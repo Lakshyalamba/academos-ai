@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 40, "column": 0}, "map": {"version":3,"sources":["file:///Users/lakshya./My%20Projects/academos/app/api/route.js"],"sourcesContent":["export async function GET() {\n  return Response.json({\n    status: \"ok\",\n    message: \"Academos API route is ready.\",\n    links: [\"/dashboard\", \"/chat\"],\n  });\n}\n"],"names":["GET","Response","json","status","message","links"],"mappings":";;;;AAAO,eAAeA;IACpB,OAAOC,SAASC,IAAI,CAAC;QACnBC,QAAQ;QACRC,SAAS;QACTC,OAAO;YAAC;YAAc;SAAQ;IAChC;AACF"}}]
+}

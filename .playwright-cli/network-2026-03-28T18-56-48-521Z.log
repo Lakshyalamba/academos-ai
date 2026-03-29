@@ -1,0 +1,1 @@
+[POST] http://localhost:3000/api/ask => [500] Internal Server Error

@@ -1,0 +1,44 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Academos" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation "Primary" [ref=e5]:
+        - link "Dashboard" [ref=e6] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Chat" [ref=e7] [cursor=pointer]:
+          - /url: /chat
+  - main [ref=e8]:
+    - generic [ref=e9]:
+      - paragraph [ref=e10]: Dashboard
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - heading "Your student dashboard" [level=1] [ref=e13]
+          - paragraph [ref=e14]: A quick view of attendance, assignment progress, and useful insights in one place.
+        - link "Back to home" [ref=e15] [cursor=pointer]:
+          - /url: /
+    - region "Dashboard sections" [ref=e16]:
+      - article [ref=e17]:
+        - paragraph [ref=e18]: Section
+        - heading "Attendance" [level=2] [ref=e19]
+        - paragraph [ref=e20]: Track class presence and stay ahead of low-attendance risks.
+        - list [ref=e21]:
+          - listitem [ref=e22]: "Weekly attendance: 92%"
+          - listitem [ref=e23]: "Classes missed: 1 this month"
+      - article [ref=e24]:
+        - paragraph [ref=e25]: Section
+        - heading "Assignments" [level=2] [ref=e26]
+        - paragraph [ref=e27]: Review upcoming submissions and recently completed work.
+        - list [ref=e28]:
+          - listitem [ref=e29]: 2 assignments due this week
+          - listitem [ref=e30]: "Last submission graded: A-"
+      - article [ref=e31]:
+        - paragraph [ref=e32]: Section
+        - heading "Insights" [level=2] [ref=e33]
+        - paragraph [ref=e34]: See patterns in your performance and study consistency.
+        - list [ref=e35]:
+          - listitem [ref=e36]: "Most active study day: Wednesday"
+          - listitem [ref=e37]: "Current momentum: strong"
+  - button "Open Next.js Dev Tools" [ref=e43] [cursor=pointer]:
+    - img [ref=e44]
+  - alert [ref=e47]

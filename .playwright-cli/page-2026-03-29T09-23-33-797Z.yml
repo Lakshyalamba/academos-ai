@@ -1,0 +1,31 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Academos" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation "Primary" [ref=e5]:
+        - link "Dashboard" [ref=e6] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Chat" [ref=e7] [cursor=pointer]:
+          - /url: /chat
+  - main [ref=e8]:
+    - generic [ref=e9]:
+      - paragraph [ref=e10]: Chat
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - heading "Academic Reasoning" [level=1] [ref=e13]
+          - paragraph [ref=e14]: The backend fetches Newton MCP data, stores it in Supabase, and sends the stored record to Claude for JSON-only reasoning.
+        - link "Back to home" [ref=e15] [cursor=pointer]:
+          - /url: /
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]: Ask a question
+        - textbox "Ask a question" [ref=e19]:
+          - /placeholder: What should I do today?
+        - button "Setup Required" [disabled] [ref=e21]
+      - generic [ref=e23]:
+        - paragraph [ref=e24]: Response
+        - paragraph [ref=e26]: "Setup required before academic reasoning can run: SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY / CLAUDE_API_KEY."
+  - button "Open Next.js Dev Tools" [ref=e32] [cursor=pointer]:
+    - img [ref=e33]
+  - alert [ref=e36]

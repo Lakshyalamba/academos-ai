@@ -1,0 +1,47 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Academos" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation "Primary" [ref=e5]:
+        - link "Dashboard" [ref=e6] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Chat" [ref=e7] [cursor=pointer]:
+          - /url: /chat
+  - main [ref=e8]:
+    - generic [ref=e9]:
+      - paragraph [ref=e10]: Chat
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - heading "Ask Claude" [level=1] [ref=e13]
+          - paragraph [ref=e14]: "Send a question to the `/api/ask` route and inspect the returned JSON directly in the UI."
+        - link "Back to home" [ref=e15] [cursor=pointer]:
+          - /url: /
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]: Ask a question
+        - textbox "Ask a question" [ref=e19]:
+          - /placeholder: What should I do today?
+          - text: What should I do today?
+        - button "Send to Claude" [ref=e21] [cursor=pointer]
+      - generic [ref=e23]:
+        - paragraph [ref=e24]: Response
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - heading "Summary" [level=2] [ref=e39]
+            - paragraph [ref=e40]: Today should focus on clearing your nearest assignment deadline and preparing for Monday's classes.
+          - generic [ref=e41]:
+            - heading "Tasks" [level=2] [ref=e42]
+            - list [ref=e43]:
+              - listitem [ref=e44]: Complete the Linear Algebra problem set due tomorrow.
+              - listitem [ref=e45]: Outline the History reflection due Friday.
+              - listitem [ref=e46]: Prepare for Monday's Physics lab at 9:00 AM and Calculus tutorial at 1:00 PM.
+          - generic [ref=e47]:
+            - heading "Insights" [level=2] [ref=e48]
+            - list [ref=e49]:
+              - listitem [ref=e50]: You have two pending assignments this week, so finishing one today will reduce pressure quickly.
+              - listitem [ref=e51]: Attendance is healthy at 92%, which gives you room to focus on coursework without an attendance risk.
+              - listitem [ref=e52]: Your last graded submission was an A-, and your study momentum is currently strong.
+  - button "Open Next.js Dev Tools" [ref=e32] [cursor=pointer]:
+    - img [ref=e33]
+  - alert [ref=e36]

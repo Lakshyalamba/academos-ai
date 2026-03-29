@@ -1,0 +1,44 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Academos" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation "Primary" [ref=e5]:
+        - link "Dashboard" [active] [ref=e6] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Chat" [ref=e7] [cursor=pointer]:
+          - /url: /chat
+  - button "Open Next.js Dev Tools" [ref=e32] [cursor=pointer]:
+    - img [ref=e33]
+  - alert [ref=e36]
+  - main [ref=e37]:
+    - generic [ref=e38]:
+      - paragraph [ref=e39]: Dashboard
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - heading "System Dashboard" [level=1] [ref=e42]
+          - paragraph [ref=e43]: This page shows whether the live academic pipeline is ready. It does not display fabricated student data.
+        - link "Back to home" [ref=e44] [cursor=pointer]:
+          - /url: /
+    - region "Dashboard sections" [ref=e45]:
+      - article [ref=e46]:
+        - paragraph [ref=e47]: Section
+        - heading "Backend Readiness" [level=2] [ref=e48]
+        - paragraph [ref=e49]: The live academic flow requires both Supabase storage and Claude reasoning before any student data can be surfaced safely.
+        - list [ref=e50]:
+          - listitem [ref=e51]: "Supabase configured: No"
+          - listitem [ref=e52]: "Claude configured: No"
+      - article [ref=e53]:
+        - paragraph [ref=e54]: Section
+        - heading "Data Integrity" [level=2] [ref=e55]
+        - paragraph [ref=e56]: This dashboard no longer renders invented attendance, assignments, or performance data.
+        - list [ref=e57]:
+          - listitem [ref=e58]: Academic answers must come from Newton MCP data only.
+          - listitem [ref=e59]: If live data is unavailable, the app should say Data not found.
+      - article [ref=e60]:
+        - paragraph [ref=e61]: Section
+        - heading "Next Step" [level=2] [ref=e62]
+        - paragraph [ref=e63]: Use the chat flow to sync Newton MCP data into Supabase, then reason over the stored record.
+        - list [ref=e64]:
+          - listitem [ref=e65]: "Flow: MCP -> Backend -> Supabase -> Claude -> UI"
+          - listitem [ref=e66]: Complete the missing configuration before running academic reasoning.

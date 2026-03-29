@@ -1,0 +1,34 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Academos" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation "Primary" [ref=e5]:
+        - link "Dashboard" [ref=e6] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Chat" [ref=e7] [cursor=pointer]:
+          - /url: /chat
+  - main [ref=e8]:
+    - generic [ref=e9]:
+      - paragraph [ref=e10]: Chat
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - heading "Ask Claude" [level=1] [ref=e13]
+          - paragraph [ref=e14]: "Send a question to the `/api/ask` route and inspect the returned JSON directly in the UI."
+        - link "Back to home" [ref=e15] [cursor=pointer]:
+          - /url: /
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]: Your question
+        - textbox "Your question" [ref=e19]:
+          - /placeholder: Ask a study question or request a summary...
+        - button "Send to Claude" [ref=e21] [cursor=pointer]
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - paragraph [ref=e24]: Response Text
+          - generic [ref=e25]: Claude responses will appear here.
+        - generic [ref=e26]:
+          - paragraph [ref=e27]: JSON Response
+          - generic [ref=e28]: "{ \"status\": \"idle\", \"response\": null, \"error\": null }"
+  - button "Open Next.js Dev Tools" [ref=e34] [cursor=pointer]:
+    - img [ref=e35]

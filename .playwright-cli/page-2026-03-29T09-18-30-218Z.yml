@@ -1,0 +1,25 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Academos" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation "Primary" [ref=e5]:
+        - link "Dashboard" [ref=e6] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Chat" [ref=e7] [cursor=pointer]:
+          - /url: /chat
+  - main [ref=e8]:
+    - generic [ref=e9]:
+      - paragraph [ref=e10]: Next.js App Router
+      - heading "Academos starter" [level=1] [ref=e11]
+      - paragraph [ref=e12]: This project includes a basic homepage and starter routes for the dashboard, chat, and API sections.
+    - region "Primary navigation" [ref=e13]:
+      - link "Dashboard View the starter dashboard page." [ref=e14] [cursor=pointer]:
+        - /url: /dashboard
+        - generic [ref=e15]: Dashboard
+        - generic [ref=e16]: View the starter dashboard page.
+      - link "Chat Open the starter chat experience." [ref=e17] [cursor=pointer]:
+        - /url: /chat
+        - generic [ref=e18]: Chat
+        - generic [ref=e19]: Open the starter chat experience.
+  - alert [ref=e20]
