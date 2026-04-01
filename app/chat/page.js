@@ -1,8 +1,11 @@
 import Link from "next/link";
 import ChatClient from "./ChatClient";
 import styles from "./chat.module.css";
+import { getRuntimeStatus } from "../../lib/runtime-status";
 
 export default function ChatPage() {
+  const runtimeStatus = getRuntimeStatus();
+
   return (
     <main className="page-shell">
       <section className={styles.header}>
@@ -11,8 +14,9 @@ export default function ChatPage() {
           <div>
             <h1 className={styles.title}>Academic Reasoning</h1>
             <p className="page-copy">
-              The backend fetches Newton MCP data, stores it in Supabase, and
-              sends the stored record to Claude for JSON-only reasoning.
+              The backend fetches Newton data from the local Newton MCP server,
+              optionally stores it in Supabase, and sends the academic snapshot
+              to Gemini for JSON-only reasoning.
             </p>
           </div>
 
@@ -22,7 +26,7 @@ export default function ChatPage() {
         </div>
       </section>
 
-      <ChatClient />
+      <ChatClient initialSetupStatus={runtimeStatus} />
     </main>
   );
 }

@@ -9,7 +9,7 @@ const routes = [
   {
     href: "/chat",
     title: "Chat",
-    description: "Run MCP-backed academic reasoning through Supabase and Claude.",
+    description: "Run Newton MCP-backed academic reasoning through Gemini, with optional Supabase persistence.",
   },
 ];
 
@@ -20,8 +20,9 @@ export default function HomePage() {
         <p className="eyebrow">Academic Data Pipeline</p>
         <h1>Academos</h1>
         <p className="hero-copy">
-          Newton MCP data is fetched by the backend, stored in Supabase, and
-          sent to Claude for JSON-only reasoning in the UI.
+          Newton data is fetched from the local Newton MCP server, optionally
+          stored in Supabase, and sent to Gemini for JSON-only reasoning in the
+          UI.
         </p>
       </section>
 

@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 10, "column": 0}, "map": {"version":3,"sources":["file:///Users/lakshya./My%20Projects/academos/app/dashboard/page.js"],"sourcesContent":["import Link from \"next/link\";\n\nexport default function DashboardPage() {\n  return (\n    <main className=\"page-shell\">\n      <section className=\"content-card\">\n        <p className=\"eyebrow\">Dashboard</p>\n        <h1>Dashboard page</h1>\n        <p className=\"page-copy\">\n          This is a placeholder for dashboard content in your App Router\n          project.\n        </p>\n        <Link href=\"/\" className=\"text-link\">\n          Back to home\n        </Link>\n      </section>\n    </main>\n  );\n}\n"],"names":["DashboardPage","className","href"],"mappings":";;;;;AAAA;;;AAEe,SAASA;IACtB,qBACE,8OAAC;QAAKC,WAAU;kBACd,cAAA,8OAAC;YAAQA,WAAU;;8BACjB,8OAAC;oBAAEA,WAAU;8BAAU;;;;;;8BACvB,8OAAC;8BAAG;;;;;;8BACJ,8OAAC;oBAAEA,WAAU;8BAAY;;;;;;8BAIzB,8OAAC,0LAAI;oBAACC,MAAK;oBAAID,WAAU;8BAAY;;;;;;;;;;;;;;;;;AAM7C"}}]
-}

@@ -1,19 +1,20 @@
 import Link from "next/link";
 import styles from "./dashboard.module.css";
-import { isClaudeConfigured } from "../../lib/claude";
-import { isSupabaseConfigured } from "../../lib/supabase";
+import { getRuntimeStatus } from "../../lib/runtime-status";
 
 export default function DashboardPage() {
-  const claudeConfigured = isClaudeConfigured();
-  const supabaseConfigured = isSupabaseConfigured();
+  const runtimeStatus = getRuntimeStatus();
+  const { newtonConfigured, llmConfigured, supabaseConfigured } =
+    runtimeStatus.config;
   const statusCards = [
     {
       title: "Backend Readiness",
       description:
-        "The live academic flow requires both Supabase storage and Claude reasoning before any student data can be surfaced safely.",
+        "The live academic flow requires Newton MCP and Gemini reasoning before any student data can be surfaced safely. Supabase persistence is optional.",
       items: [
+        `Newton MCP in Codex: ${newtonConfigured ? "Yes" : "No"}`,
         `Supabase configured: ${supabaseConfigured ? "Yes" : "No"}`,
-        `Claude configured: ${claudeConfigured ? "Yes" : "No"}`,
+        `Gemini configured: ${llmConfigured ? "Yes" : "No"}`,
       ],
     },
     {
@@ -28,12 +29,17 @@ export default function DashboardPage() {
     {
       title: "Next Step",
       description:
-        "Use the chat flow to sync Newton MCP data into Supabase, then reason over the stored record.",
+        "Use the chat flow to fetch Newton data, optionally persist it in Supabase, and reason over the available academic snapshot.",
       items: [
-        "Flow: MCP -> Backend -> Supabase -> Claude -> UI",
-        claudeConfigured && supabaseConfigured
-          ? "Configuration is present. You can use the chat route to create a live snapshot."
-          : "Complete the missing configuration before running academic reasoning.",
+        supabaseConfigured
+          ? "Flow: Newton MCP -> Backend -> Supabase -> Gemini -> UI"
+          : "Flow: Newton MCP -> Backend -> Gemini -> UI",
+        newtonConfigured && llmConfigured
+          ? supabaseConfigured
+            ? "Configuration is present. Chat can create and persist a live snapshot."
+            : "Configuration is present. Chat can run without persistence."
+          : runtimeStatus.missing[0] ||
+            "Complete the missing configuration before running academic reasoning.",
       ],
     },
   ];

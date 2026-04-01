@@ -1,25 +1,33 @@
 # Academos
 
-Academos is a Next.js app that fetches academic data from the Newton MCP server, stores the normalized snapshot in Supabase, and then sends the stored record to Claude for JSON-only reasoning in the UI.
+Academos is a Next.js app that fetches academic data from the Newton MCP server, optionally stores the normalized snapshot in Supabase, and then sends the academic snapshot to Gemini for JSON-only reasoning in the UI.
 
 Current runtime flow:
 
-`Newton MCP -> Next.js backend -> Supabase -> Claude -> UI`
+`Newton MCP -> Next.js backend -> Gemini -> UI`
+
+Optional persistence flow:
+
+`Newton MCP -> Next.js backend -> Supabase -> Gemini -> UI`
+
+Architecture report:
+
+- [`PROJECT_REPORT.md`](./PROJECT_REPORT.md)
 
 ## What The App Does
 
 - Fetches academic data from Newton through the backend.
 - Normalizes the data into a structured snapshot.
-- Stores that snapshot in Supabase before any LLM reasoning happens.
-- Sends the stored database record to Claude.
+- Optionally stores that snapshot in Supabase before LLM reasoning happens.
+- Sends the academic snapshot to Gemini.
 - Returns JSON-only academic reasoning to the chat UI.
 - Prevents fabricated academic data from being shown in the dashboard.
 
 ## Features
 
-- MCP-backed academic snapshot generation.
-- Supabase persistence for fetched academic records.
-- Claude reasoning over stored data only.
+- Newton MCP-backed academic snapshot generation with Codex-based local setup.
+- Gemini reasoning over Newton-backed academic snapshots.
+- Optional Supabase persistence for fetched academic records.
 - JSON-only response contract.
 - Separation of assignments, contests, and quizzes.
 - Setup-status preflight in the UI before chat submission.
@@ -38,7 +46,7 @@ app/
     page.js           # System-readiness dashboard
   page.js             # Home page
 lib/
-  claude.js           # Claude API wrapper
+  gemini.js           # Gemini API wrapper
   newton-mcp.js       # Newton MCP client + snapshot builder
   supabase.js         # Minimal Supabase REST client
 supabase/
@@ -53,7 +61,7 @@ The chat page submits a request to `/api/ask`.
 
 ### 2. Backend fetches Newton data
 
-The backend uses the Newton MCP client in `lib/newton-mcp.js` to fetch the relevant academic data.
+The backend uses the Newton MCP client in `lib/newton-mcp.js` to fetch the relevant academic data. The supported local setup is to register Newton in Codex first.
 
 Examples of supported data areas:
 
@@ -70,13 +78,15 @@ Examples of supported data areas:
 - leaderboard
 - question of the day
 
-### 3. Backend stores the snapshot in Supabase
+### 3. Backend optionally stores the snapshot in Supabase
 
-The normalized snapshot is inserted into the `academic_snapshots` table through `lib/supabase.js`.
+If Supabase is configured, the normalized snapshot is inserted into the `academic_snapshots` table through `lib/supabase.js`.
 
-### 4. Claude reasons over stored data only
+### 4. Gemini reasons over the academic snapshot
 
-Claude receives the stored database record, not the live MCP fetch result directly.
+If Supabase is configured, Gemini receives the stored database record.
+
+If Supabase is not configured, Gemini receives the in-memory Newton snapshot directly.
 
 ### 5. UI renders JSON response
 
@@ -87,7 +97,7 @@ The response shape is:
   "summary": "",
   "tasks": [],
   "insights": [],
-  "source": "supabase-claude",
+  "source": "supabase-gemini",
   "snapshotId": ""
 }
 ```
@@ -115,8 +125,8 @@ If the reasoning layer reports an error, the API returns:
 Create `.env.local` from `.env.example` and set:
 
 ```bash
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
-ANTHROPIC_MODEL=claude-sonnet-4-6
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash-lite
 SUPABASE_URL=https://your-project-id.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
 SUPABASE_ACADEMIC_SNAPSHOTS_TABLE=academic_snapshots
@@ -124,7 +134,8 @@ SUPABASE_ACADEMIC_SNAPSHOTS_TABLE=academic_snapshots
 
 Notes:
 
-- `SUPABASE_SERVICE_ROLE_KEY` is required because inserts and updates happen server-side.
+- `GEMINI_API_KEY` is required for Gemini reasoning.
+- `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are optional. Add them only if you want snapshot persistence.
 - `SUPABASE_ACADEMIC_SNAPSHOTS_TABLE` is optional if you use the default table name `academic_snapshots`.
 
 ## Supabase Setup
@@ -156,25 +167,37 @@ Main stored fields:
 npm install
 ```
 
-### 2. Configure environment
+### 2. Add Newton MCP to Codex
+
+```bash
+codex mcp add newton -- npx -y @newtonschool/newton-mcp@latest
+```
+
+If Newton asks for authentication later, run:
+
+```bash
+npx -y @newtonschool/newton-mcp@latest login
+```
+
+### 3. Configure environment
 
 ```bash
 cp .env.example .env.local
 ```
 
-Then fill in the real Claude and Supabase credentials.
+Then fill in the real Gemini credentials. Add Supabase credentials only if you want persistence.
 
-### 3. Apply the Supabase schema
+### 4. Apply the Supabase schema
 
-Run the SQL in `supabase/schema.sql` in your Supabase SQL editor.
+If you want persistence, run the SQL in `supabase/schema.sql` in your Supabase SQL editor.
 
-### 4. Start the app
+### 5. Start the app
 
 ```bash
 npm run dev -- --hostname 127.0.0.1 --port 3000
 ```
 
-### 5. Open the app
+### 6. Open the app
 
 ```text
 http://127.0.0.1:3000
@@ -182,11 +205,15 @@ http://127.0.0.1:3000
 
 ## Runtime Status Behavior
 
-When Claude and Supabase are configured:
+When Newton MCP and Gemini are available locally:
 
 - `/api` returns `status: "ok"`
 - chat submission is enabled
-- the backend stores a snapshot and then calls Claude
+- the backend fetches a Newton snapshot and calls Gemini
+
+When Supabase is also configured:
+
+- the backend stores the snapshot before calling Gemini
 
 When configuration is missing:
 
@@ -199,11 +226,17 @@ Example current unconfigured `/api` response:
 ```json
 {
   "status": "setup-required",
-  "message": "Academos requires Supabase and Claude configuration before academic reasoning can run.",
+  "message": "Local setup is incomplete. Finish the missing steps below before running academic reasoning.",
   "config": {
-    "claudeConfigured": false,
+    "newtonConfigured": false,
+    "llmConfigured": false,
     "supabaseConfigured": false
   },
+  "missing": [
+    "Add Newton MCP to Codex: codex mcp add newton -- npx -y @newtonschool/newton-mcp@latest",
+    "Add a real GEMINI_API_KEY or GOOGLE_API_KEY in .env.local.",
+    "Restart the dev server: npm run dev -- --hostname 127.0.0.1 --port 3000"
+  ],
   "links": ["/dashboard", "/chat"]
 }
 ```
@@ -230,7 +263,7 @@ Academic reasoning UI.
 Behavior:
 
 - checks setup status from `/api`
-- blocks submission if Supabase or Claude is missing
+- blocks submission if Codex Newton MCP or Gemini is missing
 - displays `snapshotId` after a successful reasoning pass
 
 ### `/api`
@@ -245,11 +278,10 @@ High-level behavior:
 
 1. validate the user query
 2. fetch Newton MCP data
-3. store the snapshot in Supabase
-4. read the stored row back
-5. send the stored row to Claude
-6. store Claude’s reasoning result in Supabase
-7. return normalized JSON to the UI
+3. optionally store the snapshot in Supabase
+4. send the available academic snapshot to Gemini
+5. optionally store Gemini’s reasoning result in Supabase
+6. return normalized JSON to the UI
 
 ## Build And Verification
 
@@ -281,16 +313,16 @@ What was verified:
 The app is designed around these constraints:
 
 - academic data must come from Newton MCP
-- Claude reasons over stored data only
+- Gemini reasons over Newton-backed academic data only
 - contests stay separate from assignments
 - quizzes / assessments stay separate from both contests and assignments
 - if requested data is unavailable, the app should return `Data not found`
 
 ## Known Constraints
 
-- The full end-to-end reasoning flow requires valid Claude and Supabase credentials.
-- Without those credentials, the app can still run locally, but chat stays in setup-required mode.
-- The backend expects the Newton MCP package to be available through `npx` at runtime.
+- The full end-to-end reasoning flow requires Codex Newton MCP plus a valid Gemini API key.
+- Supabase is optional. Without it, the app still runs and reasons over the in-memory Newton snapshot.
+- The backend expects the Newton MCP package to be available through Codex with `codex mcp add newton -- npx -y @newtonschool/newton-mcp@latest`.
 
 ## Useful Commands
 
@@ -316,6 +348,10 @@ npm run build
 
 Academos is now structured as a backend-first academic reasoning pipeline:
 
-`Newton MCP -> backend -> Supabase -> Claude -> UI`
+`Newton MCP -> backend -> Gemini -> UI`
 
-That keeps academic data fetch, persistence, reasoning, and rendering clearly separated and avoids fabricated student data in the interface.
+Optional persistence path:
+
+`Newton MCP -> backend -> Supabase -> Gemini -> UI`
+
+That keeps academic data fetch, optional persistence, reasoning, and rendering clearly separated and avoids fabricated student data in the interface.

@@ -11,29 +11,80 @@ const initialResponse = {
   snapshotId: "",
 };
 
-const initialSetupStatus = {
+const fallbackSetupStatus = {
   checked: false,
-  claudeConfigured: true,
-  supabaseConfigured: true,
+  newtonConfigured: false,
+  llmConfigured: false,
+  supabaseConfigured: false,
+  message: "Checking local setup status...",
+  missing: [],
+  optional: [],
+  commands: {
+    addNewton: "",
+    loginNewton: "",
+    restartDevServer: "",
+  },
 };
 
-export default function ChatClient() {
+function normalizeSetupStatus(data, checked = true) {
+  return {
+    checked,
+    newtonConfigured: Boolean(data?.config?.newtonConfigured),
+    llmConfigured: Boolean(
+      data?.config?.llmConfigured ??
+        data?.config?.geminiConfigured ??
+        data?.config?.claudeConfigured,
+    ),
+    supabaseConfigured: Boolean(data?.config?.supabaseConfigured),
+    message:
+      typeof data?.message === "string"
+        ? data.message
+        : fallbackSetupStatus.message,
+    missing: Array.isArray(data?.missing) ? data.missing : [],
+    optional: Array.isArray(data?.optional) ? data.optional : [],
+    commands: {
+      addNewton:
+        typeof data?.commands?.addNewton === "string"
+          ? data.commands.addNewton
+          : "",
+      loginNewton:
+        typeof data?.commands?.loginNewton === "string"
+          ? data.commands.loginNewton
+          : "",
+      restartDevServer:
+        typeof data?.commands?.restartDevServer === "string"
+          ? data.commands.restartDevServer
+          : "",
+    },
+  };
+}
+
+export default function ChatClient({ initialSetupStatus }) {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [responseData, setResponseData] = useState(initialResponse);
   const [errorMessage, setErrorMessage] = useState("");
-  const [setupStatus, setSetupStatus] = useState(initialSetupStatus);
+  const [setupStatus, setSetupStatus] = useState(() =>
+    initialSetupStatus
+      ? normalizeSetupStatus(initialSetupStatus)
+      : fallbackSetupStatus,
+  );
 
   const hasResponse =
     Boolean(responseData.summary) ||
     responseData.tasks.length > 0 ||
     responseData.insights.length > 0;
+  const isSetupLoading = !setupStatus.checked;
   const isConfigured =
-    setupStatus.claudeConfigured && setupStatus.supabaseConfigured;
-  const setupIssues = [
-    !setupStatus.supabaseConfigured ? "SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY" : null,
-    !setupStatus.claudeConfigured ? "ANTHROPIC_API_KEY / CLAUDE_API_KEY" : null,
-  ].filter(Boolean);
+    setupStatus.newtonConfigured &&
+    setupStatus.llmConfigured;
+  const setupMessage = setupStatus.message;
+  const technicalSourceLabel =
+    responseData.source === "supabase-gemini"
+      ? "Newton MCP -> Backend -> Supabase -> Gemini"
+      : responseData.source === "gemini"
+        ? "Newton MCP -> Backend -> Gemini"
+        : responseData.source || "Response ready";
 
   useEffect(() => {
     let isActive = true;
@@ -47,11 +98,7 @@ export default function ChatClient() {
           return;
         }
 
-        setSetupStatus({
-          checked: true,
-          claudeConfigured: Boolean(data?.config?.claudeConfigured),
-          supabaseConfigured: Boolean(data?.config?.supabaseConfigured),
-        });
+        setSetupStatus(normalizeSetupStatus(data));
       } catch {
         if (!isActive) {
           return;
@@ -59,8 +106,14 @@ export default function ChatClient() {
 
         setSetupStatus({
           checked: true,
-          claudeConfigured: false,
+          newtonConfigured: false,
+          llmConfigured: false,
           supabaseConfigured: false,
+          message:
+            "Unable to read local setup status. Make sure the dev server is running and the backend can read your Codex MCP and .env.local configuration.",
+          missing: [],
+          optional: [],
+          commands: fallbackSetupStatus.commands,
         });
       }
     }
@@ -76,9 +129,7 @@ export default function ChatClient() {
     event.preventDefault();
 
     if (!isConfigured) {
-      setErrorMessage(
-        `Setup required before reasoning can run: ${setupIssues.join(", ")}.`,
-      );
+      setErrorMessage(setupMessage);
       setResponseData(initialResponse);
       return;
     }
@@ -151,12 +202,14 @@ export default function ChatClient() {
           <button
             type="submit"
             className={styles.button}
-            disabled={isLoading || !isConfigured}
+            disabled={isLoading || isSetupLoading || !isConfigured}
           >
             {isLoading
               ? "Syncing..."
+              : isSetupLoading
+                ? "Checking Setup..."
               : !isConfigured
-                ? "Setup Required"
+                ? "Finish Local Setup"
                 : "Run Academic Reasoning"}
           </button>
         </div>
@@ -168,26 +221,41 @@ export default function ChatClient() {
           <div className={styles.responseBox} aria-live="polite">
             {isLoading ? (
               <p className={styles.statusMessage}>
-                Backend is syncing Newton MCP data to Supabase and sending the stored record to Claude...
+                Backend is fetching Newton MCP data and sending the academic snapshot to Gemini...
               </p>
+            ) : isSetupLoading ? (
+              <p className={styles.statusMessage}>{setupMessage}</p>
             ) : setupStatus.checked && !isConfigured ? (
-              <p className={styles.errorMessage}>
-                Setup required before academic reasoning can run: {setupIssues.join(", ")}.
-              </p>
+              <div className={styles.setupState}>
+                <p className={styles.errorMessage}>{setupMessage}</p>
+                {setupStatus.missing.length > 0 ? (
+                  <ul className={styles.list}>
+                    {setupStatus.missing.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : null}
+                {setupStatus.optional.length > 0 ? (
+                  <ul className={styles.list}>
+                    {setupStatus.optional.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : null}
+                {setupStatus.commands.loginNewton ? (
+                  <p className={styles.emptyText}>
+                    If Newton asks for authentication later, run{" "}
+                    <code>{setupStatus.commands.loginNewton}</code>.
+                  </p>
+                ) : null}
+              </div>
             ) : errorMessage ? (
               <p className={styles.errorMessage}>{errorMessage}</p>
             ) : hasResponse ? (
               <div className={styles.responseContent}>
                 <p className={styles.sourceBadge}>
-                  {responseData.source === "supabase-claude"
-                    ? "MCP -> Backend -> Supabase -> Claude"
-                    : "Response ready"}
+                  Verified from your Newton academic data
                 </p>
-                {responseData.snapshotId ? (
-                  <p className={styles.emptyText}>
-                    Snapshot ID: {responseData.snapshotId}
-                  </p>
-                ) : null}
 
                 <section className={styles.responseSection}>
                   <h2 className={styles.sectionTitle}>Summary</h2>
@@ -219,6 +287,24 @@ export default function ChatClient() {
                     <p className={styles.emptyText}>No insights returned.</p>
                   )}
                 </section>
+
+                {(responseData.source || responseData.snapshotId) ? (
+                  <details className={styles.responseSection}>
+                    <summary className={styles.sectionTitle}>Technical details</summary>
+                    <div className={styles.responseSection}>
+                      {responseData.source ? (
+                        <p className={styles.emptyText}>
+                          Pipeline: {technicalSourceLabel}
+                        </p>
+                      ) : null}
+                      {responseData.snapshotId ? (
+                        <p className={styles.emptyText}>
+                          Snapshot ID: {responseData.snapshotId}
+                        </p>
+                      ) : null}
+                    </div>
+                  </details>
+                ) : null}
               </div>
             ) : (
               <p className={styles.emptyState}>
