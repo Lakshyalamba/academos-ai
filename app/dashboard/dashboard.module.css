@@ -22,10 +22,17 @@
   letter-spacing: -0.04em;
 }
 
+.overviewGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.95fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+  align-items: start;
+}
+
 .todayOverviewCard {
   display: grid;
   gap: 1.15rem;
-  margin-top: 1.5rem;
   padding: 1.5rem;
   border: 1px solid rgba(18, 32, 51, 0.08);
   border-radius: 26px;
@@ -67,7 +74,7 @@
 
 .todayOverviewGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.9rem;
 }
 
@@ -103,6 +110,64 @@
 .todayMetricValueText {
   font-size: 1.2rem;
   line-height: 1.2;
+}
+
+.nextClassCard {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 251, 255, 0.86));
+  box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
+}
+
+.nextClassContent,
+.nextClassEmptyState {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.nextClassTitle {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: clamp(1.55rem, 2.6vw, 2rem);
+  line-height: 1.05;
+}
+
+.nextClassDescription {
+  margin: 0;
+  color: #42546b;
+  line-height: 1.65;
+}
+
+.nextClassMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.nextClassMetaItem {
+  padding: 0.9rem 0.95rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.nextClassMetaLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6a7280;
+}
+
+.nextClassMetaValue {
+  margin: 0.55rem 0 0;
+  color: #122033;
+  line-height: 1.45;
 }
 
 .statusStrip {
@@ -259,7 +324,16 @@
     grid-template-columns: 1fr;
   }
 
+  .overviewGrid {
+    grid-template-columns: 1fr;
+  }
+
   .todayOverviewCard {
+    padding: 1.25rem;
+    border-radius: 22px;
+  }
+
+  .nextClassCard {
     padding: 1.25rem;
     border-radius: 22px;
   }
@@ -269,6 +343,10 @@
   }
 
   .todayOverviewGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .nextClassMetaGrid {
     grid-template-columns: 1fr;
   }
 

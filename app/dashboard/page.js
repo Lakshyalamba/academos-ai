@@ -99,14 +99,6 @@ export default async function DashboardPage() {
           ? "Based on assignment due timestamps"
           : "Overdue status is unavailable right now",
     },
-    {
-      label: "Next class",
-      value: todayOverview.nextClassTitle || "No upcoming class found",
-      helper:
-        todayOverview.nextClassTime ||
-        "No next class was found in the current live schedule",
-      isTextValue: true,
-    },
   ];
 
   return (
@@ -128,36 +120,74 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className={styles.todayOverviewCard} aria-label="Today's academic overview">
-        <div className={styles.todayOverviewHeader}>
-          <div>
-            <p className={styles.cardLabel}>Today Overview</p>
-            <h2 className={styles.todayOverviewTitle}>Your academic snapshot at a glance</h2>
-            <p className={styles.todayOverviewDescription}>{todayOverview.message}</p>
+      <section className={styles.overviewGrid} aria-label="Student overview cards">
+        <section className={styles.todayOverviewCard} aria-label="Today's academic overview">
+          <div className={styles.todayOverviewHeader}>
+            <div>
+              <p className={styles.cardLabel}>Today Overview</p>
+              <h2 className={styles.todayOverviewTitle}>Your academic snapshot at a glance</h2>
+              <p className={styles.todayOverviewDescription}>{todayOverview.message}</p>
+            </div>
+
+            <p className={styles.todayOverviewMeta}>
+              {todayOverview.available ? "Live student data" : "Fallback state"}
+            </p>
           </div>
 
-          <p className={styles.todayOverviewMeta}>
-            {todayOverview.available ? "Live student data" : "Fallback state"}
-          </p>
-        </div>
+          <div className={styles.todayOverviewGrid}>
+            {todayMetrics.map((item) => (
+              <article key={item.label} className={styles.todayMetric}>
+                <p className={styles.todayMetricLabel}>{item.label}</p>
+                <p className={styles.todayMetricValue}>{item.value}</p>
+                <p className={styles.todayMetricHelper}>{item.helper}</p>
+              </article>
+            ))}
+          </div>
+        </section>
 
-        <div className={styles.todayOverviewGrid}>
-          {todayMetrics.map((item) => (
-            <article key={item.label} className={styles.todayMetric}>
-              <p className={styles.todayMetricLabel}>{item.label}</p>
-              <p
-                className={
-                  item.isTextValue
-                    ? styles.todayMetricValueText
-                    : styles.todayMetricValue
-                }
-              >
-                {item.value}
+        <article className={styles.nextClassCard} aria-label="Next class">
+          <p className={styles.cardLabel}>Next Class</p>
+          {todayOverview.nextClass?.available ? (
+            <div className={styles.nextClassContent}>
+              <h2 className={styles.nextClassTitle}>
+                {todayOverview.nextClass.subjectName}
+              </h2>
+              <p className={styles.nextClassDescription}>
+                {todayOverview.nextClass.message}
               </p>
-              <p className={styles.todayMetricHelper}>{item.helper}</p>
-            </article>
-          ))}
-        </div>
+
+              <div className={styles.nextClassMetaGrid}>
+                <div className={styles.nextClassMetaItem}>
+                  <p className={styles.nextClassMetaLabel}>Date</p>
+                  <p className={styles.nextClassMetaValue}>
+                    {todayOverview.nextClass.date}
+                  </p>
+                </div>
+                <div className={styles.nextClassMetaItem}>
+                  <p className={styles.nextClassMetaLabel}>Time</p>
+                  <p className={styles.nextClassMetaValue}>
+                    {todayOverview.nextClass.time}
+                  </p>
+                </div>
+              </div>
+
+              <div className={styles.nextClassMetaItem}>
+                <p className={styles.nextClassMetaLabel}>Class type</p>
+                <p className={styles.nextClassMetaValue}>
+                  {todayOverview.nextClass.type || "Not listed in the live schedule"}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.nextClassEmptyState}>
+              <h2 className={styles.nextClassTitle}>No upcoming class found</h2>
+              <p className={styles.nextClassDescription}>
+                {todayOverview.nextClass?.message ||
+                  "No upcoming class was found in the current live schedule."}
+              </p>
+            </div>
+          )}
+        </article>
       </section>
 
       <section className={styles.statusStrip} aria-label="Readiness summary">
