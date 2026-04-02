@@ -38,6 +38,148 @@
   top: 6.25rem;
 }
 
+.todoPanel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 251, 255, 0.9));
+  box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
+}
+
+.todoPanelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.todoPanelTitle {
+  margin: 0.35rem 0 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: clamp(1.8rem, 3vw, 2.35rem);
+  line-height: 1.02;
+}
+
+.todoPanelDescription {
+  margin: 0.55rem 0 0;
+  color: #42546b;
+  line-height: 1.65;
+}
+
+.todoPanelMeta {
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(18, 32, 51, 0.06);
+  color: #5f6d7d;
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.todoForm {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.todoInputLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #42546b;
+}
+
+.todoInputRow {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.todoInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(18, 32, 51, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #122033;
+  font: inherit;
+}
+
+.todoInput::placeholder {
+  color: #7a8796;
+}
+
+.todoInput:focus {
+  outline: none;
+  border-color: rgba(184, 92, 56, 0.45);
+  box-shadow: 0 0 0 4px rgba(184, 92, 56, 0.12);
+}
+
+.todoAddButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.1rem;
+  border: none;
+  border-radius: 16px;
+  background: #122033;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.todoAddButton:hover {
+  background: #1c314d;
+}
+
+.todoChecklist {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todoChecklistItem {
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.todoCheckboxRow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+}
+
+.todoCheckbox {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  accent-color: #b85c38;
+}
+
+.todoChecklistText,
+.todoEmptyState {
+  margin: 0;
+  color: #122033;
+  line-height: 1.6;
+}
+
+.todoChecklistTextDone {
+  color: #6a7280;
+  text-decoration: line-through;
+}
+
+.todoEmptyState {
+  color: #42546b;
+}
+
 .todayOverviewCard {
   display: grid;
   gap: 1.15rem;
@@ -485,6 +627,19 @@
 
   .dashboardSidebar {
     position: static;
+  }
+
+  .todoPanel {
+    padding: 1.25rem;
+    border-radius: 22px;
+  }
+
+  .todoPanelHeader {
+    flex-direction: column;
+  }
+
+  .todoInputRow {
+    flex-direction: column;
   }
 
   .todayOverviewCard {

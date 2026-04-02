@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./dashboard.module.css";
+import TodoListCard from "./TodoListCard";
 import { getAttendanceAlert } from "../../lib/attendance-alert";
 import { getTodayOverview } from "../../lib/dashboard-overview";
 import { getRuntimeStatus } from "../../lib/runtime-status";
@@ -86,6 +87,8 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </section>
+
+      <TodoListCard />
 
       <section className={styles.dashboardLayout} aria-label="Dashboard content">
         <div className={styles.dashboardMain}>
