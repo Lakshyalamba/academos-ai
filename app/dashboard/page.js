@@ -9,6 +9,14 @@ function getMetricValue(value, fallback = "Not available") {
   return typeof value === "number" ? String(value) : fallback;
 }
 
+function getClassCountLabel(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return "No classes";
+  }
+
+  return `${items.length} ${items.length === 1 ? "class" : "classes"}`;
+}
+
 export default async function DashboardPage() {
   const runtimeStatus = getRuntimeStatus();
   const { newtonConfigured, llmConfigured, supabaseConfigured } =
@@ -120,74 +128,111 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className={styles.overviewGrid} aria-label="Student overview cards">
-        <section className={styles.todayOverviewCard} aria-label="Today's academic overview">
-          <div className={styles.todayOverviewHeader}>
-            <div>
-              <p className={styles.cardLabel}>Today Overview</p>
-              <h2 className={styles.todayOverviewTitle}>Your academic snapshot at a glance</h2>
-              <p className={styles.todayOverviewDescription}>{todayOverview.message}</p>
-            </div>
+      <section className={styles.todayOverviewCard} aria-label="Today's academic overview">
+        <div className={styles.todayOverviewHeader}>
+          <div>
+            <p className={styles.cardLabel}>Today Overview</p>
+            <h2 className={styles.todayOverviewTitle}>Your academic snapshot at a glance</h2>
+            <p className={styles.todayOverviewDescription}>{todayOverview.message}</p>
+          </div>
 
-            <p className={styles.todayOverviewMeta}>
-              {todayOverview.available ? "Live student data" : "Fallback state"}
+          <p className={styles.todayOverviewMeta}>
+            {todayOverview.available ? "Live student data" : "Fallback state"}
+          </p>
+        </div>
+
+        <div className={styles.todayOverviewGrid}>
+          {todayMetrics.map((item) => (
+            <article key={item.label} className={styles.todayMetric}>
+              <p className={styles.todayMetricLabel}>{item.label}</p>
+              <p className={styles.todayMetricValue}>{item.value}</p>
+              <p className={styles.todayMetricHelper}>{item.helper}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.classesWidget} aria-label="Today and tomorrow classes">
+        <div className={styles.classesWidgetHeader}>
+          <div>
+            <p className={styles.cardLabel}>Classes</p>
+            <h2 className={styles.classesWidgetTitle}>Today and tomorrow</h2>
+            <p className={styles.classesWidgetDescription}>
+              A quick look at your nearest scheduled classes without opening chat.
             </p>
           </div>
+          <p className={styles.todayOverviewMeta}>
+            {todayOverview.classesSchedule?.available ? "Live schedule" : "Fallback state"}
+          </p>
+        </div>
 
-          <div className={styles.todayOverviewGrid}>
-            {todayMetrics.map((item) => (
-              <article key={item.label} className={styles.todayMetric}>
-                <p className={styles.todayMetricLabel}>{item.label}</p>
-                <p className={styles.todayMetricValue}>{item.value}</p>
-                <p className={styles.todayMetricHelper}>{item.helper}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <article className={styles.nextClassCard} aria-label="Next class">
-          <p className={styles.cardLabel}>Next Class</p>
-          {todayOverview.nextClass?.available ? (
-            <div className={styles.nextClassContent}>
-              <h2 className={styles.nextClassTitle}>
-                {todayOverview.nextClass.subjectName}
-              </h2>
-              <p className={styles.nextClassDescription}>
-                {todayOverview.nextClass.message}
-              </p>
-
-              <div className={styles.nextClassMetaGrid}>
-                <div className={styles.nextClassMetaItem}>
-                  <p className={styles.nextClassMetaLabel}>Date</p>
-                  <p className={styles.nextClassMetaValue}>
-                    {todayOverview.nextClass.date}
-                  </p>
-                </div>
-                <div className={styles.nextClassMetaItem}>
-                  <p className={styles.nextClassMetaLabel}>Time</p>
-                  <p className={styles.nextClassMetaValue}>
-                    {todayOverview.nextClass.time}
-                  </p>
-                </div>
-              </div>
-
-              <div className={styles.nextClassMetaItem}>
-                <p className={styles.nextClassMetaLabel}>Class type</p>
-                <p className={styles.nextClassMetaValue}>
-                  {todayOverview.nextClass.type || "Not listed in the live schedule"}
-                </p>
-              </div>
+        <div className={styles.classesSectionsGrid}>
+          <article className={styles.classesSection}>
+            <div className={styles.classesSectionHeader}>
+              <h3 className={styles.classesSectionTitle}>Today</h3>
+              <span className={styles.classesSectionMeta}>
+                {getClassCountLabel(todayOverview.classesSchedule?.today)}
+              </span>
             </div>
-          ) : (
-            <div className={styles.nextClassEmptyState}>
-              <h2 className={styles.nextClassTitle}>No upcoming class found</h2>
-              <p className={styles.nextClassDescription}>
-                {todayOverview.nextClass?.message ||
-                  "No upcoming class was found in the current live schedule."}
+
+            {todayOverview.classesSchedule?.today?.length ? (
+              <ul className={styles.classesList}>
+                {todayOverview.classesSchedule.today.map((entry) => (
+                  <li
+                    key={`${entry.subjectName}-${entry.time}-${entry.type}`}
+                    className={styles.classRow}
+                  >
+                    <div>
+                      <p className={styles.className}>{entry.subjectName}</p>
+                    </div>
+                    <div className={styles.classMeta}>
+                      <span className={styles.classBadge}>{entry.time}</span>
+                      <span className={styles.classBadgeMuted}>{entry.type || "Class"}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className={styles.classesEmptyState}>
+                {todayOverview.classesSchedule?.todayEmptyMessage ||
+                  "No classes scheduled today."}
               </p>
+            )}
+          </article>
+
+          <article className={styles.classesSection}>
+            <div className={styles.classesSectionHeader}>
+              <h3 className={styles.classesSectionTitle}>Tomorrow</h3>
+              <span className={styles.classesSectionMeta}>
+                {getClassCountLabel(todayOverview.classesSchedule?.tomorrow)}
+              </span>
             </div>
-          )}
-        </article>
+
+            {todayOverview.classesSchedule?.tomorrow?.length ? (
+              <ul className={styles.classesList}>
+                {todayOverview.classesSchedule.tomorrow.map((entry) => (
+                  <li
+                    key={`${entry.subjectName}-${entry.time}-${entry.type}`}
+                    className={styles.classRow}
+                  >
+                    <div>
+                      <p className={styles.className}>{entry.subjectName}</p>
+                    </div>
+                    <div className={styles.classMeta}>
+                      <span className={styles.classBadge}>{entry.time}</span>
+                      <span className={styles.classBadgeMuted}>{entry.type || "Class"}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className={styles.classesEmptyState}>
+                {todayOverview.classesSchedule?.tomorrowEmptyMessage ||
+                  "No classes scheduled tomorrow."}
+              </p>
+            )}
+          </article>
+        </div>
       </section>
 
       <section className={styles.statusStrip} aria-label="Readiness summary">

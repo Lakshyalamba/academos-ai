@@ -22,17 +22,10 @@
   letter-spacing: -0.04em;
 }
 
-.overviewGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.95fr);
-  gap: 1rem;
-  margin-top: 1.5rem;
-  align-items: start;
-}
-
 .todayOverviewCard {
   display: grid;
   gap: 1.15rem;
+  margin-top: 1.5rem;
   padding: 1.5rem;
   border: 1px solid rgba(18, 32, 51, 0.08);
   border-radius: 26px;
@@ -112,10 +105,10 @@
   line-height: 1.2;
 }
 
-.nextClassCard {
+.classesWidget {
   display: grid;
-  align-content: start;
   gap: 1rem;
+  margin-top: 1.5rem;
   padding: 1.5rem;
   border: 1px solid rgba(18, 32, 51, 0.08);
   border-radius: 26px;
@@ -123,51 +116,125 @@
   box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
 }
 
-.nextClassContent,
-.nextClassEmptyState {
-  display: grid;
-  gap: 0.9rem;
+.classesWidgetHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.nextClassTitle {
-  margin: 0;
+.classesWidgetTitle {
+  margin: 0.35rem 0 0;
   font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   font-size: clamp(1.55rem, 2.6vw, 2rem);
   line-height: 1.05;
 }
 
-.nextClassDescription {
-  margin: 0;
+.classesWidgetDescription {
+  margin: 0.55rem 0 0;
   color: #42546b;
   line-height: 1.65;
 }
 
-.nextClassMetaGrid {
+.classesSectionsGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.classesSection {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.classesSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.75rem;
 }
 
-.nextClassMetaItem {
-  padding: 0.9rem 0.95rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.9);
-}
-
-.nextClassMetaLabel {
+.classesSectionTitle {
   margin: 0;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #6a7280;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: 1.25rem;
+  line-height: 1.1;
 }
 
-.nextClassMetaValue {
-  margin: 0.55rem 0 0;
+.classesSectionMeta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(18, 32, 51, 0.06);
+  color: #5f6d7d;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.classesList {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.classRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.className {
+  margin: 0;
   color: #122033;
   line-height: 1.45;
+}
+
+.classMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.classBadge,
+.classBadgeMuted {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.32rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.classBadge {
+  background: rgba(184, 92, 56, 0.1);
+  color: #9a4e30;
+}
+
+.classBadgeMuted {
+  background: rgba(18, 32, 51, 0.06);
+  color: #5f6d7d;
+}
+
+.classesEmptyState {
+  margin: 0;
+  color: #42546b;
+  line-height: 1.65;
 }
 
 .statusStrip {
@@ -324,16 +391,7 @@
     grid-template-columns: 1fr;
   }
 
-  .overviewGrid {
-    grid-template-columns: 1fr;
-  }
-
   .todayOverviewCard {
-    padding: 1.25rem;
-    border-radius: 22px;
-  }
-
-  .nextClassCard {
     padding: 1.25rem;
     border-radius: 22px;
   }
@@ -346,8 +404,25 @@
     grid-template-columns: 1fr;
   }
 
-  .nextClassMetaGrid {
+  .classesWidget {
+    padding: 1.25rem;
+    border-radius: 22px;
+  }
+
+  .classesWidgetHeader {
+    flex-direction: column;
+  }
+
+  .classesSectionsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .classRow {
+    flex-direction: column;
+  }
+
+  .classMeta {
+    justify-content: flex-start;
   }
 
   .detailsSummary,
