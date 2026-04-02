@@ -1,6 +1,7 @@
 import Link from "next/link";
+import ContestGuidancePanel from "./ContestGuidancePanel";
 import ContestPrepForm from "./ContestPrepForm";
-import { getContestHistory } from "../../lib/contest-history";
+import { getContestPageData } from "../../lib/contest-history";
 import styles from "./contest.module.css";
 
 const prepHighlights = [
@@ -9,15 +10,10 @@ const prepHighlights = [
   "Student-friendly contest overview without extra clutter",
 ];
 
-const guidancePoints = [
-  "AI prep suggestions will appear here once contest coaching is enabled.",
-  "This section is reserved for future practice plans, warm-up guidance, and strategy support.",
-];
-
 export const dynamic = "force-dynamic";
 
 export default async function ContestPage() {
-  const contestHistory = await getContestHistory();
+  const contestPageData = await getContestPageData();
 
   return (
     <main className="page-shell">
@@ -53,12 +49,45 @@ export default async function ContestPage() {
               <p className={styles.cardLabel}>Upcoming Contest Prep</p>
               <h2 className={styles.cardTitle}>Get ready for the next contest</h2>
               <p className={styles.cardDescription}>
-                Enter the upcoming Friday contest details and keep the structure
-                ready for future prep workflows.
+                {contestPageData.upcomingContest
+                  ? `Newton currently lists ${contestPageData.upcomingContest.title} for ${contestPageData.upcomingContest.subjectName} on ${contestPageData.upcomingContest.dateLabel}. You can still use the manual form below to plan the week.`
+                  : "Enter the upcoming Friday contest details and keep the structure ready for future prep workflows."}
               </p>
             </div>
-            <p className={styles.cardMeta}>Manual entry</p>
+            <p className={styles.cardMeta}>
+              {contestPageData.upcomingContest ? "Live + manual" : "Manual entry"}
+            </p>
           </div>
+
+          {contestPageData.upcomingContest ? (
+            <div className={styles.upcomingContestPanel}>
+              <div className={styles.upcomingContestHeader}>
+                <div>
+                  <p className={styles.cardLabel}>Live Upcoming Contest</p>
+                  <h3 className={styles.upcomingContestTitle}>
+                    {contestPageData.upcomingContest.title}
+                  </h3>
+                </div>
+                <p className={styles.cardMeta}>Newton record</p>
+              </div>
+
+              <div className={styles.upcomingContestGrid}>
+                <div className={styles.upcomingContestRow}>
+                  <p className={styles.upcomingContestLabel}>Subject</p>
+                  <p className={styles.upcomingContestValue}>
+                    {contestPageData.upcomingContest.subjectName}
+                  </p>
+                </div>
+
+                <div className={styles.upcomingContestRow}>
+                  <p className={styles.upcomingContestLabel}>Date</p>
+                  <p className={styles.upcomingContestValue}>
+                    {contestPageData.upcomingContest.dateLabel}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           <ContestPrepForm />
         </section>
@@ -67,19 +96,16 @@ export default async function ContestPage() {
           <div className={styles.cardHeader}>
             <div>
               <p className={styles.cardLabel}>AI Prep Guidance</p>
-              <h2 className={styles.cardTitle}>Future contest coaching space</h2>
+              <h2 className={styles.cardTitle}>Subject-aware contest coaching</h2>
               <p className={styles.cardDescription}>
-                Reserved for guided prep suggestions once contest AI support is enabled.
+                Guidance is generated from your saved contest details and related live
+                Newton academic records for the same subject.
               </p>
             </div>
-            <p className={styles.cardMeta}>Coming later</p>
+            <p className={styles.cardMeta}>Live analysis</p>
           </div>
 
-          <ul className={styles.noteList}>
-            {guidancePoints.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
+          <ContestGuidancePanel />
         </section>
       </section>
 
@@ -94,18 +120,18 @@ export default async function ContestPage() {
             </p>
           </div>
           <p className={styles.cardMeta}>
-            {contestHistory.available ? "Live records" : "Unavailable"}
+            {contestPageData.status.available ? "Live records" : "Unavailable"}
           </p>
         </div>
 
-        {contestHistory.subjectCards.length ? (
+        {contestPageData.pastContests.length ? (
           <div className={styles.scoresContent}>
-            {contestHistory.progressLabel ? (
-              <p className={styles.scoresSummary}>{contestHistory.progressLabel}</p>
+            {contestPageData.pastContestSummary ? (
+              <p className={styles.scoresSummary}>{contestPageData.pastContestSummary}</p>
             ) : null}
 
             <div className={styles.subjectScoresGrid}>
-              {contestHistory.subjectCards.map((subject) => (
+              {contestPageData.pastContests.map((subject) => (
                 <article
                   key={subject.subjectName}
                   className={styles.subjectScoreCard}
@@ -149,7 +175,7 @@ export default async function ContestPage() {
           </div>
         ) : (
           <div className={styles.emptyStateBox}>
-            <p className={styles.emptyStateTitle}>{contestHistory.emptyMessage}</p>
+            <p className={styles.emptyStateTitle}>{contestPageData.emptyMessage}</p>
             <p className={styles.emptyStateCopy}>
               This section stays contest-only, so it remains empty when live
               contest history is not available.

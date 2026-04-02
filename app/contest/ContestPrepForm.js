@@ -1,90 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  buildContestDraft,
+  buildFormFromDraft,
+  CONTEST_SAVED_EVENT,
+  CONTEST_STORAGE_KEY,
+  initialContestForm,
+  isValidContestDraft,
+  validateContestForm,
+} from "../../lib/contest-draft";
 import styles from "./contest.module.css";
-
-const STORAGE_KEY = "academos-upcoming-contest";
-
-const initialForm = {
-  contestName: "",
-  contestDate: "",
-  subjectName: "",
-  syllabusInput: "",
-  notes: "",
-};
-
-function normalizeTopics(value) {
-  return String(value || "")
-    .split(/[\n,]+/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function validateContestForm(form) {
-  const errors = {};
-
-  if (!form.contestName.trim()) {
-    errors.contestName = "Contest name is required.";
-  }
-
-  if (!form.contestDate) {
-    errors.contestDate = "Contest date is required.";
-  }
-
-  if (!form.subjectName.trim()) {
-    errors.subjectName = "Subject name is required.";
-  }
-
-  const topics = normalizeTopics(form.syllabusInput);
-
-  if (!form.syllabusInput.trim() || topics.length === 0) {
-    errors.syllabusInput = "Syllabus or topics are required.";
-  }
-
-  return {
-    errors,
-    isValid: Object.keys(errors).length === 0,
-    topics,
-  };
-}
-
-function buildContestDraft(form, topics) {
-  return {
-    contestName: form.contestName.trim(),
-    contestDate: form.contestDate,
-    subjectName: form.subjectName.trim(),
-    syllabus: {
-      rawInput: form.syllabusInput.trim(),
-      topics,
-    },
-    notes: form.notes.trim(),
-  };
-}
-
-function isValidContestDraft(value) {
-  return Boolean(
-    value &&
-      typeof value.contestName === "string" &&
-      typeof value.contestDate === "string" &&
-      typeof value.subjectName === "string" &&
-      value.syllabus &&
-      typeof value.syllabus.rawInput === "string" &&
-      Array.isArray(value.syllabus.topics) &&
-      typeof value.notes === "string",
-  );
-}
-
-function buildFormFromDraft(value) {
-  return {
-    contestName: value.contestName || "",
-    contestDate: value.contestDate || "",
-    subjectName: value.subjectName || "",
-    syllabusInput:
-      value?.syllabus?.rawInput ||
-      (Array.isArray(value?.syllabus?.topics) ? value.syllabus.topics.join(", ") : ""),
-    notes: value.notes || "",
-  };
-}
 
 function formatContestDate(value) {
   if (!value) {
@@ -104,13 +30,13 @@ function formatContestDate(value) {
 }
 
 export default function ContestPrepForm() {
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState(initialContestForm);
   const [errors, setErrors] = useState({});
   const [savedContest, setSavedContest] = useState(null);
 
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem(STORAGE_KEY);
+      const saved = window.localStorage.getItem(CONTEST_STORAGE_KEY);
 
       if (!saved) {
         return;
@@ -160,7 +86,12 @@ export default function ContestPrepForm() {
 
     setErrors({});
     setSavedContest(nextDraft);
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextDraft));
+    window.localStorage.setItem(CONTEST_STORAGE_KEY, JSON.stringify(nextDraft));
+    window.dispatchEvent(
+      new CustomEvent(CONTEST_SAVED_EVENT, {
+        detail: nextDraft,
+      }),
+    );
   }
 
   return (
