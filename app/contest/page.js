@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ContestPrepForm from "./ContestPrepForm";
+import { getContestHistory } from "../../lib/contest-history";
 import styles from "./contest.module.css";
 
 const prepHighlights = [
@@ -13,12 +14,11 @@ const guidancePoints = [
   "This section is reserved for future practice plans, warm-up guidance, and strategy support.",
 ];
 
-const scoreHistoryNotes = [
-  "Past contest scores and performance history will appear here once records are connected.",
-  "You will be able to review previous results and progress over time in this section.",
-];
+export const dynamic = "force-dynamic";
 
-export default function ContestPage() {
+export default async function ContestPage() {
+  const contestHistory = await getContestHistory();
+
   return (
     <main className="page-shell">
       <section className={styles.header}>
@@ -89,20 +89,73 @@ export default function ContestPage() {
             <p className={styles.cardLabel}>Past Contest Scores</p>
             <h2 className={styles.cardTitle}>Score history and previous results</h2>
             <p className={styles.cardDescription}>
-              A clean place for contest history once score data is integrated.
+              Only contest records from Newton are shown here, separate from
+              assignments and quizzes.
             </p>
           </div>
-          <p className={styles.cardMeta}>Placeholder</p>
+          <p className={styles.cardMeta}>
+            {contestHistory.available ? "Live records" : "Unavailable"}
+          </p>
         </div>
 
-        <div className={styles.emptyStateBox}>
-          <p className={styles.emptyStateTitle}>No contest history is connected yet.</p>
-          <ul className={styles.noteList}>
-            {scoreHistoryNotes.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
+        {contestHistory.subjectCards.length ? (
+          <div className={styles.scoresContent}>
+            {contestHistory.progressLabel ? (
+              <p className={styles.scoresSummary}>{contestHistory.progressLabel}</p>
+            ) : null}
+
+            <div className={styles.subjectScoresGrid}>
+              {contestHistory.subjectCards.map((subject) => (
+                <article
+                  key={subject.subjectName}
+                  className={styles.subjectScoreCard}
+                  aria-label={`${subject.subjectName} contest history`}
+                >
+                  <div className={styles.subjectScoreHeader}>
+                    <div>
+                      <p className={styles.cardLabel}>Subject</p>
+                      <h3 className={styles.subjectScoreTitle}>{subject.subjectName}</h3>
+                    </div>
+                    <p className={styles.cardMeta}>
+                      {subject.contestCount}{" "}
+                      {subject.contestCount === 1 ? "contest" : "contests"}
+                    </p>
+                  </div>
+
+                  <ul className={styles.subjectContestList}>
+                    {subject.entries.map((entry) => (
+                      <li key={entry.id} className={styles.subjectContestItem}>
+                        <div>
+                          <p className={styles.subjectContestName}>{entry.title}</p>
+                          <p className={styles.subjectContestDate}>{entry.dateLabel}</p>
+                        </div>
+
+                        {entry.scoreLabel || entry.rankLabel ? (
+                          <div className={styles.subjectContestMeta}>
+                            {entry.scoreLabel ? (
+                              <span className={styles.scoreChip}>{entry.scoreLabel}</span>
+                            ) : null}
+                            {entry.rankLabel ? (
+                              <span className={styles.scoreChipMuted}>{entry.rankLabel}</span>
+                            ) : null}
+                          </div>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className={styles.emptyStateBox}>
+            <p className={styles.emptyStateTitle}>{contestHistory.emptyMessage}</p>
+            <p className={styles.emptyStateCopy}>
+              This section stays contest-only, so it remains empty when live
+              contest history is not available.
+            </p>
+          </div>
+        )}
       </section>
     </main>
   );
