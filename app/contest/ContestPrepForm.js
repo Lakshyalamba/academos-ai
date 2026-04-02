@@ -98,6 +98,16 @@ export default function ContestPrepForm() {
     <div className={styles.prepFormStack}>
       <div className={styles.prepContentGrid}>
         <form className={styles.prepForm} onSubmit={handleSubmit} noValidate>
+          <div className={styles.formIntroBlock}>
+            <div>
+              <p className={styles.cardLabel}>Weekly Entry</p>
+              <h3 className={styles.formIntroTitle}>Save the next contest once and reuse it everywhere</h3>
+            </div>
+            <p className={styles.formIntroCopy}>
+              This saved contest powers the AI prep section and contest-related chat answers.
+            </p>
+          </div>
+
           <div className={styles.formGrid}>
             <label className={styles.field}>
               <span className={styles.fieldLabel}>Contest Name</span>
@@ -189,6 +199,9 @@ export default function ContestPrepForm() {
             <div>
               <p className={styles.cardLabel}>Saved Contest</p>
               <h3 className={styles.savedContestTitle}>Current upcoming contest</h3>
+              <p className={styles.savedContestHelper}>
+                Keep this updated so your prep guidance stays aligned with the latest plan.
+              </p>
             </div>
             <p className={styles.cardMeta}>
               {savedContest ? "Saved locally" : "No contest saved"}

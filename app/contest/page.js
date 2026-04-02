@@ -5,9 +5,9 @@ import { getContestPageData } from "../../lib/contest-history";
 import styles from "./contest.module.css";
 
 const prepHighlights = [
-  "Upcoming contest schedule and readiness cards",
-  "Prep focus areas and revision checkpoints",
-  "Student-friendly contest overview without extra clutter",
+  "Plan the next Friday contest in one place",
+  "Get subject-aware revision guidance",
+  "Review previous contest performance quickly",
 ];
 
 export const dynamic = "force-dynamic";
@@ -43,7 +43,7 @@ export default async function ContestPage() {
       </section>
 
       <section className={styles.contentGrid} aria-label="Contest sections">
-        <section className={styles.primaryCard}>
+        <section className={`${styles.primaryCard} ${styles.prepCard}`}>
           <div className={styles.cardHeader}>
             <div>
               <p className={styles.cardLabel}>Upcoming Contest Prep</p>
@@ -51,11 +51,11 @@ export default async function ContestPage() {
               <p className={styles.cardDescription}>
                 {contestPageData.upcomingContest
                   ? `Newton currently lists ${contestPageData.upcomingContest.title} for ${contestPageData.upcomingContest.subjectName} on ${contestPageData.upcomingContest.dateLabel}. You can still use the manual form below to plan the week.`
-                  : "Enter the upcoming Friday contest details and keep the structure ready for future prep workflows."}
+                  : "Use this space every Monday to save the next Friday contest and keep your prep details organized."}
               </p>
             </div>
             <p className={styles.cardMeta}>
-              {contestPageData.upcomingContest ? "Live + manual" : "Manual entry"}
+              {contestPageData.upcomingContest ? "Planner + live check" : "Weekly planner"}
             </p>
           </div>
 
@@ -92,17 +92,17 @@ export default async function ContestPage() {
           <ContestPrepForm />
         </section>
 
-        <section className={styles.secondaryCard}>
+        <section className={`${styles.secondaryCard} ${styles.guidanceCard}`}>
           <div className={styles.cardHeader}>
             <div>
               <p className={styles.cardLabel}>AI Prep Guidance</p>
-              <h2 className={styles.cardTitle}>Subject-aware contest coaching</h2>
+              <h2 className={styles.cardTitle}>Most important prep moves before the contest</h2>
               <p className={styles.cardDescription}>
                 Guidance is generated from your saved contest details and related live
                 Newton academic records for the same subject.
               </p>
             </div>
-            <p className={styles.cardMeta}>Live analysis</p>
+            <p className={styles.cardMeta}>Priority view</p>
           </div>
 
           <ContestGuidancePanel />
@@ -120,7 +120,7 @@ export default async function ContestPage() {
             </p>
           </div>
           <p className={styles.cardMeta}>
-            {contestPageData.status.available ? "Live records" : "Unavailable"}
+            {contestPageData.status.available ? "Past records" : "Unavailable"}
           </p>
         </div>
 

@@ -148,26 +148,31 @@ export default function ContestGuidancePanel() {
 
   const sections = [
     {
+      key: "actionItems",
+      label: "Action Items",
+      title: "Do this first",
+      items: Array.isArray(guidance.actionItems) ? guidance.actionItems : [],
+      emptyLabel: "No urgent contest actions are available right now.",
+      priority: true,
+    },
+    {
       key: "focusTopics",
       label: "Focus Topics",
+      title: "Where to focus",
       items: Array.isArray(guidance.focusTopics) ? guidance.focusTopics : [],
       emptyLabel: "No specific weak-topic signal was found in the current academic record.",
     },
     {
       key: "reviseClasses",
       label: "Revise Classes",
+      title: "Classes to revise",
       items: Array.isArray(guidance.reviseClasses) ? guidance.reviseClasses : [],
       emptyLabel: "No specific lecture revision target was found right now.",
     },
     {
-      key: "actionItems",
-      label: "Action Items",
-      items: Array.isArray(guidance.actionItems) ? guidance.actionItems : [],
-      emptyLabel: "No urgent contest actions are available right now.",
-    },
-    {
       key: "insights",
       label: "Insights",
+      title: "What stands out",
       items: Array.isArray(guidance.insights) ? guidance.insights : [],
       emptyLabel: "No extra prep insight is available right now.",
     },
@@ -187,14 +192,30 @@ export default function ContestGuidancePanel() {
         </div>
 
         <p className={styles.guidanceSummaryText}>{guidance.summary}</p>
+
+        <div className={styles.guidanceMetaRow}>
+          <span className={styles.guidanceMetaPill}>{contest.subjectName}</span>
+          <span className={styles.guidanceMetaPill}>{contest.contestDate}</span>
+          <span className={styles.guidanceMetaPill}>
+            {contest.syllabus.topics.length}{" "}
+            {contest.syllabus.topics.length === 1 ? "topic" : "topics"}
+          </span>
+        </div>
       </div>
 
       <div className={styles.guidanceGrid}>
         {sections.map((section) => (
-          <article key={section.key} className={styles.guidanceSectionCard}>
+          <article
+            key={section.key}
+            className={
+              section.priority
+                ? `${styles.guidanceSectionCard} ${styles.guidanceSectionCardPriority}`
+                : styles.guidanceSectionCard
+            }
+          >
             <div className={styles.guidanceSectionHeader}>
               <p className={styles.cardLabel}>{section.label}</p>
-              <h3 className={styles.guidanceSectionTitle}>{section.label}</h3>
+              <h3 className={styles.guidanceSectionTitle}>{section.title}</h3>
             </div>
 
             {section.items.length ? (
