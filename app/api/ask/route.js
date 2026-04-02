@@ -4,9 +4,16 @@ import {
   parseGeminiJsonResponse,
 } from "../../../lib/gemini";
 import {
+  buildContestChatResponse,
+  buildMissingContestChatResponse,
+  generateContestGuidance,
+  isContestRelatedQuery,
+} from "../../../lib/contest-guidance";
+import {
   buildAcademicReasoningPrompt,
   getNewtonSnapshot,
 } from "../../../lib/newton-mcp";
+import { isValidContestDraft } from "../../../lib/contest-draft";
 import {
   getAcademicSnapshotById,
   insertAcademicSnapshot,
@@ -223,6 +230,13 @@ export async function POST(request) {
     }
 
     const query = rawQuery.trim();
+    const contestDraft = isValidContestDraft(body?.contest) ? body.contest : null;
+    const contestQuery = isContestRelatedQuery(query);
+
+    if (contestQuery && !contestDraft) {
+      return Response.json(buildMissingContestChatResponse());
+    }
+
     const runtimeStatus = getRuntimeStatus();
 
     if (runtimeStatus.status !== "ok") {
@@ -236,6 +250,11 @@ export async function POST(request) {
         },
         { status: 503 },
       );
+    }
+
+    if (contestQuery && contestDraft) {
+      const contestGuidance = await generateContestGuidance(contestDraft);
+      return Response.json(buildContestChatResponse(contestGuidance));
     }
 
     const snapshot = await getNewtonSnapshot(query);

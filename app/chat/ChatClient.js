@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  CONTEST_STORAGE_KEY,
+  isValidContestDraft,
+} from "../../lib/contest-draft";
 import styles from "./chat.module.css";
 
 const initialResponse = {
@@ -28,10 +32,26 @@ const fallbackSetupStatus = {
 
 const exampleQueries = [
   "What should I focus on this week?",
+  "What should I prepare for this Friday's contest?",
   "Do I have any overdue work or attendance risk?",
   "Summarize my upcoming classes, quizzes, and deadlines.",
   "Which subject needs the most attention right now?",
 ];
+
+function readSavedContestDraft() {
+  try {
+    const savedValue = window.localStorage.getItem(CONTEST_STORAGE_KEY);
+
+    if (!savedValue) {
+      return null;
+    }
+
+    const parsedValue = JSON.parse(savedValue);
+    return isValidContestDraft(parsedValue) ? parsedValue : null;
+  } catch {
+    return null;
+  }
+}
 
 function normalizeSetupStatus(data, checked = true) {
   return {
@@ -89,6 +109,12 @@ export default function ChatClient({ initialSetupStatus }) {
   const technicalSourceLabel =
     responseData.source === "supabase-gemini"
       ? "Newton MCP -> Next.js backend -> Supabase -> Gemini"
+      : responseData.source === "contest-gemini"
+        ? "Saved contest -> Newton MCP -> Next.js backend -> Gemini"
+        : responseData.source === "contest-fallback"
+          ? "Saved contest -> Newton MCP -> Next.js backend"
+          : responseData.source === "contest-missing"
+            ? "Saved contest required"
       : responseData.source === "gemini"
         ? "Newton MCP -> Next.js backend -> Gemini"
         : responseData.source || "Response ready";
@@ -176,7 +202,10 @@ export default function ChatClient({ initialSetupStatus }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({
+          query,
+          contest: readSavedContestDraft(),
+        }),
       });
 
       const data = await request.json();
