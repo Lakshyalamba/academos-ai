@@ -1,11 +1,21 @@
 import Link from "next/link";
 import styles from "./dashboard.module.css";
+import { getTodayOverview } from "../../lib/dashboard-overview";
 import { getRuntimeStatus } from "../../lib/runtime-status";
 
-export default function DashboardPage() {
+export const dynamic = "force-dynamic";
+
+function getMetricValue(value, fallback = "Not available") {
+  return typeof value === "number" ? String(value) : fallback;
+}
+
+export default async function DashboardPage() {
   const runtimeStatus = getRuntimeStatus();
   const { newtonConfigured, llmConfigured, supabaseConfigured } =
     runtimeStatus.config;
+  const todayOverview = await getTodayOverview({
+    enabled: newtonConfigured,
+  });
   const statusPills = [
     {
       label: "Records",
@@ -64,6 +74,40 @@ export default function DashboardPage() {
       ],
     },
   ];
+  const todayMetrics = [
+    {
+      label: "Classes today",
+      value: getMetricValue(todayOverview.classesTodayCount),
+      helper:
+        typeof todayOverview.classesTodayCount === "number"
+          ? "From your upcoming class schedule"
+          : "Today's class schedule is unavailable",
+    },
+    {
+      label: "Pending assignments",
+      value: getMetricValue(todayOverview.pendingAssignmentsCount),
+      helper:
+        typeof todayOverview.pendingAssignmentsCount === "number"
+          ? "Open assignment items in the fetched snapshot"
+          : "Assignment data is unavailable right now",
+    },
+    {
+      label: "Overdue items",
+      value: getMetricValue(todayOverview.overdueItemsCount),
+      helper:
+        typeof todayOverview.overdueItemsCount === "number"
+          ? "Based on assignment due timestamps"
+          : "Overdue status is unavailable right now",
+    },
+    {
+      label: "Next class",
+      value: todayOverview.nextClassTitle || "No upcoming class found",
+      helper:
+        todayOverview.nextClassTime ||
+        "No next class was found in the current live schedule",
+      isTextValue: true,
+    },
+  ];
 
   return (
     <main className="page-shell">
@@ -81,6 +125,38 @@ export default function DashboardPage() {
           <Link href="/" className="text-link">
             Back to home
           </Link>
+        </div>
+      </section>
+
+      <section className={styles.todayOverviewCard} aria-label="Today's academic overview">
+        <div className={styles.todayOverviewHeader}>
+          <div>
+            <p className={styles.cardLabel}>Today Overview</p>
+            <h2 className={styles.todayOverviewTitle}>Your academic snapshot at a glance</h2>
+            <p className={styles.todayOverviewDescription}>{todayOverview.message}</p>
+          </div>
+
+          <p className={styles.todayOverviewMeta}>
+            {todayOverview.available ? "Live student data" : "Fallback state"}
+          </p>
+        </div>
+
+        <div className={styles.todayOverviewGrid}>
+          {todayMetrics.map((item) => (
+            <article key={item.label} className={styles.todayMetric}>
+              <p className={styles.todayMetricLabel}>{item.label}</p>
+              <p
+                className={
+                  item.isTextValue
+                    ? styles.todayMetricValueText
+                    : styles.todayMetricValue
+                }
+              >
+                {item.value}
+              </p>
+              <p className={styles.todayMetricHelper}>{item.helper}</p>
+            </article>
+          ))}
         </div>
       </section>
 

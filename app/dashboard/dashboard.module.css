@@ -22,6 +22,89 @@
   letter-spacing: -0.04em;
 }
 
+.todayOverviewCard {
+  display: grid;
+  gap: 1.15rem;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 251, 255, 0.86));
+  box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
+}
+
+.todayOverviewHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.todayOverviewTitle {
+  margin: 0.35rem 0 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  line-height: 1.05;
+}
+
+.todayOverviewDescription,
+.todayMetricHelper {
+  margin: 0.6rem 0 0;
+  color: #42546b;
+  line-height: 1.65;
+}
+
+.todayOverviewMeta {
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(184, 92, 56, 0.1);
+  color: #9a4e30;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.todayOverviewGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.todayMetric {
+  min-height: 100%;
+  padding: 1rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.todayMetricLabel {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6a7280;
+}
+
+.todayMetricValue,
+.todayMetricValueText {
+  margin: 0.7rem 0 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  color: #122033;
+}
+
+.todayMetricValue {
+  font-size: clamp(1.8rem, 3vw, 2.35rem);
+  line-height: 1;
+}
+
+.todayMetricValueText {
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
 .statusStrip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -173,6 +256,19 @@
   }
 
   .statusStrip {
+    grid-template-columns: 1fr;
+  }
+
+  .todayOverviewCard {
+    padding: 1.25rem;
+    border-radius: 22px;
+  }
+
+  .todayOverviewHeader {
+    flex-direction: column;
+  }
+
+  .todayOverviewGrid {
     grid-template-columns: 1fr;
   }
 
