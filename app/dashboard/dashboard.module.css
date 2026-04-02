@@ -253,6 +253,7 @@
   line-height: 1.65;
 }
 
+.attendancePanel,
 .assignmentsPanel {
   display: grid;
   gap: 1rem;
@@ -264,6 +265,7 @@
   box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
 }
 
+.attendancePanelHeader,
 .assignmentsPanelHeader {
   display: flex;
   align-items: flex-start;
@@ -271,11 +273,127 @@
   gap: 1rem;
 }
 
+.attendancePanelTitle,
 .assignmentsPanelTitle {
   margin: 0.35rem 0 0;
   font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   font-size: clamp(1.45rem, 2.3vw, 1.85rem);
   line-height: 1.05;
+}
+
+.attendancePanelDescription {
+  margin: 0.55rem 0 0;
+  color: #42546b;
+  line-height: 1.6;
+}
+
+.attendanceStateBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 5.25rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.attendanceStateHealthy {
+  background: rgba(46, 125, 74, 0.12);
+  color: #2e7d4a;
+}
+
+.attendanceStateWatch {
+  background: rgba(184, 92, 56, 0.12);
+  color: #9a4e30;
+}
+
+.attendanceStateRisk {
+  background: rgba(159, 45, 45, 0.12);
+  color: #9f2d2d;
+}
+
+.attendanceStateUnavailable {
+  background: rgba(18, 32, 51, 0.06);
+  color: #5f6d7d;
+}
+
+.attendanceAverageCard {
+  display: grid;
+  gap: 0.4rem;
+  padding: 1rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.attendanceAverageLabel {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6a7280;
+}
+
+.attendanceAverageValue {
+  margin: 0.25rem 0 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: clamp(2rem, 2.8vw, 2.35rem);
+  line-height: 1;
+  color: #122033;
+}
+
+.attendanceAverageHelper {
+  margin: 0.25rem 0 0;
+  color: #42546b;
+  line-height: 1.6;
+}
+
+.attendanceSubjectList {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attendanceSubjectRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.attendanceSubjectName {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: #122033;
+}
+
+.attendanceSubjectMeta {
+  margin: 0.35rem 0 0;
+  color: #42546b;
+  line-height: 1.55;
+}
+
+.attendanceSubjectValue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.34rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(18, 32, 51, 0.06);
+  color: #122033;
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .assignmentsPanelMeta {
@@ -341,22 +459,6 @@
   white-space: nowrap;
 }
 
-.statusStrip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.statusPill {
-  padding: 1rem 1.1rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 18px 50px rgba(18, 32, 51, 0.06);
-}
-
-.statusLabel,
 .cardLabel {
   margin: 0;
   font-size: 0.72rem;
@@ -364,120 +466,6 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #b85c38;
-}
-
-.statusValue {
-  margin: 0.55rem 0 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: 1.4rem;
-  line-height: 1.1;
-}
-
-.statusHelper {
-  margin: 0.45rem 0 0;
-  color: #42546b;
-  line-height: 1.55;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.card {
-  display: grid;
-  align-content: start;
-  gap: 0.8rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 24px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 255, 0.82));
-  box-shadow: 0 18px 50px rgba(18, 32, 51, 0.07);
-  min-height: 100%;
-}
-
-.cardTitle {
-  margin: 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: 1.6rem;
-  line-height: 1.1;
-}
-
-.cardDescription {
-  margin: 0;
-  color: #42546b;
-  line-height: 1.65;
-}
-
-.cardList {
-  margin: 0.35rem 0 0;
-  padding-left: 1.2rem;
-  color: #122033;
-  line-height: 1.7;
-}
-
-.cardList li + li {
-  margin-top: 0.45rem;
-}
-
-.detailsCard {
-  margin-top: 1.5rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 18px 50px rgba(18, 32, 51, 0.06);
-  overflow: hidden;
-}
-
-.detailsSummary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.15rem 1.35rem;
-  cursor: pointer;
-  list-style: none;
-  font-weight: 700;
-}
-
-.detailsSummary::-webkit-details-marker {
-  display: none;
-}
-
-.detailsSummary::after {
-  content: "+";
-  font-size: 1.4rem;
-  line-height: 1;
-  color: #b85c38;
-}
-
-.detailsCard[open] .detailsSummary::after {
-  content: "−";
-}
-
-.detailsBody {
-  display: grid;
-  gap: 0.95rem;
-  padding: 0 1.35rem 1.35rem;
-}
-
-.detailsText {
-  margin: 0;
-  color: #42546b;
-  line-height: 1.7;
-}
-
-.detailsList {
-  margin: 0;
-  padding-left: 1.2rem;
-  color: #122033;
-  line-height: 1.7;
-}
-
-.detailsList li + li {
-  margin-top: 0.45rem;
 }
 
 @media (max-width: 640px) {
@@ -489,10 +477,6 @@
   .headerRow {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .statusStrip {
-    grid-template-columns: 1fr;
   }
 
   .dashboardLayout {
@@ -537,18 +521,18 @@
     justify-content: flex-start;
   }
 
+  .attendancePanel,
   .assignmentsPanel {
     padding: 1.25rem;
     border-radius: 22px;
   }
 
+  .attendancePanelHeader,
   .assignmentsPanelHeader {
     flex-direction: column;
   }
 
-  .detailsSummary,
-  .detailsBody {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .attendanceSubjectRow {
+    flex-direction: column;
   }
 }
