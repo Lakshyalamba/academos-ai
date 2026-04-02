@@ -6,40 +6,61 @@ export default function DashboardPage() {
   const runtimeStatus = getRuntimeStatus();
   const { newtonConfigured, llmConfigured, supabaseConfigured } =
     runtimeStatus.config;
+  const statusPills = [
+    {
+      label: "Records",
+      value: newtonConfigured ? "Ready" : "Missing",
+      helper: "Newton-backed academic data",
+    },
+    {
+      label: "Reasoning",
+      value: llmConfigured ? "Ready" : "Missing",
+      helper: "Gemini response generation",
+    },
+    {
+      label: "Saved snapshots",
+      value: supabaseConfigured ? "Enabled" : "Optional",
+      helper: "Supabase persistence layer",
+    },
+  ];
   const statusCards = [
     {
-      title: "Backend Readiness",
+      label: "Readiness",
+      title: "Live Answer Readiness",
       description:
-        "The live academic flow requires Newton MCP and Gemini reasoning before any student data can be surfaced safely. Supabase persistence is optional.",
+        "Academos only answers with verified student data when the live services behind it are ready.",
       items: [
-        `Newton MCP in Codex: ${newtonConfigured ? "Yes" : "No"}`,
-        `Supabase configured: ${supabaseConfigured ? "Yes" : "No"}`,
-        `Gemini configured: ${llmConfigured ? "Yes" : "No"}`,
+        `Newton MCP connection: ${newtonConfigured ? "Ready" : "Missing"}`,
+        `Gemini reasoning: ${llmConfigured ? "Ready" : "Missing"}`,
+        `Supabase snapshot storage: ${supabaseConfigured ? "Enabled" : "Optional and off"}`,
       ],
     },
     {
-      title: "Data Integrity",
+      label: "Trust",
+      title: "Trust Safeguards",
       description:
-        "This dashboard no longer renders invented attendance, assignments, or performance data.",
+        "This dashboard explains the trust rules behind the demo instead of showing invented student data.",
       items: [
-        "Academic answers must come from Newton MCP data only.",
-        "If live data is unavailable, the app should say Data not found.",
+        "Student-facing answers must be grounded in Newton-backed records.",
+        "If live academic data is unavailable, the app should say Data not found.",
       ],
     },
     {
-      title: "Next Step",
+      label: "Flow",
+      title: "How A Live Answer Is Prepared",
       description:
-        "Use the chat flow to fetch Newton data, optionally persist it in Supabase, and reason over the available academic snapshot.",
+        "Use the chat experience to fetch fresh records, prepare a structured snapshot, and return a concise answer.",
       items: [
+        "Newton fetches the verified academic record before an answer is generated.",
         supabaseConfigured
-          ? "Flow: Newton MCP -> Backend -> Supabase -> Gemini -> UI"
-          : "Flow: Newton MCP -> Backend -> Gemini -> UI",
+          ? "Supabase is saving the snapshot before reasoning runs."
+          : "Supabase remains available, but the current run uses the in-memory snapshot path.",
         newtonConfigured && llmConfigured
           ? supabaseConfigured
-            ? "Configuration is present. Chat can create and persist a live snapshot."
-            : "Configuration is present. Chat can run without persistence."
+            ? "Setup is complete. The chat flow can fetch, save, and explain a live snapshot."
+            : "Setup is complete. The chat flow can explain live data without persistence."
           : runtimeStatus.missing[0] ||
-            "Complete the missing configuration before running academic reasoning.",
+            "Complete the missing configuration before running live academic answers.",
       ],
     },
   ];
@@ -50,10 +71,10 @@ export default function DashboardPage() {
         <p className="eyebrow">Dashboard</p>
         <div className={styles.headerRow}>
           <div>
-            <h1 className={styles.title}>System Dashboard</h1>
+            <h1 className={styles.title}>Readiness Dashboard</h1>
             <p className="page-copy">
-              This page shows whether the live academic pipeline is ready. It
-              does not display fabricated student data.
+              Check whether Academos can safely answer with live academic data.
+              This page covers readiness and trust, not student record content.
             </p>
           </div>
 
@@ -63,10 +84,20 @@ export default function DashboardPage() {
         </div>
       </section>
 
+      <section className={styles.statusStrip} aria-label="Readiness summary">
+        {statusPills.map((item) => (
+          <article key={item.label} className={styles.statusPill}>
+            <p className={styles.statusLabel}>{item.label}</p>
+            <p className={styles.statusValue}>{item.value}</p>
+            <p className={styles.statusHelper}>{item.helper}</p>
+          </article>
+        ))}
+      </section>
+
       <section className={styles.grid} aria-label="Dashboard sections">
         {statusCards.map((section) => (
           <article key={section.title} className={styles.card}>
-            <p className={styles.cardLabel}>Section</p>
+            <p className={styles.cardLabel}>{section.label}</p>
             <h2 className={styles.cardTitle}>{section.title}</h2>
             <p className={styles.cardDescription}>{section.description}</p>
 
@@ -78,6 +109,28 @@ export default function DashboardPage() {
           </article>
         ))}
       </section>
+
+      <details className={styles.detailsCard}>
+        <summary className={styles.detailsSummary}>Technical details</summary>
+        <div className={styles.detailsBody}>
+          <p className={styles.detailsText}>
+            Runtime configuration stays available for demos, but it is kept out
+            of the main student-facing content by default.
+          </p>
+          <ul className={styles.detailsList}>
+            <li>Newton MCP: {newtonConfigured ? "Ready" : "Missing"}</li>
+            <li>Gemini: {llmConfigured ? "Ready" : "Missing"}</li>
+            <li>
+              Supabase: {supabaseConfigured ? "Enabled for snapshot storage" : "Optional and currently off"}
+            </li>
+            {runtimeStatus.commands.restartDevServer ? (
+              <li>
+                Dev server command: <code>{runtimeStatus.commands.restartDevServer}</code>
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      </details>
     </main>
   );
 }

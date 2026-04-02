@@ -26,6 +26,13 @@ const fallbackSetupStatus = {
   },
 };
 
+const exampleQueries = [
+  "What should I focus on this week?",
+  "Do I have any overdue work or attendance risk?",
+  "Summarize my upcoming classes, quizzes, and deadlines.",
+  "Which subject needs the most attention right now?",
+];
+
 function normalizeSetupStatus(data, checked = true) {
   return {
     checked,
@@ -81,10 +88,29 @@ export default function ChatClient({ initialSetupStatus }) {
   const setupMessage = setupStatus.message;
   const technicalSourceLabel =
     responseData.source === "supabase-gemini"
-      ? "Newton MCP -> Backend -> Supabase -> Gemini"
+      ? "Newton MCP -> Next.js backend -> Supabase -> Gemini"
       : responseData.source === "gemini"
-        ? "Newton MCP -> Backend -> Gemini"
+        ? "Newton MCP -> Next.js backend -> Gemini"
         : responseData.source || "Response ready";
+  const readinessItems = [
+    {
+      label: "Records",
+      value: setupStatus.newtonConfigured ? "Ready" : "Missing",
+    },
+    {
+      label: "Reasoning",
+      value: setupStatus.llmConfigured ? "Ready" : "Missing",
+    },
+    {
+      label: "Saved snapshots",
+      value: setupStatus.supabaseConfigured ? "Enabled" : "Optional",
+    },
+  ];
+  const loadingSteps = [
+    "Checking your latest academic records",
+    "Looking for deadlines, schedule updates, and risk signals",
+    "Preparing a concise answer with tasks and insights",
+  ];
 
   useEffect(() => {
     let isActive = true;
@@ -180,23 +206,60 @@ export default function ChatClient({ initialSetupStatus }) {
     }
   }
 
+  function handleExampleClick(value) {
+    setQuery(value);
+    setErrorMessage("");
+  }
+
+  function getItemCountLabel(items, singular, plural) {
+    if (!Array.isArray(items) || items.length === 0) {
+      return "No items";
+    }
+
+    return `${items.length} ${items.length === 1 ? singular : plural}`;
+  }
+
   return (
     <section className={styles.layout}>
       <form className={styles.formCard} onSubmit={handleSubmit}>
-        <label htmlFor="chat-query" className={styles.label}>
-          Ask a question
-        </label>
-        <input
+        <div className={styles.formHeader}>
+          <label htmlFor="chat-query" className={styles.label}>
+            Ask about your academics
+          </label>
+          <p className={styles.formIntro}>
+            Start with a question a student would actually ask. Academos will
+            return a short summary, recommended tasks, and useful insights.
+          </p>
+        </div>
+
+        <textarea
           id="chat-query"
           name="query"
-          type="text"
-          className={styles.input}
+          className={styles.textarea}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="What should I do today?"
+          placeholder="What should I focus on this week?"
           autoComplete="off"
           disabled={isLoading}
+          rows={6}
         />
+
+        <div className={styles.examples}>
+          <p className={styles.examplesLabel}>Try one of these</p>
+          <div className={styles.examplesList}>
+            {exampleQueries.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={styles.exampleButton}
+                onClick={() => handleExampleClick(item)}
+                disabled={isLoading}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className={styles.actions}>
           <button
@@ -205,28 +268,79 @@ export default function ChatClient({ initialSetupStatus }) {
             disabled={isLoading || isSetupLoading || !isConfigured}
           >
             {isLoading
-              ? "Syncing..."
+              ? "Preparing answer..."
               : isSetupLoading
-                ? "Checking Setup..."
+                ? "Checking setup..."
               : !isConfigured
-                ? "Finish Local Setup"
-                : "Run Academic Reasoning"}
+                ? "Complete local setup"
+                : "Ask Academos"}
           </button>
+          <p className={styles.helperText}>
+            {isConfigured
+              ? "Answers stay grounded in your academic records."
+              : "Live answers unlock after setup is complete."}
+          </p>
         </div>
+
+        <div className={styles.statusGrid} aria-label="Runtime status">
+          {readinessItems.map((item) => (
+            <div key={item.label} className={styles.statusItem}>
+              <span className={styles.statusLabel}>{item.label}</span>
+              <strong className={styles.statusValue}>{item.value}</strong>
+            </div>
+          ))}
+        </div>
+
+        <details className={styles.detailsCard}>
+          <summary className={styles.detailsSummary}>Technical details</summary>
+          <div className={styles.detailsBody}>
+            <p className={styles.detailsText}>
+              Live student data still comes from Newton MCP. Gemini formats the
+              response, and Supabase continues to store snapshots when it is
+              configured.
+            </p>
+            <p className={styles.detailsText}>
+              Current setup message: {setupMessage}
+            </p>
+          </div>
+        </details>
       </form>
 
       <div className={styles.resultsColumn}>
         <section className={styles.resultCard}>
-          <p className={styles.cardLabel}>Response</p>
+          <div className={styles.resultHeader}>
+            <div>
+              <p className={styles.cardLabel}>Answer</p>
+              <h2 className={styles.resultTitle}>Your academic snapshot</h2>
+            </div>
+            {hasResponse ? (
+              <span className={styles.resultBadge}>Verified answer</span>
+            ) : null}
+          </div>
           <div className={styles.responseBox} aria-live="polite">
             {isLoading ? (
-              <p className={styles.statusMessage}>
-                Backend is fetching Newton MCP data and sending the academic snapshot to Gemini...
-              </p>
+              <div className={styles.loadingState}>
+                <p className={styles.loadingTitle}>Preparing your answer</p>
+                <p className={styles.statusMessage}>
+                  Academos is checking your records and organizing the most
+                  important signals into a clean response.
+                </p>
+                <ul className={styles.loadingList}>
+                  {loadingSteps.map((step) => (
+                    <li key={step} className={styles.loadingListItem}>
+                      {step}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ) : isSetupLoading ? (
-              <p className={styles.statusMessage}>{setupMessage}</p>
+              <div className={styles.loadingState}>
+                <p className={styles.loadingTitle}>Checking setup</p>
+                <p className={styles.statusMessage}>{setupMessage}</p>
+              </div>
             ) : setupStatus.checked && !isConfigured ? (
               <div className={styles.setupState}>
+                <p className={styles.setupTitle}>Complete local setup to ask live academic questions</p>
                 <p className={styles.errorMessage}>{setupMessage}</p>
                 {setupStatus.missing.length > 0 ? (
                   <ul className={styles.list}>
@@ -250,55 +364,80 @@ export default function ChatClient({ initialSetupStatus }) {
                 ) : null}
               </div>
             ) : errorMessage ? (
-              <p className={styles.errorMessage}>{errorMessage}</p>
+              <div className={styles.setupState}>
+                <p className={styles.setupTitle}>Academos could not prepare an answer</p>
+                <p className={styles.errorMessage}>{errorMessage}</p>
+              </div>
             ) : hasResponse ? (
               <div className={styles.responseContent}>
-                <p className={styles.sourceBadge}>
-                  Verified from your Newton academic data
-                </p>
+                <div className={styles.responseHeader}>
+                  <p className={styles.sourceBadge}>
+                    Verified from your academic records
+                  </p>
+                  {responseData.source === "supabase-gemini" ? (
+                    <span className={styles.metaPill}>Saved snapshot enabled</span>
+                  ) : null}
+                </div>
 
                 <section className={styles.responseSection}>
-                  <h2 className={styles.sectionTitle}>Summary</h2>
+                  <div className={styles.sectionHeader}>
+                    <h2 className={styles.sectionTitle}>Summary</h2>
+                    <span className={styles.sectionMeta}>Student-friendly view</span>
+                  </div>
                   <p className={styles.summaryText}>{responseData.summary}</p>
                 </section>
 
                 <section className={styles.responseSection}>
-                  <h2 className={styles.sectionTitle}>Tasks</h2>
+                  <div className={styles.sectionHeader}>
+                    <h2 className={styles.sectionTitle}>Recommended tasks</h2>
+                    <span className={styles.sectionMeta}>
+                      {getItemCountLabel(responseData.tasks, "task", "tasks")}
+                    </span>
+                  </div>
                   {responseData.tasks.length > 0 ? (
-                    <ul className={styles.list}>
+                    <ul className={styles.responseList}>
                       {responseData.tasks.map((task, index) => (
                         <li key={`${task}-${index}`}>{task}</li>
                       ))}
                     </ul>
                   ) : (
-                    <p className={styles.emptyText}>No tasks returned.</p>
+                    <p className={styles.emptyText}>
+                      No urgent tasks were highlighted in this answer.
+                    </p>
                   )}
                 </section>
 
                 <section className={styles.responseSection}>
-                  <h2 className={styles.sectionTitle}>Insights</h2>
+                  <div className={styles.sectionHeader}>
+                    <h2 className={styles.sectionTitle}>Key insights</h2>
+                    <span className={styles.sectionMeta}>
+                      {getItemCountLabel(responseData.insights, "insight", "insights")}
+                    </span>
+                  </div>
                   {responseData.insights.length > 0 ? (
-                    <ul className={styles.list}>
+                    <ul className={styles.responseList}>
                       {responseData.insights.map((insight, index) => (
                         <li key={`${insight}-${index}`}>{insight}</li>
                       ))}
                     </ul>
                   ) : (
-                    <p className={styles.emptyText}>No insights returned.</p>
+                    <p className={styles.emptyText}>
+                      No additional academic trends surfaced for this question.
+                    </p>
                   )}
                 </section>
 
                 {(responseData.source || responseData.snapshotId) ? (
-                  <details className={styles.responseSection}>
-                    <summary className={styles.sectionTitle}>Technical details</summary>
-                    <div className={styles.responseSection}>
+                  <details className={styles.detailsCard}>
+                    <summary className={styles.detailsSummary}>Technical details</summary>
+                    <div className={styles.detailsBody}>
                       {responseData.source ? (
-                        <p className={styles.emptyText}>
-                          Pipeline: {technicalSourceLabel}
+                        <p className={styles.detailsText}>
+                          Processing path: {technicalSourceLabel}
                         </p>
                       ) : null}
                       {responseData.snapshotId ? (
-                        <p className={styles.emptyText}>
+                        <p className={styles.detailsText}>
                           Snapshot ID: {responseData.snapshotId}
                         </p>
                       ) : null}
@@ -307,9 +446,25 @@ export default function ChatClient({ initialSetupStatus }) {
                 ) : null}
               </div>
             ) : (
-              <p className={styles.emptyState}>
-                Ask about attendance, quizzes, contests, calendar, arena, or subject performance.
-              </p>
+              <div className={styles.emptyState}>
+                <p className={styles.emptyStateTitle}>Ask a question to get a verified academic answer</p>
+                <p className={styles.emptyStateText}>
+                  Start with deadlines, attendance, schedule, quizzes, or the
+                  subject that needs the most attention.
+                </p>
+                <div className={styles.examplesList}>
+                  {exampleQueries.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      className={styles.exampleButton}
+                      onClick={() => handleExampleClick(item)}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </section>

@@ -12,11 +12,11 @@ export default function ChatPage() {
         <p className="eyebrow">Chat</p>
         <div className={styles.headerRow}>
           <div>
-            <h1 className={styles.title}>Academic Reasoning</h1>
+            <h1 className={styles.title}>Ask Academos</h1>
             <p className="page-copy">
-              The backend fetches Newton data from the local Newton MCP server,
-              optionally stores it in Supabase, and sends the academic snapshot
-              to Gemini for JSON-only reasoning.
+              Get a student-friendly answer based on your academic records.
+              Ask about attendance, deadlines, quizzes, contests, schedule, or
+              subject progress.
             </p>
           </div>
 

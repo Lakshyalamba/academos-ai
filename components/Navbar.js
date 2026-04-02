@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/chat", label: "Chat" },
+  { href: "/chat", label: "Ask Academos" },
 ];
 
 export default function Navbar() {
@@ -10,7 +10,8 @@ export default function Navbar() {
     <header className="site-header">
       <div className="site-header-inner">
         <Link href="/" className="site-brand">
-          Academos
+          <span className="site-brand-title">Academos</span>
+          <span className="site-brand-copy">student academic guide</span>
         </Link>
 
         <nav className="site-nav" aria-label="Primary">

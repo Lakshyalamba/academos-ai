@@ -1,0 +1,199 @@
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.heroCopy {
+  display: grid;
+  align-content: center;
+  gap: 1.25rem;
+}
+
+.heroTitle {
+  max-width: 12ch;
+}
+
+.heroLead {
+  max-width: 40rem;
+}
+
+.heroChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.heroChip {
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  color: #42546b;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.heroPanel {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 253, 249, 0.96), rgba(248, 250, 255, 0.9));
+  border: 1px solid rgba(18, 32, 51, 0.08);
+}
+
+.heroPanelLabel,
+.sectionLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #b85c38;
+}
+
+.heroPanelTitle {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.heroPanelCopy {
+  margin: 0;
+  color: #42546b;
+  line-height: 1.7;
+}
+
+.heroPanelList {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #122033;
+  line-height: 1.75;
+}
+
+.heroPanelList li + li {
+  margin-top: 0.45rem;
+}
+
+.sectionStack {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.infoCard {
+  padding: 1.5rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  box-shadow: 0 20px 60px rgba(18, 32, 51, 0.06);
+}
+
+.infoTitle {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.infoCopy {
+  margin: 0.8rem 0 0;
+  color: #42546b;
+  line-height: 1.7;
+}
+
+.navCardLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #b85c38;
+}
+
+.detailsCard {
+  overflow: hidden;
+}
+
+.detailsSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+}
+
+.detailsSummary::-webkit-details-marker {
+  display: none;
+}
+
+.detailsSummary::after {
+  content: "+";
+  flex: 0 0 auto;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #b85c38;
+}
+
+.detailsCard[open] .detailsSummary::after {
+  content: "−";
+}
+
+.detailsBody {
+  display: grid;
+  gap: 1.1rem;
+  padding-top: 1rem;
+}
+
+.detailsBody p {
+  margin: 0;
+  color: #42546b;
+  line-height: 1.7;
+}
+
+.detailsList {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #122033;
+  line-height: 1.7;
+}
+
+.detailsList li + li {
+  margin-top: 0.45rem;
+}
+
+@media (max-width: 820px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroTitle {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroPanel,
+  .infoCard {
+    padding: 1.25rem;
+    border-radius: 20px;
+  }
+
+  .heroChips {
+    gap: 0.6rem;
+  }
+
+  .heroChip {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

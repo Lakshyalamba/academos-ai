@@ -1,165 +1,84 @@
 # Academos
 
-Academos is a Next.js app that fetches academic data from the Newton MCP server, optionally stores the normalized snapshot in Supabase, and then sends the academic snapshot to Gemini for JSON-only reasoning in the UI.
+Academos is a student-facing academic assistant built with Next.js. It fetches verified academic data through Newton MCP, optionally stores a normalized snapshot in Supabase, and uses Gemini to turn that data into a clean summary, next tasks, and practical insights.
 
-Current runtime flow:
+The product is designed for demo-safe academic guidance:
 
-`Newton MCP -> Next.js backend -> Gemini -> UI`
-
-Optional persistence flow:
-
-`Newton MCP -> Next.js backend -> Supabase -> Gemini -> UI`
+- student-friendly landing page and chat flow
+- verified answers grounded in Newton-backed records
+- optional Supabase persistence for saved snapshots
+- technical details available in the UI, but collapsed by default
+- a readiness dashboard that explains setup and trust safeguards
 
 Architecture report:
 
 - [`PROJECT_REPORT.md`](./PROJECT_REPORT.md)
 
-## What The App Does
+## Project Overview
 
-- Fetches academic data from Newton through the backend.
-- Normalizes the data into a structured snapshot.
-- Optionally stores that snapshot in Supabase before LLM reasoning happens.
-- Sends the academic snapshot to Gemini.
-- Returns JSON-only academic reasoning to the chat UI.
-- Prevents fabricated academic data from being shown in the dashboard.
+Academos helps a student answer questions such as:
 
-## Features
+- What should I focus on this week?
+- Do I have any overdue work or attendance risk?
+- What classes, quizzes, or deadlines are coming up?
+- Which subject needs the most attention right now?
 
-- Newton MCP-backed academic snapshot generation with Codex-based local setup.
-- Gemini reasoning over Newton-backed academic snapshots.
-- Optional Supabase persistence for fetched academic records.
-- JSON-only response contract.
-- Separation of assignments, contests, and quizzes.
-- Setup-status preflight in the UI before chat submission.
+Instead of showing raw records, the app returns a structured answer with:
 
-## Project Structure
+- `summary`
+- `tasks`
+- `insights`
 
-```text
-app/
-  api/
-    route.js          # Runtime/config status endpoint
-    ask/route.js      # Main academic reasoning API
-  chat/
-    ChatClient.js     # Chat UI and setup preflight
-    page.js           # Chat page
-  dashboard/
-    page.js           # System-readiness dashboard
-  page.js             # Home page
-lib/
-  gemini.js           # Gemini API wrapper
-  newton-mcp.js       # Newton MCP client + snapshot builder
-  supabase.js         # Minimal Supabase REST client
-supabase/
-  schema.sql          # Required database schema
-```
+The current product includes:
 
-## Runtime Workflow
+- a polished landing page for demos and GitHub presentation
+- a readiness dashboard for setup and trust validation
+- a chat page for student-facing academic questions
+- an API layer that preserves the existing Newton MCP, Supabase, and Gemini flow
 
-### 1. User asks a question
+## Screenshots
 
-The chat page submits a request to `/api/ask`.
+![Academos home page](docs/screenshots/home.png)
 
-### 2. Backend fetches Newton data
+![Academos readiness dashboard](docs/screenshots/dashboard.png)
 
-The backend uses the Newton MCP client in `lib/newton-mcp.js` to fetch the relevant academic data. The supported local setup is to register Newton in Codex first.
+![Academos chat page](docs/screenshots/chat.png)
 
-Examples of supported data areas:
+## Architecture
 
-- courses
-- attendance
-- assignments
-- contests
-- quizzes / assessments
-- subject performance
-- schedule
-- calendar
-- recent lecture timeline
-- arena
-- leaderboard
-- question of the day
+### Runtime flow
 
-### 3. Backend optionally stores the snapshot in Supabase
+Without persistence:
 
-If Supabase is configured, the normalized snapshot is inserted into the `academic_snapshots` table through `lib/supabase.js`.
+`Newton MCP -> Next.js backend -> Gemini -> UI`
 
-### 4. Gemini reasons over the academic snapshot
+With persistence enabled:
 
-If Supabase is configured, Gemini receives the stored database record.
+`Newton MCP -> Next.js backend -> Supabase -> Gemini -> UI`
 
-If Supabase is not configured, Gemini receives the in-memory Newton snapshot directly.
+### High-level request lifecycle
 
-### 5. UI renders JSON response
+1. A student submits a question from the chat UI.
+2. The backend fetches the relevant academic data from Newton MCP.
+3. If Supabase is configured, the normalized snapshot is stored.
+4. Gemini receives the available academic snapshot and returns structured output.
+5. The UI renders a summary, tasks, and insights.
 
-The response shape is:
+### Core modules
 
-```json
-{
-  "summary": "",
-  "tasks": [],
-  "insights": [],
-  "source": "supabase-gemini",
-  "snapshotId": ""
-}
-```
+- [`app/page.js`](./app/page.js): landing page
+- [`app/dashboard/page.js`](./app/dashboard/page.js): readiness dashboard
+- [`app/chat/page.js`](./app/chat/page.js): chat page wrapper
+- [`app/chat/ChatClient.js`](./app/chat/ChatClient.js): chat UI, setup checks, and response rendering
+- [`app/api/route.js`](./app/api/route.js): runtime status endpoint
+- [`app/api/ask/route.js`](./app/api/ask/route.js): academic reasoning endpoint
+- [`lib/newton-mcp.js`](./lib/newton-mcp.js): Newton MCP client and snapshot builder
+- [`lib/gemini.js`](./lib/gemini.js): Gemini integration
+- [`lib/supabase.js`](./lib/supabase.js): snapshot persistence helpers
+- [`lib/runtime-status.js`](./lib/runtime-status.js): runtime readiness checks
+- [`supabase/schema.sql`](./supabase/schema.sql): required database schema for persistence
 
-If the data is missing, the reasoning layer should return:
-
-```json
-{
-  "summary": "Data not found",
-  "tasks": [],
-  "insights": []
-}
-```
-
-If the reasoning layer reports an error, the API returns:
-
-```json
-{
-  "error": "..."
-}
-```
-
-## Environment Variables
-
-Create `.env.local` from `.env.example` and set:
-
-```bash
-GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.5-flash-lite
-SUPABASE_URL=https://your-project-id.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
-SUPABASE_ACADEMIC_SNAPSHOTS_TABLE=academic_snapshots
-```
-
-Notes:
-
-- `GEMINI_API_KEY` is required for Gemini reasoning.
-- `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are optional. Add them only if you want snapshot persistence.
-- `SUPABASE_ACADEMIC_SNAPSHOTS_TABLE` is optional if you use the default table name `academic_snapshots`.
-
-## Supabase Setup
-
-Apply the SQL in `supabase/schema.sql` to your Supabase project before using the chat flow.
-
-This creates:
-
-- `public.academic_snapshots`
-- a `created_at` index
-- an `updated_at` trigger
-
-Main stored fields:
-
-- `query`
-- `intent`
-- `source`
-- `tools_used`
-- `snapshot`
-- `reasoning_response`
-- `reasoning_model`
-- timestamps
-
-## Local Setup
+## Setup Steps
 
 ### 1. Install dependencies
 
@@ -173,25 +92,25 @@ npm install
 codex mcp add newton -- npx -y @newtonschool/newton-mcp@latest
 ```
 
-If Newton asks for authentication later, run:
+If Newton asks for authentication later:
 
 ```bash
 npx -y @newtonschool/newton-mcp@latest login
 ```
 
-### 3. Configure environment
+### 3. Configure environment variables
 
 ```bash
 cp .env.example .env.local
 ```
 
-Then fill in the real Gemini credentials. Add Supabase credentials only if you want persistence.
+Fill in the required values for Gemini. Add Supabase credentials only if you want persisted snapshots.
 
 ### 4. Apply the Supabase schema
 
-If you want persistence, run the SQL in `supabase/schema.sql` in your Supabase SQL editor.
+If you want persistence, run the SQL from [`supabase/schema.sql`](./supabase/schema.sql) in your Supabase SQL editor.
 
-### 5. Start the app
+### 5. Start the app locally
 
 ```bash
 npm run dev -- --hostname 127.0.0.1 --port 3000
@@ -203,126 +122,87 @@ npm run dev -- --hostname 127.0.0.1 --port 3000
 http://127.0.0.1:3000
 ```
 
-## Runtime Status Behavior
+## Environment Variables
 
-When Newton MCP and Gemini are available locally:
+Create `.env.local` from `.env.example` and set the following values:
 
-- `/api` returns `status: "ok"`
-- chat submission is enabled
-- the backend fetches a Newton snapshot and calls Gemini
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `GEMINI_API_KEY` | Yes | Enables Gemini reasoning |
+| `GEMINI_MODEL` | No | Overrides the default Gemini model |
+| `SUPABASE_URL` | No | Enables snapshot persistence |
+| `SUPABASE_SERVICE_ROLE_KEY` | No | Allows server-side snapshot insert/update access |
+| `SUPABASE_ACADEMIC_SNAPSHOTS_TABLE` | No | Overrides the default snapshots table name |
 
-When Supabase is also configured:
+Example:
 
-- the backend stores the snapshot before calling Gemini
+```bash
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash-lite
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+SUPABASE_ACADEMIC_SNAPSHOTS_TABLE=academic_snapshots
+```
 
-When configuration is missing:
+## Demo Queries
 
-- `/api` returns `status: "setup-required"`
-- the chat button is disabled
-- the UI shows the missing setup instead of submitting a broken request
+Use these during the final demo:
 
-Example current unconfigured `/api` response:
+- What should I focus on this week?
+- Do I have any overdue work or attendance risk?
+- Summarize my upcoming classes, quizzes, and deadlines.
+- Which subject needs the most attention right now?
+- What is my next important academic action?
+- Give me a summary of my current attendance and pending work.
+
+## API Response Shape
+
+The chat UI expects a structured response in this format:
 
 ```json
 {
-  "status": "setup-required",
-  "message": "Local setup is incomplete. Finish the missing steps below before running academic reasoning.",
-  "config": {
-    "newtonConfigured": false,
-    "llmConfigured": false,
-    "supabaseConfigured": false
-  },
-  "missing": [
-    "Add Newton MCP to Codex: codex mcp add newton -- npx -y @newtonschool/newton-mcp@latest",
-    "Add a real GEMINI_API_KEY or GOOGLE_API_KEY in .env.local.",
-    "Restart the dev server: npm run dev -- --hostname 127.0.0.1 --port 3000"
-  ],
-  "links": ["/dashboard", "/chat"]
+  "summary": "",
+  "tasks": [],
+  "insights": [],
+  "source": "supabase-gemini",
+  "snapshotId": ""
 }
 ```
 
-## Routes
+If data is unavailable, the reasoning layer should return:
 
-### `/`
-
-Home page describing the pipeline and main navigation.
-
-### `/dashboard`
-
-System-readiness dashboard.
-
-Important:
-
-- It does **not** show fabricated academic data.
-- It only shows system readiness and data-integrity guidance.
-
-### `/chat`
-
-Academic reasoning UI.
-
-Behavior:
-
-- checks setup status from `/api`
-- blocks submission if Codex Newton MCP or Gemini is missing
-- displays `snapshotId` after a successful reasoning pass
-
-### `/api`
-
-Status/config endpoint.
-
-### `/api/ask`
-
-Main reasoning endpoint.
-
-High-level behavior:
-
-1. validate the user query
-2. fetch Newton MCP data
-3. optionally store the snapshot in Supabase
-4. send the available academic snapshot to Gemini
-5. optionally store Gemini’s reasoning result in Supabase
-6. return normalized JSON to the UI
-
-## Build And Verification
-
-Production build:
-
-```bash
-npm run build
+```json
+{
+  "summary": "Data not found",
+  "tasks": [],
+  "insights": []
+}
 ```
 
-### Browser verification
+## Limitations
 
-This repo was checked locally with Playwright against:
+- The full end-to-end experience depends on a working local Newton MCP setup in Codex.
+- Gemini credentials are required for live reasoning.
+- Supabase is optional, but snapshot persistence requires valid Supabase credentials and schema setup.
+- The product currently focuses on structured academic answers, not long multi-turn conversation memory.
+- The dashboard is intentionally a readiness and trust surface, not a student analytics dashboard.
 
-- `/`
-- `/dashboard`
-- `/chat`
-- `/api`
+## Future Scope
 
-What was verified:
+- Saved student conversation sessions
+- Personalised follow-up prompts and reminders
+- Richer academic trend visualisations
+- Filtered views for subject-wise and semester-wise analysis
+- Exportable summaries for mentors or student advisors
+- Notification flows for risk, deadlines, and attendance drops
 
-- local server starts
-- chat setup preflight works
-- `/api` reports missing configuration correctly
-- dashboard no longer renders fake academic data
-- production build succeeds
+## Available Routes
 
-## Data Integrity Rules
-
-The app is designed around these constraints:
-
-- academic data must come from Newton MCP
-- Gemini reasons over Newton-backed academic data only
-- contests stay separate from assignments
-- quizzes / assessments stay separate from both contests and assignments
-- if requested data is unavailable, the app should return `Data not found`
-
-## Known Constraints
-
-- The full end-to-end reasoning flow requires Codex Newton MCP plus a valid Gemini API key.
-- Supabase is optional. Without it, the app still runs and reasons over the in-memory Newton snapshot.
-- The backend expects the Newton MCP package to be available through Codex with `codex mcp add newton -- npx -y @newtonschool/newton-mcp@latest`.
+- `/`: landing page
+- `/dashboard`: readiness and trust dashboard
+- `/chat`: student-facing academic chat
+- `/api`: runtime status endpoint
+- `/api/ask`: academic reasoning endpoint
 
 ## Useful Commands
 
@@ -346,12 +226,4 @@ npm run build
 
 ## Summary
 
-Academos is now structured as a backend-first academic reasoning pipeline:
-
-`Newton MCP -> backend -> Gemini -> UI`
-
-Optional persistence path:
-
-`Newton MCP -> backend -> Supabase -> Gemini -> UI`
-
-That keeps academic data fetch, optional persistence, reasoning, and rendering clearly separated and avoids fabricated student data in the interface.
+Academos keeps the backend architecture intact while presenting the product as a polished student-facing academic assistant. Newton MCP remains the source of truth, Gemini produces the structured answer, and Supabase continues to support snapshot persistence when enabled.

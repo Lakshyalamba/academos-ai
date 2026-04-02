@@ -2,8 +2,9 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 
 export const metadata = {
-  title: "Academos",
-  description: "A simple Next.js App Router starter",
+  title: "Academos | Student Academic Assistant",
+  description:
+    "Academos turns student academic records into clear summaries, tasks, and insights.",
 };
 
 export default function RootLayout({ children }) {
