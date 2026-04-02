@@ -22,6 +22,22 @@
   letter-spacing: -0.04em;
 }
 
+.dashboardLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.dashboardMain {
+  display: grid;
+}
+
+.dashboardSidebar {
+  position: sticky;
+  top: 6.25rem;
+}
+
 .todayOverviewCard {
   display: grid;
   gap: 1.15rem;
@@ -237,6 +253,94 @@
   line-height: 1.65;
 }
 
+.assignmentsPanel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1.35rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 251, 255, 0.86));
+  box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
+}
+
+.assignmentsPanelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.assignmentsPanelTitle {
+  margin: 0.35rem 0 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: clamp(1.45rem, 2.3vw, 1.85rem);
+  line-height: 1.05;
+}
+
+.assignmentsPanelMeta {
+  margin: 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(18, 32, 51, 0.06);
+  color: #5f6d7d;
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.assignmentList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.assignmentItem {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.assignmentItemHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.assignmentTitle {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: #122033;
+}
+
+.assignmentSubject,
+.assignmentDue,
+.assignmentsEmptyState {
+  margin: 0;
+  color: #42546b;
+  line-height: 1.55;
+}
+
+.overdueBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.28rem 0.58rem;
+  border-radius: 999px;
+  background: rgba(159, 45, 45, 0.12);
+  color: #9f2d2d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .statusStrip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -391,6 +495,14 @@
     grid-template-columns: 1fr;
   }
 
+  .dashboardLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardSidebar {
+    position: static;
+  }
+
   .todayOverviewCard {
     padding: 1.25rem;
     border-radius: 22px;
@@ -423,6 +535,15 @@
 
   .classMeta {
     justify-content: flex-start;
+  }
+
+  .assignmentsPanel {
+    padding: 1.25rem;
+    border-radius: 22px;
+  }
+
+  .assignmentsPanelHeader {
+    flex-direction: column;
   }
 
   .detailsSummary,
