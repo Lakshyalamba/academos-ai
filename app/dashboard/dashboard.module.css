@@ -46,9 +46,9 @@
 
 .dashboardSecondaryGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 .todoPanel {

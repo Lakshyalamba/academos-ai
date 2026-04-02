@@ -133,6 +133,197 @@
   line-height: 1.65;
 }
 
+.prepFormStack {
+  display: grid;
+  gap: 1rem;
+}
+
+.prepForm {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.fieldLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #42546b;
+}
+
+.fieldInput,
+.fieldTextarea {
+  width: 100%;
+  min-width: 0;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(18, 32, 51, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #122033;
+  font: inherit;
+}
+
+.fieldTextarea {
+  resize: vertical;
+}
+
+.fieldInput::placeholder,
+.fieldTextarea::placeholder {
+  color: #7a8796;
+}
+
+.fieldInput:focus,
+.fieldTextarea:focus {
+  outline: none;
+  border-color: rgba(184, 92, 56, 0.45);
+  box-shadow: 0 0 0 4px rgba(184, 92, 56, 0.12);
+}
+
+.fieldHint {
+  font-size: 0.82rem;
+  color: #6b7785;
+  line-height: 1.5;
+}
+
+.fieldError {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #9f2d2d;
+}
+
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.1rem;
+  border: none;
+  border-radius: 16px;
+  background: #122033;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background: #1c314d;
+}
+
+.formActionCopy {
+  margin: 0;
+  color: #42546b;
+  line-height: 1.6;
+}
+
+.previewCard {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.previewHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.previewTitle {
+  margin: 0.35rem 0 0;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: #122033;
+}
+
+.previewContent {
+  display: grid;
+  gap: 1rem;
+}
+
+.previewSummary {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.previewSummaryText,
+.previewNotes {
+  margin: 0;
+  color: #122033;
+  line-height: 1.6;
+}
+
+.previewNotes {
+  color: #42546b;
+}
+
+.topicBlock {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.topicBlockLabel {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7785;
+}
+
+.topicChipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.topicChip {
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  color: #42546b;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.previewCode {
+  margin: 0;
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(18, 32, 51, 0.06);
+  color: #122033;
+  line-height: 1.6;
+}
+
 .noteList {
   margin: 0;
   padding-left: 1.2rem;
@@ -146,6 +337,10 @@
 
 @media (max-width: 900px) {
   .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formGrid {
     grid-template-columns: 1fr;
   }
 }
@@ -167,5 +362,11 @@
 
   .title {
     max-width: 100%;
+  }
+
+  .formActions,
+  .previewHeader {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

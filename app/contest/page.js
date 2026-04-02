@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ContestPrepForm from "./ContestPrepForm";
 import styles from "./contest.module.css";
 
 const prepHighlights = [
@@ -52,19 +53,14 @@ export default function ContestPage() {
               <p className={styles.cardLabel}>Upcoming Contest Prep</p>
               <h2 className={styles.cardTitle}>Get ready for the next contest</h2>
               <p className={styles.cardDescription}>
-                A focused area for upcoming contest readiness and prep planning.
+                Enter the upcoming Friday contest details and keep the structure
+                ready for future prep workflows.
               </p>
             </div>
-            <p className={styles.cardMeta}>Placeholder</p>
+            <p className={styles.cardMeta}>Manual entry</p>
           </div>
 
-          <div className={styles.emptyStateBox}>
-            <p className={styles.emptyStateTitle}>Upcoming contest prep is not connected yet.</p>
-            <p className={styles.emptyStateCopy}>
-              Once contest schedule logic is added, this section can show the
-              next contest, prep timing, and quick readiness cues.
-            </p>
-          </div>
+          <ContestPrepForm />
         </section>
 
         <section className={styles.secondaryCard}>

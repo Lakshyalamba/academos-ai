@@ -4,7 +4,6 @@ import TodoListCard from "./TodoListCard";
 import { getAttendanceAlert } from "../../lib/attendance-alert";
 import { getCatchUp } from "../../lib/catch-up";
 import { getTodayOverview } from "../../lib/dashboard-overview";
-import { getRuntimeStatus } from "../../lib/runtime-status";
 
 export const dynamic = "force-dynamic";
 
@@ -34,22 +33,13 @@ function getAttendanceStateLabel(state) {
 }
 
 function getSectionMeta(available, readyLabel) {
-  return available ? readyLabel : "Setup needed";
+  return available ? readyLabel : "Unavailable";
 }
 
 export default async function DashboardPage() {
-  const { newtonConfigured } = getRuntimeStatus().config;
-  const [todayOverview, attendanceAlert, catchUp] = await Promise.all([
-    getTodayOverview({
-      enabled: newtonConfigured,
-    }),
-    getAttendanceAlert({
-      enabled: newtonConfigured,
-    }),
-    getCatchUp({
-      enabled: newtonConfigured,
-    }),
-  ]);
+  const todayOverview = await getTodayOverview();
+  const attendanceAlert = await getAttendanceAlert();
+  const catchUp = await getCatchUp();
   const todayMetrics = [
     {
       label: "Classes today",
