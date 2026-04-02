@@ -2,6 +2,7 @@ import Link from "next/link";
 import styles from "./dashboard.module.css";
 import TodoListCard from "./TodoListCard";
 import { getAttendanceAlert } from "../../lib/attendance-alert";
+import { getCatchUp } from "../../lib/catch-up";
 import { getTodayOverview } from "../../lib/dashboard-overview";
 import { getRuntimeStatus } from "../../lib/runtime-status";
 
@@ -34,11 +35,14 @@ function getAttendanceStateLabel(state) {
 
 export default async function DashboardPage() {
   const { newtonConfigured } = getRuntimeStatus().config;
-  const [todayOverview, attendanceAlert] = await Promise.all([
+  const [todayOverview, attendanceAlert, catchUp] = await Promise.all([
     getTodayOverview({
       enabled: newtonConfigured,
     }),
     getAttendanceAlert({
+      enabled: newtonConfigured,
+    }),
+    getCatchUp({
       enabled: newtonConfigured,
     }),
   ]);
@@ -197,6 +201,46 @@ export default async function DashboardPage() {
                 )}
               </article>
             </div>
+          </section>
+
+          <section className={styles.catchUpPanel} aria-label="Recent missed lectures">
+            <div className={styles.catchUpPanelHeader}>
+              <div>
+                <p className={styles.cardLabel}>Catch Up</p>
+                <h2 className={styles.catchUpPanelTitle}>Recent missed lectures</h2>
+                <p className={styles.catchUpPanelDescription}>
+                  Catch up quickly on lectures that still need your attention.
+                </p>
+              </div>
+              <p className={styles.catchUpPanelMeta}>
+                {catchUp.available ? "Live activity" : "Fallback state"}
+              </p>
+            </div>
+
+            {catchUp.items?.length ? (
+              <ul className={styles.catchUpList}>
+                {catchUp.items.map((item) => (
+                  <li key={item.id} className={styles.catchUpItem}>
+                    <div className={styles.catchUpItemHeader}>
+                      <div>
+                        <h3 className={styles.catchUpSubject}>{item.subjectName}</h3>
+                        <p className={styles.catchUpLecture}>
+                          {item.lectureLabel && item.lectureLabel !== item.subjectName
+                            ? `${item.lectureLabel} · ${item.dateLabel}`
+                            : item.dateLabel}
+                        </p>
+                      </div>
+                      {item.hasRecording ? (
+                        <span className={styles.catchUpBadge}>Recording available</span>
+                      ) : null}
+                    </div>
+                    <p className={styles.catchUpSuggestion}>{item.suggestion}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className={styles.assignmentsEmptyState}>{catchUp.emptyMessage}</p>
+            )}
           </section>
         </div>
 

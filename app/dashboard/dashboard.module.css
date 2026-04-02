@@ -396,6 +396,7 @@
 }
 
 .attendancePanel,
+.catchUpPanel,
 .assignmentsPanel {
   display: grid;
   gap: 1rem;
@@ -408,6 +409,7 @@
 }
 
 .attendancePanelHeader,
+.catchUpPanelHeader,
 .assignmentsPanelHeader {
   display: flex;
   align-items: flex-start;
@@ -416,6 +418,7 @@
 }
 
 .attendancePanelTitle,
+.catchUpPanelTitle,
 .assignmentsPanelTitle {
   margin: 0.35rem 0 0;
   font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
@@ -423,7 +426,8 @@
   line-height: 1.05;
 }
 
-.attendancePanelDescription {
+.attendancePanelDescription,
+.catchUpPanelDescription {
   margin: 0.55rem 0 0;
   color: #42546b;
   line-height: 1.6;
@@ -538,6 +542,7 @@
   white-space: nowrap;
 }
 
+.catchUpPanelMeta,
 .assignmentsPanelMeta {
   margin: 0;
   padding: 0.5rem 0.8rem;
@@ -557,6 +562,15 @@
   list-style: none;
 }
 
+.catchUpList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catchUpItem,
 .assignmentItem {
   display: grid;
   gap: 0.45rem;
@@ -566,6 +580,7 @@
   background: rgba(255, 255, 255, 0.94);
 }
 
+.catchUpItemHeader,
 .assignmentItemHeader {
   display: flex;
   align-items: flex-start;
@@ -573,6 +588,7 @@
   gap: 0.75rem;
 }
 
+.catchUpSubject,
 .assignmentTitle {
   margin: 0;
   font-size: 1rem;
@@ -580,6 +596,8 @@
   color: #122033;
 }
 
+.catchUpLecture,
+.catchUpSuggestion,
 .assignmentSubject,
 .assignmentDue,
 .assignmentsEmptyState {
@@ -588,11 +606,24 @@
   line-height: 1.55;
 }
 
+.catchUpBadge,
 .overdueBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.28rem 0.58rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.catchUpBadge {
+  background: rgba(46, 125, 74, 0.12);
+  color: #2e7d4a;
+}
+
+.overdueBadge {
   border-radius: 999px;
   background: rgba(159, 45, 45, 0.12);
   color: #9f2d2d;
@@ -677,16 +708,19 @@
   }
 
   .attendancePanel,
+  .catchUpPanel,
   .assignmentsPanel {
     padding: 1.25rem;
     border-radius: 22px;
   }
 
   .attendancePanelHeader,
+  .catchUpPanelHeader,
   .assignmentsPanelHeader {
     flex-direction: column;
   }
 
+  .catchUpItemHeader,
   .attendanceSubjectRow {
     flex-direction: column;
   }
