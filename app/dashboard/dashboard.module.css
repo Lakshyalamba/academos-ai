@@ -24,24 +24,37 @@
 
 .dashboardLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.92fr);
   gap: 1rem;
   align-items: start;
+  margin-top: 1rem;
 }
 
 .dashboardMain {
   display: grid;
+  gap: 1rem;
+  align-content: start;
 }
 
 .dashboardSidebar {
   position: sticky;
   top: 6.25rem;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.dashboardSecondaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 1rem;
+  align-items: stretch;
 }
 
 .todoPanel {
   display: grid;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: 1.15rem;
+  margin-top: 1.25rem;
   padding: 1.5rem;
   border: 1px solid rgba(18, 32, 51, 0.08);
   border-radius: 28px;
@@ -83,6 +96,10 @@
 .todoForm {
   display: grid;
   gap: 0.65rem;
+  padding: 1rem;
+  border: 1px solid rgba(18, 32, 51, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .todoInputLabel {
@@ -135,6 +152,13 @@
   background: #1c314d;
 }
 
+.todoWorkspace {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
 .todoChecklist {
   display: grid;
   gap: 0.75rem;
@@ -183,7 +207,6 @@
 .todayOverviewCard {
   display: grid;
   gap: 1.15rem;
-  margin-top: 1.5rem;
   padding: 1.5rem;
   border: 1px solid rgba(18, 32, 51, 0.08);
   border-radius: 26px;
@@ -226,10 +249,12 @@
 .todayOverviewGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.9rem;
+  gap: 1rem;
 }
 
 .todayMetric {
+  display: grid;
+  align-content: start;
   min-height: 100%;
   padding: 1rem;
   border: 1px solid rgba(18, 32, 51, 0.08);
@@ -266,7 +291,6 @@
 .classesWidget {
   display: grid;
   gap: 1rem;
-  margin-top: 1.5rem;
   padding: 1.5rem;
   border: 1px solid rgba(18, 32, 51, 0.08);
   border-radius: 26px;
@@ -400,7 +424,6 @@
 .assignmentsPanel {
   display: grid;
   gap: 1rem;
-  margin-top: 1.5rem;
   padding: 1.35rem;
   border: 1px solid rgba(18, 32, 51, 0.08);
   border-radius: 26px;
@@ -641,6 +664,21 @@
   color: #b85c38;
 }
 
+@media (max-width: 960px) {
+  .dashboardLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardSidebar {
+    position: static;
+  }
+
+  .dashboardSecondaryGrid,
+  .todoWorkspace {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 640px) {
   .header {
     padding: 1.5rem;
@@ -660,6 +698,10 @@
     position: static;
   }
 
+  .dashboardSecondaryGrid {
+    grid-template-columns: 1fr;
+  }
+
   .todoPanel {
     padding: 1.25rem;
     border-radius: 22px;
@@ -671,6 +713,10 @@
 
   .todoInputRow {
     flex-direction: column;
+  }
+
+  .todoWorkspace {
+    grid-template-columns: 1fr;
   }
 
   .todayOverviewCard {

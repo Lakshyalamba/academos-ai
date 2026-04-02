@@ -17,6 +17,7 @@ export default function TodoListCard() {
   const [items, setItems] = useState([]);
   const [draft, setDraft] = useState("");
   const [isReady, setIsReady] = useState(false);
+  const openItemsCount = items.filter((item) => !item.completed).length;
 
   useEffect(() => {
     try {
@@ -83,59 +84,67 @@ export default function TodoListCard() {
           <p className={styles.cardLabel}>To-Do List</p>
           <h2 className={styles.todoPanelTitle}>Keep your own study checklist</h2>
           <p className={styles.todoPanelDescription}>
-            Add personal tasks and tick them off as you finish them.
+            Add quick personal tasks and clear them as your day moves forward.
           </p>
         </div>
-        <p className={styles.todoPanelMeta}>Personal list</p>
+        <p className={styles.todoPanelMeta}>
+          {items.length === 0
+            ? "No tasks yet"
+            : openItemsCount === 0
+              ? "All done"
+              : `${openItemsCount} open`}
+        </p>
       </div>
 
-      <form className={styles.todoForm} onSubmit={handleSubmit}>
-        <label className={styles.todoInputLabel} htmlFor="dashboard-todo-input">
-          Add a task
-        </label>
-        <div className={styles.todoInputRow}>
-          <input
-            id="dashboard-todo-input"
-            className={styles.todoInput}
-            type="text"
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-            placeholder="Example: Finish DBMS notes"
-            maxLength={120}
-          />
-          <button className={styles.todoAddButton} type="submit">
-            Add
-          </button>
-        </div>
-      </form>
+      <div className={styles.todoWorkspace}>
+        <form className={styles.todoForm} onSubmit={handleSubmit}>
+          <label className={styles.todoInputLabel} htmlFor="dashboard-todo-input">
+            Add a task
+          </label>
+          <div className={styles.todoInputRow}>
+            <input
+              id="dashboard-todo-input"
+              className={styles.todoInput}
+              type="text"
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              placeholder="Example: Finish DBMS notes"
+              maxLength={120}
+            />
+            <button className={styles.todoAddButton} type="submit">
+              Add
+            </button>
+          </div>
+        </form>
 
-      {items.length > 0 ? (
-        <ul className={styles.todoChecklist}>
-          {items.map((item) => (
-            <li key={item.id} className={styles.todoChecklistItem}>
-              <label className={styles.todoCheckboxRow}>
-                <input
-                  className={styles.todoCheckbox}
-                  type="checkbox"
-                  checked={item.completed}
-                  onChange={() => handleToggle(item.id)}
-                />
-                <span
-                  className={`${styles.todoChecklistText} ${
-                    item.completed ? styles.todoChecklistTextDone : ""
-                  }`}
-                >
-                  {item.text}
-                </span>
-              </label>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className={styles.todoEmptyState}>
-          Add a task to keep track of your own priorities for today.
-        </p>
-      )}
+        {items.length > 0 ? (
+          <ul className={styles.todoChecklist}>
+            {items.map((item) => (
+              <li key={item.id} className={styles.todoChecklistItem}>
+                <label className={styles.todoCheckboxRow}>
+                  <input
+                    className={styles.todoCheckbox}
+                    type="checkbox"
+                    checked={item.completed}
+                    onChange={() => handleToggle(item.id)}
+                  />
+                  <span
+                    className={`${styles.todoChecklistText} ${
+                      item.completed ? styles.todoChecklistTextDone : ""
+                    }`}
+                  >
+                    {item.text}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className={styles.todoEmptyState}>
+            No personal tasks yet. Add one to keep today organized.
+          </p>
+        )}
+      </div>
     </section>
   );
 }

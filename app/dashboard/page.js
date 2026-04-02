@@ -33,6 +33,10 @@ function getAttendanceStateLabel(state) {
   }
 }
 
+function getSectionMeta(available, readyLabel) {
+  return available ? readyLabel : "Setup needed";
+}
+
 export default async function DashboardPage() {
   const { newtonConfigured } = getRuntimeStatus().config;
   const [todayOverview, attendanceAlert, catchUp] = await Promise.all([
@@ -81,8 +85,8 @@ export default async function DashboardPage() {
           <div>
             <h1 className={styles.title}>Academic Dashboard</h1>
             <p className="page-copy">
-              See today's classes, attendance, and academic work in one
-              student-friendly view.
+              Everything you need for the day, from classes and pending work to
+              attendance and catch-up.
             </p>
           </div>
 
@@ -100,12 +104,12 @@ export default async function DashboardPage() {
             <div className={styles.todayOverviewHeader}>
               <div>
                 <p className={styles.cardLabel}>Today Overview</p>
-                <h2 className={styles.todayOverviewTitle}>Your academic snapshot at a glance</h2>
+                <h2 className={styles.todayOverviewTitle}>Today at a glance</h2>
                 <p className={styles.todayOverviewDescription}>{todayOverview.message}</p>
               </div>
 
               <p className={styles.todayOverviewMeta}>
-                {todayOverview.available ? "Live student data" : "Fallback state"}
+                {getSectionMeta(todayOverview.available, "Live view")}
               </p>
             </div>
 
@@ -120,128 +124,130 @@ export default async function DashboardPage() {
             </div>
           </section>
 
-          <section className={styles.classesWidget} aria-label="Today and tomorrow classes">
-            <div className={styles.classesWidgetHeader}>
-              <div>
-                <p className={styles.cardLabel}>Classes</p>
-                <h2 className={styles.classesWidgetTitle}>Today and tomorrow</h2>
-                <p className={styles.classesWidgetDescription}>
-                  A quick look at your nearest scheduled classes without opening chat.
+          <div className={styles.dashboardSecondaryGrid}>
+            <section className={styles.classesWidget} aria-label="Today and tomorrow classes">
+              <div className={styles.classesWidgetHeader}>
+                <div>
+                  <p className={styles.cardLabel}>Classes</p>
+                  <h2 className={styles.classesWidgetTitle}>Today and tomorrow</h2>
+                  <p className={styles.classesWidgetDescription}>
+                    Your nearest schedule without opening chat.
+                  </p>
+                </div>
+                <p className={styles.todayOverviewMeta}>
+                  {getSectionMeta(todayOverview.classesSchedule?.available, "Live schedule")}
                 </p>
               </div>
-              <p className={styles.todayOverviewMeta}>
-                {todayOverview.classesSchedule?.available ? "Live schedule" : "Fallback state"}
-              </p>
-            </div>
 
-            <div className={styles.classesSectionsGrid}>
-              <article className={styles.classesSection}>
-                <div className={styles.classesSectionHeader}>
-                  <h3 className={styles.classesSectionTitle}>Today</h3>
-                  <span className={styles.classesSectionMeta}>
-                    {getClassCountLabel(todayOverview.classesSchedule?.today)}
-                  </span>
-                </div>
+              <div className={styles.classesSectionsGrid}>
+                <article className={styles.classesSection}>
+                  <div className={styles.classesSectionHeader}>
+                    <h3 className={styles.classesSectionTitle}>Today</h3>
+                    <span className={styles.classesSectionMeta}>
+                      {getClassCountLabel(todayOverview.classesSchedule?.today)}
+                    </span>
+                  </div>
 
-                {todayOverview.classesSchedule?.today?.length ? (
-                  <ul className={styles.classesList}>
-                    {todayOverview.classesSchedule.today.map((entry) => (
-                      <li
-                        key={`${entry.subjectName}-${entry.time}-${entry.type}`}
-                        className={styles.classRow}
-                      >
-                        <div>
-                          <p className={styles.className}>{entry.subjectName}</p>
-                        </div>
-                        <div className={styles.classMeta}>
-                          <span className={styles.classBadge}>{entry.time}</span>
-                          <span className={styles.classBadgeMuted}>{entry.type || "Class"}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className={styles.classesEmptyState}>
-                    {todayOverview.classesSchedule?.todayEmptyMessage ||
-                      "No classes scheduled today."}
+                  {todayOverview.classesSchedule?.today?.length ? (
+                    <ul className={styles.classesList}>
+                      {todayOverview.classesSchedule.today.map((entry) => (
+                        <li
+                          key={`${entry.subjectName}-${entry.time}-${entry.type}`}
+                          className={styles.classRow}
+                        >
+                          <div>
+                            <p className={styles.className}>{entry.subjectName}</p>
+                          </div>
+                          <div className={styles.classMeta}>
+                            <span className={styles.classBadge}>{entry.time}</span>
+                            <span className={styles.classBadgeMuted}>{entry.type || "Class"}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className={styles.classesEmptyState}>
+                      {todayOverview.classesSchedule?.todayEmptyMessage ||
+                        "No classes scheduled today."}
+                    </p>
+                  )}
+                </article>
+
+                <article className={styles.classesSection}>
+                  <div className={styles.classesSectionHeader}>
+                    <h3 className={styles.classesSectionTitle}>Tomorrow</h3>
+                    <span className={styles.classesSectionMeta}>
+                      {getClassCountLabel(todayOverview.classesSchedule?.tomorrow)}
+                    </span>
+                  </div>
+
+                  {todayOverview.classesSchedule?.tomorrow?.length ? (
+                    <ul className={styles.classesList}>
+                      {todayOverview.classesSchedule.tomorrow.map((entry) => (
+                        <li
+                          key={`${entry.subjectName}-${entry.time}-${entry.type}`}
+                          className={styles.classRow}
+                        >
+                          <div>
+                            <p className={styles.className}>{entry.subjectName}</p>
+                          </div>
+                          <div className={styles.classMeta}>
+                            <span className={styles.classBadge}>{entry.time}</span>
+                            <span className={styles.classBadgeMuted}>{entry.type || "Class"}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className={styles.classesEmptyState}>
+                      {todayOverview.classesSchedule?.tomorrowEmptyMessage ||
+                        "No classes scheduled tomorrow."}
+                    </p>
+                  )}
+                </article>
+              </div>
+            </section>
+
+            <section className={styles.catchUpPanel} aria-label="Recent missed lectures">
+              <div className={styles.catchUpPanelHeader}>
+                <div>
+                  <p className={styles.cardLabel}>Catch Up</p>
+                  <h2 className={styles.catchUpPanelTitle}>Recent missed lectures</h2>
+                  <p className={styles.catchUpPanelDescription}>
+                    Missed lectures worth reviewing next.
                   </p>
-                )}
-              </article>
-
-              <article className={styles.classesSection}>
-                <div className={styles.classesSectionHeader}>
-                  <h3 className={styles.classesSectionTitle}>Tomorrow</h3>
-                  <span className={styles.classesSectionMeta}>
-                    {getClassCountLabel(todayOverview.classesSchedule?.tomorrow)}
-                  </span>
                 </div>
-
-                {todayOverview.classesSchedule?.tomorrow?.length ? (
-                  <ul className={styles.classesList}>
-                    {todayOverview.classesSchedule.tomorrow.map((entry) => (
-                      <li
-                        key={`${entry.subjectName}-${entry.time}-${entry.type}`}
-                        className={styles.classRow}
-                      >
-                        <div>
-                          <p className={styles.className}>{entry.subjectName}</p>
-                        </div>
-                        <div className={styles.classMeta}>
-                          <span className={styles.classBadge}>{entry.time}</span>
-                          <span className={styles.classBadgeMuted}>{entry.type || "Class"}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className={styles.classesEmptyState}>
-                    {todayOverview.classesSchedule?.tomorrowEmptyMessage ||
-                      "No classes scheduled tomorrow."}
-                  </p>
-                )}
-              </article>
-            </div>
-          </section>
-
-          <section className={styles.catchUpPanel} aria-label="Recent missed lectures">
-            <div className={styles.catchUpPanelHeader}>
-              <div>
-                <p className={styles.cardLabel}>Catch Up</p>
-                <h2 className={styles.catchUpPanelTitle}>Recent missed lectures</h2>
-                <p className={styles.catchUpPanelDescription}>
-                  Catch up quickly on lectures that still need your attention.
+                <p className={styles.catchUpPanelMeta}>
+                  {getSectionMeta(catchUp.available, "Live activity")}
                 </p>
               </div>
-              <p className={styles.catchUpPanelMeta}>
-                {catchUp.available ? "Live activity" : "Fallback state"}
-              </p>
-            </div>
 
-            {catchUp.items?.length ? (
-              <ul className={styles.catchUpList}>
-                {catchUp.items.map((item) => (
-                  <li key={item.id} className={styles.catchUpItem}>
-                    <div className={styles.catchUpItemHeader}>
-                      <div>
-                        <h3 className={styles.catchUpSubject}>{item.subjectName}</h3>
-                        <p className={styles.catchUpLecture}>
-                          {item.lectureLabel && item.lectureLabel !== item.subjectName
-                            ? `${item.lectureLabel} · ${item.dateLabel}`
-                            : item.dateLabel}
-                        </p>
+              {catchUp.items?.length ? (
+                <ul className={styles.catchUpList}>
+                  {catchUp.items.map((item) => (
+                    <li key={item.id} className={styles.catchUpItem}>
+                      <div className={styles.catchUpItemHeader}>
+                        <div>
+                          <h3 className={styles.catchUpSubject}>{item.subjectName}</h3>
+                          <p className={styles.catchUpLecture}>
+                            {item.lectureLabel && item.lectureLabel !== item.subjectName
+                              ? `${item.lectureLabel} · ${item.dateLabel}`
+                              : item.dateLabel}
+                          </p>
+                        </div>
+                        {item.hasRecording ? (
+                          <span className={styles.catchUpBadge}>Recording available</span>
+                        ) : null}
                       </div>
-                      {item.hasRecording ? (
-                        <span className={styles.catchUpBadge}>Recording available</span>
-                      ) : null}
-                    </div>
-                    <p className={styles.catchUpSuggestion}>{item.suggestion}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className={styles.assignmentsEmptyState}>{catchUp.emptyMessage}</p>
-            )}
-          </section>
+                      <p className={styles.catchUpSuggestion}>{item.suggestion}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className={styles.assignmentsEmptyState}>{catchUp.emptyMessage}</p>
+              )}
+            </section>
+          </div>
         </div>
 
         <aside className={styles.dashboardSidebar}>
@@ -314,7 +320,7 @@ export default async function DashboardPage() {
                 <h2 className={styles.assignmentsPanelTitle}>Academic work to watch</h2>
               </div>
               <p className={styles.assignmentsPanelMeta}>
-                {todayOverview.pendingAssignments?.available ? "Live items" : "Fallback state"}
+                {getSectionMeta(todayOverview.pendingAssignments?.available, "Live items")}
               </p>
             </div>
 
