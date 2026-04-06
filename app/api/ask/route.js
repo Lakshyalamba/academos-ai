@@ -1,3 +1,4 @@
+import { jsonResponse, optionsResponse } from "../../../lib/api-response";
 import {
   askGemini,
   getConfiguredGeminiModel,
@@ -20,6 +21,7 @@ import {
   isSupabaseConfigured,
   updateAcademicSnapshotReasoning,
 } from "../../../lib/supabase";
+import { logServerError } from "../../../lib/server-logging";
 import { getRuntimeStatus } from "../../../lib/runtime-status";
 
 export const runtime = "nodejs";
@@ -206,7 +208,7 @@ function hasUsefulAcademicData(snapshot) {
 
 function logGeminiParsingFailure(reason, response) {
   console.error(reason, {
-    responsePreview: String(response || "").slice(0, 1200),
+    responseLength: String(response || "").length,
   });
 }
 
@@ -216,14 +218,15 @@ export async function POST(request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
+    return jsonResponse(request, { error: "Request body must be valid JSON." }, { status: 400 });
   }
 
   try {
     const rawQuery = body?.query;
 
     if (typeof rawQuery !== "string" || !rawQuery.trim()) {
-      return Response.json(
+      return jsonResponse(
+        request,
         { error: "Request body must include a non-empty string 'query'." },
         { status: 400 },
       );
@@ -234,13 +237,14 @@ export async function POST(request) {
     const contestQuery = isContestRelatedQuery(query);
 
     if (contestQuery && !contestDraft) {
-      return Response.json(buildMissingContestChatResponse());
+      return jsonResponse(request, buildMissingContestChatResponse());
     }
 
     const runtimeStatus = getRuntimeStatus();
 
     if (runtimeStatus.status !== "ok") {
-      return Response.json(
+      return jsonResponse(
+        request,
         {
           error: runtimeStatus.message,
           status: runtimeStatus.status,
@@ -254,7 +258,7 @@ export async function POST(request) {
 
     if (contestQuery && contestDraft) {
       const contestGuidance = await generateContestGuidance(contestDraft);
-      return Response.json(buildContestChatResponse(contestGuidance));
+      return jsonResponse(request, buildContestChatResponse(contestGuidance));
     }
 
     const snapshot = await getNewtonSnapshot(query);
@@ -276,7 +280,10 @@ export async function POST(request) {
         snapshotId = persistedSnapshot.id;
         responseSource = "supabase-gemini";
       } catch (error) {
-        console.error("Supabase persistence is unavailable. Continuing with in-memory reasoning.", error);
+        logServerError(
+          "Supabase persistence is unavailable. Continuing with in-memory reasoning.",
+          error,
+        );
       }
     }
 
@@ -304,11 +311,11 @@ export async function POST(request) {
             reasoningModel: getConfiguredGeminiModel(),
           });
         } catch (error) {
-          console.error("Unable to persist Gemini error response to Supabase.", error);
+          logServerError("Unable to persist Gemini error response to Supabase.", error);
         }
       }
 
-      return Response.json({ error: parsedResponse.error.trim() }, { status: 500 });
+      return jsonResponse(request, { error: parsedResponse.error.trim() }, { status: 500 });
     }
 
     let normalizedResponse;
@@ -345,19 +352,27 @@ export async function POST(request) {
           reasoningModel: getConfiguredGeminiModel(),
         });
       } catch (error) {
-        console.error("Unable to persist Gemini reasoning response to Supabase.", error);
+        logServerError("Unable to persist Gemini reasoning response to Supabase.", error);
       }
     }
 
-    return Response.json({
-      ...normalizedResponse,
-      source: responseSource,
-      snapshotId,
-    });
+    return jsonResponse(
+      request,
+      {
+        ...normalizedResponse,
+        source: responseSource,
+        snapshotId,
+      },
+    );
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Unable to process request.";
 
-    return Response.json({ error: message }, { status: 500 });
+    logServerError("Unhandled error while processing /api/ask.", error);
+    return jsonResponse(request, { error: message }, { status: 500 });
   }
+}
+
+export async function OPTIONS(request) {
+  return optionsResponse(request);
 }

@@ -1,11 +1,8 @@
 import Link from "next/link";
 import ChatClient from "./ChatClient";
 import styles from "./chat.module.css";
-import { getRuntimeStatus } from "../../lib/runtime-status";
 
 export default function ChatPage() {
-  const runtimeStatus = getRuntimeStatus();
-
   return (
     <main className="page-shell">
       <section className={styles.header}>
@@ -26,7 +23,7 @@ export default function ChatPage() {
         </div>
       </section>
 
-      <ChatClient initialSetupStatus={runtimeStatus} />
+      <ChatClient />
     </main>
   );
 }

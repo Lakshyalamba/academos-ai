@@ -2,12 +2,21 @@
   "name": "academos",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "node scripts/start-backend.mjs",
+    "start:prod": "node scripts/start-backend.mjs",
+    "backend:start": "node scripts/start-backend.mjs",
+    "backend:build": "next build",
+    "check": "npm run build"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.0",
+    "@supabase/supabase-js": "^2.101.1",
     "next": "^16.2.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"

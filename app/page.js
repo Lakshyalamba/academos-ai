@@ -50,6 +50,20 @@ export default function HomePage() {
             </p>
           </div>
 
+          <div className={styles.heroActions}>
+            <Link href="/auth?mode=signup" className="button-primary">
+              Sign Up
+            </Link>
+            <Link href="/auth?mode=login" className="button-secondary">
+              Login
+            </Link>
+          </div>
+
+          <p className={styles.heroActionHint}>
+            Start on the landing page, then log in to unlock the dashboard,
+            contest workspace, and student assistant.
+          </p>
+
           <div className={styles.heroChips} aria-label="Key product highlights">
             <span className={styles.heroChip}>Attendance and schedule guidance</span>
             <span className={styles.heroChip}>Assignments, quizzes, and contests</span>

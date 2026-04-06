@@ -6,6 +6,7 @@ import {
   CONTEST_STORAGE_KEY,
   isValidContestDraft,
 } from "../../lib/contest-draft";
+import { getApiUrl } from "../../lib/public-config";
 import styles from "./contest.module.css";
 
 function readSavedContest() {
@@ -69,7 +70,7 @@ export default function ContestGuidancePanel() {
       setError("");
 
       try {
-        const response = await fetch("/api/contest/guidance", {
+        const response = await fetch(getApiUrl("/api/contest/guidance"), {
           method: "POST",
           headers: {
             "content-type": "application/json",

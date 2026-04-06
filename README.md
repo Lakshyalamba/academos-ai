@@ -2,6 +2,8 @@
 
 Academos is an AI-powered student assistant built with Next.js that turns academic records into clear, structured guidance. It fetches verified student data through Newton MCP, optionally stores a snapshot in Supabase, and uses Gemini to generate readable responses such as summaries, recommended tasks, and useful academic insights. The product is designed to help students quickly understand attendance, assignments, schedule, and overall academic status without manually checking multiple views.
 
+The app now keeps the landing page public and places the dashboard, chat, and contest workspace behind Supabase Auth.
+
 ## Problem Statement
 
 Students often have to piece together their academic status from multiple sources such as attendance records, upcoming classes, assignments, and academic summaries. That workflow is slow, fragmented, and easy to miss important signals in. A student may know the data exists, but still struggle to answer simple questions like:
@@ -74,6 +76,9 @@ app/
   api/
     route.js            # Runtime status endpoint
     ask/route.js        # Main academic reasoning API
+  auth/
+    AuthForm.js         # Login and signup form
+    page.js             # Dedicated auth route
   chat/
     ChatClient.js       # Chat UI and response rendering
     chat.module.css     # Chat page styles
@@ -86,12 +91,16 @@ app/
   layout.js             # Root layout
   page.js               # Landing page
 components/
+  AuthProvider.js
   Navbar.js
 lib/
+  auth-routes.js        # Protected-route helpers
   gemini.js             # Gemini integration
   newton-mcp.js         # Newton MCP client and snapshot builder
   runtime-status.js     # Local setup / runtime checks
+  supabase-auth-config.js
   supabase.js           # Snapshot persistence helpers
+proxy.js                # Route protection and auth redirects
 supabase/
   schema.sql            # Optional Supabase schema
 ```
@@ -132,37 +141,208 @@ npx -y @newtonschool/newton-mcp@latest login
 
 If you want persisted snapshots, apply the SQL in `supabase/schema.sql` to your Supabase project before running the app.
 
+### 5. Supabase Auth setup
+
+To use the login and signup flow:
+
+1. Create a Supabase project or reuse the same project already used for persistence.
+2. In Supabase Auth, enable the Email provider.
+3. Copy the project URL into `SUPABASE_URL`.
+4. Copy the Supabase service role key into `SUPABASE_SERVICE_ROLE_KEY`.
+5. Set the Supabase Auth site URL to your deployed frontend URL and add `http://localhost:3000` for local development.
+6. If you want signup to enter the app immediately, disable email confirmation in Supabase Auth. If you keep confirmation enabled, the app will show a verification message after signup until the email is confirmed.
+
 ## Environment Variables
 
-Use the placeholder values from `.env.example` only:
+Use the placeholder values from `.env.example` only.
+
+Server-only variables:
 
 ```bash
 GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_MODEL=gemini-2.5-flash-lite
+GEMINI_API_BASE_URL=https://generativelanguage.googleapis.com/v1beta/models
+GOOGLE_API_KEY=
+GOOGLE_MODEL=
+NEWTON_CODEX_SERVER_NAME=newton
+NEWTON_MCP_PACKAGE=@newtonschool/newton-mcp@latest
+NEWTON_NPX_COMMAND=npx
+CODEX_COMMAND=codex
 SUPABASE_URL=https://your-project-id.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
 SUPABASE_ACADEMIC_SNAPSHOTS_TABLE=academic_snapshots
 ```
 
+Client-safe variables:
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=
+```
+
+Optional backend-only CORS variables:
+
+```bash
+ALLOWED_FRONTEND_ORIGINS=
+CORS_ALLOWED_ORIGIN=
+```
+
 Notes:
 
-- `GEMINI_API_KEY` is required for Gemini-powered responses.
-- `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are optional unless you want persistence.
+- `GEMINI_API_KEY` or `GOOGLE_API_KEY` is required for Gemini-powered responses.
+- `GEMINI_API_BASE_URL` is optional and only needed if you want to override the default Gemini endpoint.
+- `NEXT_PUBLIC_API_BASE_URL` is optional. Leave it empty when the frontend and backend are deployed together in the same Next.js app. Set it only if your browser code must call a separate API origin in production.
+- `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are required for the server-side email/password auth flow.
+- `ALLOWED_FRONTEND_ORIGINS` is optional and preferred. Set it to a comma-separated list of allowed frontend origins when your frontend is hosted on a different origin and must call these API routes from the browser.
+- `CORS_ALLOWED_ORIGIN` remains supported as a legacy single-origin alias.
+- Variables without `NEXT_PUBLIC_` stay server-only and must never be exposed to the browser.
+- `NEWTON_CODEX_SERVER_NAME`, `NEWTON_MCP_PACKAGE`, `NEWTON_NPX_COMMAND`, and `CODEX_COMMAND` are optional runtime overrides for deployment environments.
+- `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are required for auth and optional only if you remove the auth flow entirely.
 - `SUPABASE_ACADEMIC_SNAPSHOTS_TABLE` can stay at the default placeholder value unless you use a custom table name.
+
+## Deployment Overview
+
+The safest production shape for this repository is a split deployment:
+
+- frontend: Vercel preferred, Netlify also fine
+- backend: Render preferred, Railway also fine
+
+Why this split is recommended:
+
+- the frontend pages now fetch live data through API calls at runtime
+- the backend still depends on machine-local Newton MCP access, `codex`, and `npx`
+- that backend runtime is a better fit for a long-lived Node service than a serverless frontend host
+
+Included deployment files:
+
+- `.nvmrc` pins the project to Node 20
+- `render.yaml` defines a minimal Render web service for the backend
+
+Files intentionally not added:
+
+- no `vercel.json` because Vercel already handles Next.js App Router builds correctly
+- no `Procfile` because `npm start` and `render.yaml` already define backend startup
+- no SPA rewrite config because this is not a Vite or CRA app
+
+## Env Var Setup
+
+Use hosting platform env settings instead of committing secrets.
+
+Frontend host:
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=https://your-backend-domain.example.com
+```
+
+Notes:
+
+- leave `NEXT_PUBLIC_API_BASE_URL` empty only when frontend and backend are served from the same origin
+- set it for split frontend/backend deployments
+
+Backend host:
+
+```bash
+GEMINI_API_KEY=your_gemini_api_key_here
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+ALLOWED_FRONTEND_ORIGINS=https://your-frontend-domain.example.com
+```
+
+Optional backend variables:
+
+```bash
+GEMINI_MODEL=gemini-2.5-flash-lite
+GEMINI_API_BASE_URL=https://generativelanguage.googleapis.com/v1beta/models
+GOOGLE_API_KEY=
+GOOGLE_MODEL=
+SUPABASE_ACADEMIC_SNAPSHOTS_TABLE=academic_snapshots
+NEWTON_CODEX_SERVER_NAME=newton
+NEWTON_MCP_PACKAGE=@newtonschool/newton-mcp@latest
+NEWTON_NPX_COMMAND=npx
+CODEX_COMMAND=codex
+CORS_ALLOWED_ORIGIN=
+```
+
+Newton MCP still requires a machine-local runtime with `codex` and `npx`
+available on the backend host.
+
+## Frontend Deployment Steps
+
+Recommended host: Vercel
+
+1. Create a new project from this repository.
+2. Use the repo root `.` as the root directory.
+3. Let the platform detect Next.js automatically.
+4. Use Node 20 from `.nvmrc`.
+5. Set `NEXT_PUBLIC_API_BASE_URL` if the frontend will call a separate backend origin.
+6. Deploy with:
+
+```bash
+npm ci
+npm run build
+```
+
+Notes:
+
+- no custom rewrite is needed on Vercel
+- on Netlify, use its Next.js runtime support and do not add `/* -> /index.html`
+- the frontend routes `/`, `/chat`, `/dashboard`, and `/contest` are build-safe and fetch live data at runtime
+
+## Backend Deployment Steps
+
+Recommended host: Render
+
+1. Create a Render Web Service from this repository or apply `render.yaml`.
+2. Use the repo root `.`.
+3. Render will use:
+   - build command: `npm ci && npm run backend:build`
+   - start command: `npm start`
+   - health check path: `/api/health`
+4. Set the required backend env vars in the platform dashboard.
+5. If using persistence, apply `supabase/schema.sql` in Supabase.
+6. Install and authenticate Newton MCP on the backend host:
+
+```bash
+codex mcp add newton -- npx -y @newtonschool/newton-mcp@latest
+npx -y @newtonschool/newton-mcp@latest login
+```
+
+7. Verify the health endpoint after deploy:
+
+```text
+GET /api/health
+```
+
+Railway can use the same repo root and commands:
+
+- build: `npm run backend:build`
+- start: `npm start`
+
+## Post-Deploy Testing Checklist
+
+- frontend home page loads on `/`
+- frontend routes `/chat`, `/dashboard`, and `/contest` return `200`
+- backend health check returns `200` on `/api/health`
+- backend runtime status returns `200` on `/api`
+- `POST /api/ask` works with a real Gemini key and Newton setup
+- if frontend and backend are split, browser requests succeed without CORS errors
+- if Supabase is enabled, snapshot writes succeed after applying `supabase/schema.sql`
+- Newton-backed routes work on the deployed backend host after MCP login
 
 ## Run Locally
 
 Start the development server:
 
 ```bash
-npm run dev -- --hostname 127.0.0.1 --port 3000
+npm run dev
 ```
 
 Then open:
 
 ```text
-http://127.0.0.1:3000
+http://localhost:3000
 ```
+
+Protected routes redirect to `/auth` until a valid Supabase session exists.
 
 Optional production build check:
 

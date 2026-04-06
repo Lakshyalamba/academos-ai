@@ -5,6 +5,7 @@ import {
   CONTEST_STORAGE_KEY,
   isValidContestDraft,
 } from "../../lib/contest-draft";
+import { getApiUrl } from "../../lib/public-config";
 import styles from "./chat.module.css";
 
 const initialResponse = {
@@ -143,7 +144,7 @@ export default function ChatClient({ initialSetupStatus }) {
 
     async function loadSetupStatus() {
       try {
-        const response = await fetch("/api", { cache: "no-store" });
+        const response = await fetch(getApiUrl("/api"), { cache: "no-store" });
         const data = await response.json();
 
         if (!isActive) {
@@ -197,7 +198,7 @@ export default function ChatClient({ initialSetupStatus }) {
     setResponseData(initialResponse);
 
     try {
-      const request = await fetch("/api/ask", {
+      const request = await fetch(getApiUrl("/api/ask"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

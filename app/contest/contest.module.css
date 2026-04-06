@@ -54,6 +54,20 @@
   align-items: stretch;
 }
 
+.statusBanner {
+  margin-top: 1.15rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(184, 92, 56, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 247, 241, 0.92);
+}
+
+.statusBannerText {
+  margin: 0;
+  color: #9a4e30;
+  line-height: 1.6;
+}
+
 .primaryCard,
 .secondaryCard,
 .scoresCard {

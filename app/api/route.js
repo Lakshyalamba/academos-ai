@@ -1,5 +1,12 @@
+import { jsonResponse, optionsResponse } from "../../lib/api-response";
 import { getRuntimeStatus } from "../../lib/runtime-status";
 
-export async function GET() {
-  return Response.json(getRuntimeStatus());
+export const runtime = "nodejs";
+
+export async function GET(request) {
+  return jsonResponse(request, getRuntimeStatus());
+}
+
+export async function OPTIONS(request) {
+  return optionsResponse(request);
 }
