@@ -116,8 +116,8 @@ export default function ContestGuidancePanel() {
       <div className={styles.emptyStateBox}>
         <p className={styles.emptyStateTitle}>Save an upcoming contest to generate prep guidance.</p>
         <p className={styles.emptyStateCopy}>
-          The AI section uses your saved contest subject, syllabus topics, and notes
-          together with live Newton academic data.
+          The AI section uses your saved contest subject, syllabus topics, and notes, then
+          adds live academic comparison when it is available.
         </p>
       </div>
     );
@@ -128,7 +128,7 @@ export default function ContestGuidancePanel() {
       <div className={styles.guidanceLoadingState}>
         <p className={styles.emptyStateTitle}>Building your contest prep plan...</p>
         <p className={styles.emptyStateCopy}>
-          Comparing your saved contest topics with recent lectures, progress, and pending work.
+          Comparing your saved contest details with any available academic context.
         </p>
       </div>
     );
@@ -146,6 +146,15 @@ export default function ContestGuidancePanel() {
   if (!guidance) {
     return null;
   }
+
+  const sourceLabel =
+    guidance.source === "gemini"
+      ? "AI guidance"
+      : guidance.source === "fallback"
+        ? "Live fallback"
+        : guidance.source === "demo-gemini"
+          ? "Demo guidance"
+          : "Fallback guidance";
 
   const sections = [
     {
@@ -187,12 +196,14 @@ export default function ContestGuidancePanel() {
             <p className={styles.cardLabel}>Saved Contest Context</p>
             <h3 className={styles.guidanceSummaryTitle}>{contest.contestName}</h3>
           </div>
-          <p className={styles.cardMeta}>
-            {guidance.source === "gemini" ? "AI guidance" : "Live fallback"}
-          </p>
+          <p className={styles.cardMeta}>{sourceLabel}</p>
         </div>
 
         <p className={styles.guidanceSummaryText}>{guidance.summary}</p>
+
+        {guidance.notice ? (
+          <p className={styles.emptyStateCopy}>{guidance.notice}</p>
+        ) : null}
 
         <div className={styles.guidanceMetaRow}>
           <span className={styles.guidanceMetaPill}>{contest.subjectName}</span>

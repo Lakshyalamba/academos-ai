@@ -13,15 +13,22 @@ const initialResponse = {
   tasks: [],
   insights: [],
   source: "",
+  mode: "",
+  notice: "",
   snapshotId: "",
 };
 
 const fallbackSetupStatus = {
   checked: false,
+  status: "degraded",
+  mode: "demo",
   newtonConfigured: false,
+  liveAcademicSyncAvailable: false,
   llmConfigured: false,
   supabaseConfigured: false,
-  message: "Checking local setup status...",
+  fallbackResponsesAvailable: true,
+  message: "Checking runtime status...",
+  notices: [],
   missing: [],
   optional: [],
   commands: {
@@ -57,17 +64,25 @@ function readSavedContestDraft() {
 function normalizeSetupStatus(data, checked = true) {
   return {
     checked,
+    status: typeof data?.status === "string" ? data.status : "degraded",
+    mode: typeof data?.mode === "string" ? data.mode : "demo",
     newtonConfigured: Boolean(data?.config?.newtonConfigured),
+    liveAcademicSyncAvailable: Boolean(data?.config?.liveAcademicSyncAvailable),
     llmConfigured: Boolean(
       data?.config?.llmConfigured ??
         data?.config?.geminiConfigured ??
         data?.config?.claudeConfigured,
     ),
     supabaseConfigured: Boolean(data?.config?.supabaseConfigured),
+    fallbackResponsesAvailable:
+      typeof data?.config?.fallbackResponsesAvailable === "boolean"
+        ? data.config.fallbackResponsesAvailable
+        : true,
     message:
       typeof data?.message === "string"
         ? data.message
         : fallbackSetupStatus.message,
+    notices: Array.isArray(data?.notices) ? data.notices : [],
     missing: Array.isArray(data?.missing) ? data.missing : [],
     optional: Array.isArray(data?.optional) ? data.optional : [],
     commands: {
@@ -103,30 +118,20 @@ export default function ChatClient({ initialSetupStatus }) {
     responseData.tasks.length > 0 ||
     responseData.insights.length > 0;
   const isSetupLoading = !setupStatus.checked;
-  const isConfigured =
-    setupStatus.newtonConfigured &&
-    setupStatus.llmConfigured;
+  const canSubmit =
+    setupStatus.checked &&
+    (setupStatus.llmConfigured || setupStatus.fallbackResponsesAvailable);
+  const isLiveMode = setupStatus.mode === "live";
   const setupMessage = setupStatus.message;
-  const technicalSourceLabel =
-    responseData.source === "supabase-gemini"
-      ? "Newton MCP -> Next.js backend -> Supabase -> Gemini"
-      : responseData.source === "contest-gemini"
-        ? "Saved contest -> Newton MCP -> Next.js backend -> Gemini"
-        : responseData.source === "contest-fallback"
-          ? "Saved contest -> Newton MCP -> Next.js backend"
-          : responseData.source === "contest-missing"
-            ? "Saved contest required"
-      : responseData.source === "gemini"
-        ? "Newton MCP -> Next.js backend -> Gemini"
-        : responseData.source || "Response ready";
+  const technicalSourceLabel = getTechnicalSourceLabel(responseData.source);
   const readinessItems = [
     {
       label: "Records",
-      value: setupStatus.newtonConfigured ? "Ready" : "Missing",
+      value: setupStatus.liveAcademicSyncAvailable ? "Live" : "Demo",
     },
     {
       label: "Reasoning",
-      value: setupStatus.llmConfigured ? "Ready" : "Missing",
+      value: setupStatus.llmConfigured ? "Ready" : "Basic",
     },
     {
       label: "Saved snapshots",
@@ -159,11 +164,16 @@ export default function ChatClient({ initialSetupStatus }) {
 
         setSetupStatus({
           checked: true,
+          status: "degraded",
+          mode: "demo",
           newtonConfigured: false,
+          liveAcademicSyncAvailable: false,
           llmConfigured: false,
           supabaseConfigured: false,
           message:
-            "Unable to read local setup status. Make sure the dev server is running and the backend can read your Codex MCP and .env.local configuration.",
+            "Live academic sync is unavailable in this deployment. You can still try fallback guidance if the backend is reachable.",
+          fallbackResponsesAvailable: true,
+          notices: [],
           missing: [],
           optional: [],
           commands: fallbackSetupStatus.commands,
@@ -181,14 +191,14 @@ export default function ChatClient({ initialSetupStatus }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!isConfigured) {
-      setErrorMessage(setupMessage);
+    if (!query.trim()) {
+      setErrorMessage("Please enter a question before sending the request.");
       setResponseData(initialResponse);
       return;
     }
 
-    if (!query.trim()) {
-      setErrorMessage("Please enter a question before sending the request.");
+    if (!canSubmit) {
+      setErrorMessage("Academos is still checking runtime availability. Please try again in a moment.");
       setResponseData(initialResponse);
       return;
     }
@@ -222,13 +232,15 @@ export default function ChatClient({ initialSetupStatus }) {
         tasks: Array.isArray(data.tasks) ? data.tasks : [],
         insights: Array.isArray(data.insights) ? data.insights : [],
         source: typeof data.source === "string" ? data.source : "",
+        mode: typeof data.mode === "string" ? data.mode : "",
+        notice: typeof data.notice === "string" ? data.notice : "",
         snapshotId: typeof data.snapshotId === "string" ? data.snapshotId : "",
       });
     } catch (error) {
       setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to reach the API route.",
+        error instanceof Error && error.name === "AbortError"
+          ? "The request was interrupted before Academos could finish."
+          : "Unable to reach Academos right now.",
       );
       setResponseData(initialResponse);
     } finally {
@@ -247,6 +259,24 @@ export default function ChatClient({ initialSetupStatus }) {
     }
 
     return `${items.length} ${items.length === 1 ? singular : plural}`;
+  }
+
+  function getTechnicalSourceLabel(source) {
+    const labels = {
+      "supabase-gemini": "Newton MCP -> Next.js backend -> Supabase -> Gemini",
+      "contest-gemini": "Saved contest -> Newton MCP -> Next.js backend -> Gemini",
+      "contest-fallback": "Saved contest -> Newton MCP -> Next.js backend",
+      "contest-demo-gemini": "Saved contest -> Gemini fallback guidance",
+      "contest-demo-fallback": "Saved contest -> Static fallback guidance",
+      "contest-missing": "Saved contest required",
+      gemini: "Newton MCP -> Next.js backend -> Gemini",
+      "demo-stored-gemini": "Stored snapshot -> Gemini fallback guidance",
+      "demo-general-gemini": "General reasoning -> Gemini fallback guidance",
+      "demo-stored-fallback": "Stored snapshot -> Static fallback guidance",
+      "demo-static": "General reasoning -> Static fallback guidance",
+    };
+
+    return labels[source] || source || "Response ready";
   }
 
   return (
@@ -295,20 +325,18 @@ export default function ChatClient({ initialSetupStatus }) {
           <button
             type="submit"
             className={styles.button}
-            disabled={isLoading || isSetupLoading || !isConfigured}
+            disabled={isLoading || isSetupLoading}
           >
             {isLoading
               ? "Preparing answer..."
               : isSetupLoading
-                ? "Checking setup..."
-              : !isConfigured
-                ? "Complete local setup"
-                : "Ask Academos"}
+                ? "Checking runtime..."
+              : "Ask Academos"}
           </button>
           <p className={styles.helperText}>
-            {isConfigured
-              ? "Answers stay grounded in your academic records."
-              : "Live answers unlock after setup is complete."}
+            {isLiveMode
+              ? "Answers stay grounded in your live academic records."
+              : "Fallback answers stay usable even when live academic sync is unavailable."}
           </p>
         </div>
 
@@ -325,12 +353,11 @@ export default function ChatClient({ initialSetupStatus }) {
           <summary className={styles.detailsSummary}>Technical details</summary>
           <div className={styles.detailsBody}>
             <p className={styles.detailsText}>
-              Live student data still comes from Newton MCP. Gemini formats the
-              response, and Supabase continues to store snapshots when it is
-              configured.
+              Live student data still comes from Newton MCP when available. In demo
+              mode, Academos switches to fallback guidance instead of blocking the UI.
             </p>
             <p className={styles.detailsText}>
-              Current setup message: {setupMessage}
+              Current runtime message: {setupMessage}
             </p>
           </div>
         </details>
@@ -344,7 +371,9 @@ export default function ChatClient({ initialSetupStatus }) {
               <h2 className={styles.resultTitle}>Your academic snapshot</h2>
             </div>
             {hasResponse ? (
-              <span className={styles.resultBadge}>Verified answer</span>
+              <span className={styles.resultBadge}>
+                {responseData.mode === "live" ? "Live answer" : "Fallback answer"}
+              </span>
             ) : null}
           </div>
           <div className={styles.responseBox} aria-live="polite">
@@ -352,8 +381,7 @@ export default function ChatClient({ initialSetupStatus }) {
               <div className={styles.loadingState}>
                 <p className={styles.loadingTitle}>Preparing your answer</p>
                 <p className={styles.statusMessage}>
-                  Academos is checking your records and organizing the most
-                  important signals into a clean response.
+                  Academos is preparing the best available answer for this deployment.
                 </p>
                 <ul className={styles.loadingList}>
                   {loadingSteps.map((step) => (
@@ -365,33 +393,8 @@ export default function ChatClient({ initialSetupStatus }) {
               </div>
             ) : isSetupLoading ? (
               <div className={styles.loadingState}>
-                <p className={styles.loadingTitle}>Checking setup</p>
+                <p className={styles.loadingTitle}>Checking runtime</p>
                 <p className={styles.statusMessage}>{setupMessage}</p>
-              </div>
-            ) : setupStatus.checked && !isConfigured ? (
-              <div className={styles.setupState}>
-                <p className={styles.setupTitle}>Complete local setup to ask live academic questions</p>
-                <p className={styles.errorMessage}>{setupMessage}</p>
-                {setupStatus.missing.length > 0 ? (
-                  <ul className={styles.list}>
-                    {setupStatus.missing.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                ) : null}
-                {setupStatus.optional.length > 0 ? (
-                  <ul className={styles.list}>
-                    {setupStatus.optional.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                ) : null}
-                {setupStatus.commands.loginNewton ? (
-                  <p className={styles.emptyText}>
-                    If Newton asks for authentication later, run{" "}
-                    <code>{setupStatus.commands.loginNewton}</code>.
-                  </p>
-                ) : null}
               </div>
             ) : errorMessage ? (
               <div className={styles.setupState}>
@@ -402,12 +405,18 @@ export default function ChatClient({ initialSetupStatus }) {
               <div className={styles.responseContent}>
                 <div className={styles.responseHeader}>
                   <p className={styles.sourceBadge}>
-                    Verified from your academic records
+                    {responseData.mode === "live"
+                      ? "Grounded in live academic records"
+                      : "Fallback guidance"}
                   </p>
                   {responseData.source === "supabase-gemini" ? (
                     <span className={styles.metaPill}>Saved snapshot enabled</span>
                   ) : null}
                 </div>
+
+                {responseData.notice ? (
+                  <p className={styles.emptyText}>{responseData.notice}</p>
+                ) : null}
 
                 <section className={styles.responseSection}>
                   <div className={styles.sectionHeader}>
@@ -477,10 +486,15 @@ export default function ChatClient({ initialSetupStatus }) {
               </div>
             ) : (
               <div className={styles.emptyState}>
-                <p className={styles.emptyStateTitle}>Ask a question to get a verified academic answer</p>
+                <p className={styles.emptyStateTitle}>
+                  {isLiveMode
+                    ? "Ask a question to get a live academic answer"
+                    : "Ask a question to get fallback academic guidance"}
+                </p>
                 <p className={styles.emptyStateText}>
-                  Start with deadlines, attendance, schedule, quizzes, or the
-                  subject that needs the most attention.
+                  {isLiveMode
+                    ? "Start with deadlines, attendance, schedule, quizzes, or the subject that needs the most attention."
+                    : "Live academic sync is unavailable in this deployment. You can still ask about priorities, deadlines, attendance risk, or contest prep and get clearly labeled fallback guidance."}
                 </p>
                 <div className={styles.examplesList}>
                   {exampleQueries.map((item) => (

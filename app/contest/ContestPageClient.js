@@ -27,6 +27,7 @@ function isValidContestPageData(data) {
 export default function ContestPageClient() {
   const [contestPageData, setContestPageData] = useState(getInitialContestPageData);
   const [errorMessage, setErrorMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
     let isActive = true;
@@ -44,9 +45,8 @@ export default function ContestPageClient() {
 
         if (isValidContestPageData(payload)) {
           setContestPageData(payload);
-          setErrorMessage(
-            response.ok ? "" : payload?.status?.error || "Contest data is unavailable right now.",
-          );
+          setErrorMessage("");
+          setStatusMessage(typeof payload?.notice === "string" ? payload.notice : "");
           return;
         }
 
@@ -75,6 +75,7 @@ export default function ContestPageClient() {
         setErrorMessage(
           error instanceof Error ? error.message : "Contest data is unavailable right now.",
         );
+        setStatusMessage("");
       }
     }
 
@@ -87,9 +88,9 @@ export default function ContestPageClient() {
 
   return (
     <>
-      {errorMessage ? (
+      {errorMessage || statusMessage ? (
         <div className={styles.statusBanner} role="status">
-          <p className={styles.statusBannerText}>{errorMessage}</p>
+          <p className={styles.statusBannerText}>{errorMessage || statusMessage}</p>
         </div>
       ) : null}
 
@@ -102,11 +103,17 @@ export default function ContestPageClient() {
               <p className={styles.cardDescription}>
                 {contestPageData.upcomingContest
                   ? `Newton currently lists ${contestPageData.upcomingContest.title} for ${contestPageData.upcomingContest.subjectName} on ${contestPageData.upcomingContest.dateLabel}. You can still use the manual form below to plan the week.`
-                  : "Use this space every Monday to save the next Friday contest and keep your prep details organized."}
+                  : contestPageData.mode === "demo"
+                    ? "Live academic sync is unavailable in this deployment. You can still save the next contest and use fallback prep guidance."
+                    : "Use this space every Monday to save the next Friday contest and keep your prep details organized."}
               </p>
             </div>
             <p className={styles.cardMeta}>
-              {contestPageData.upcomingContest ? "Planner + live check" : "Weekly planner"}
+              {contestPageData.upcomingContest
+                ? "Planner + live check"
+                : contestPageData.mode === "demo"
+                  ? "Planner + fallback guidance"
+                  : "Weekly planner"}
             </p>
           </div>
 
@@ -149,11 +156,14 @@ export default function ContestPageClient() {
               <p className={styles.cardLabel}>AI Prep Guidance</p>
               <h2 className={styles.cardTitle}>Most important prep moves before the contest</h2>
               <p className={styles.cardDescription}>
-                Guidance is generated from your saved contest details and related live
-                Newton academic records for the same subject.
+                {contestPageData.mode === "demo"
+                  ? "Guidance uses your saved contest details and clearly falls back when live academic comparison is unavailable."
+                  : "Guidance is generated from your saved contest details and related live Newton academic records for the same subject."}
               </p>
             </div>
-            <p className={styles.cardMeta}>Priority view</p>
+            <p className={styles.cardMeta}>
+              {contestPageData.mode === "demo" ? "Fallback view" : "Priority view"}
+            </p>
           </div>
 
           <ContestGuidancePanel />
@@ -171,7 +181,7 @@ export default function ContestPageClient() {
             </p>
           </div>
           <p className={styles.cardMeta}>
-            {contestPageData.status.available ? "Past records" : "Unavailable"}
+            {contestPageData.status.available ? "Past records" : contestPageData.mode === "demo" ? "Fallback state" : "Unavailable"}
           </p>
         </div>
 
@@ -228,8 +238,9 @@ export default function ContestPageClient() {
           <div className={styles.emptyStateBox}>
             <p className={styles.emptyStateTitle}>{contestPageData.emptyMessage}</p>
             <p className={styles.emptyStateCopy}>
-              This section stays contest-only, so it remains empty when live
-              contest history is not available.
+              {contestPageData.mode === "demo"
+                ? "This section stays contest-only, so it remains empty until live contest history is available again."
+                : "This section stays contest-only, so it remains empty when live contest history is not available."}
             </p>
           </div>
         )}

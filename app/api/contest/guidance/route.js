@@ -26,27 +26,19 @@ export async function POST(request) {
 
   const runtimeStatus = getRuntimeStatus();
 
-  if (runtimeStatus.status !== "ok") {
+  try {
+    const guidance = await generateContestGuidance(contest, {
+      useLiveAcademicContext: Boolean(runtimeStatus?.config?.liveAcademicSyncAvailable),
+    });
+    return jsonResponse(request, guidance);
+  } catch (error) {
     return jsonResponse(
       request,
       {
-        error: runtimeStatus.message,
-        status: runtimeStatus.status,
-        config: runtimeStatus.config,
-        missing: runtimeStatus.missing,
+        error: "Unable to generate contest prep guidance right now.",
       },
-      { status: 503 },
+      { status: 500 },
     );
-  }
-
-  try {
-    const guidance = await generateContestGuidance(contest);
-    return jsonResponse(request, guidance);
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unable to generate contest prep guidance.";
-
-    return jsonResponse(request, { error: message }, { status: 500 });
   }
 }
 

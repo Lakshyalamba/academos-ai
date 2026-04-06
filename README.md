@@ -97,7 +97,7 @@ lib/
   auth-routes.js        # Protected-route helpers
   gemini.js             # Gemini integration
   newton-mcp.js         # Newton MCP client and snapshot builder
-  runtime-status.js     # Local setup / runtime checks
+  runtime-status.js     # Runtime mode and demo fallback checks
   supabase-auth-config.js
   supabase.js           # Snapshot persistence helpers
 proxy.js                # Route protection and auth redirects
@@ -260,10 +260,16 @@ NEWTON_MCP_PACKAGE=@newtonschool/newton-mcp@latest
 NEWTON_NPX_COMMAND=npx
 CODEX_COMMAND=codex
 CORS_ALLOWED_ORIGIN=
+ACADEMOS_FORCE_DEMO_MODE=
 ```
 
 Newton MCP still requires a machine-local runtime with `codex` and `npx`
 available on the backend host.
+
+If Newton MCP is unavailable, the app now falls back to a non-fatal demo mode.
+In demo mode, `/api` reports degraded runtime status, chat returns clearly labeled
+fallback guidance, and dashboard/contest pages remain navigable without pretending
+that live academic data exists.
 
 ## Frontend Deployment Steps
 
@@ -312,6 +318,14 @@ npx -y @newtonschool/newton-mcp@latest login
 GET /api/health
 ```
 
+If your Render deployment cannot provide Newton MCP, keep Gemini configured and
+let the app run in demo fallback mode. You can optionally force that behavior
+explicitly with:
+
+```bash
+ACADEMOS_FORCE_DEMO_MODE=true
+```
+
 Railway can use the same repo root and commands:
 
 - build: `npm run backend:build`
@@ -348,6 +362,12 @@ Optional production build check:
 
 ```bash
 npm run build
+```
+
+To simulate the deployed demo fallback locally:
+
+```bash
+ACADEMOS_FORCE_DEMO_MODE=true npm run dev
 ```
 
 ## Demo Queries

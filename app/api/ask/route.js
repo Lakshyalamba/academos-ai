@@ -1,7 +1,12 @@
 import { jsonResponse, optionsResponse } from "../../../lib/api-response";
 import {
+  LIVE_SYNC_DEMO_NOTICE,
+  buildStaticAcademicFallbackResponse,
+} from "../../../lib/demo-mode";
+import {
   askGemini,
   getConfiguredGeminiModel,
+  isGeminiConfigured,
   parseGeminiJsonResponse,
 } from "../../../lib/gemini";
 import {
@@ -17,6 +22,7 @@ import {
 import { isValidContestDraft } from "../../../lib/contest-draft";
 import {
   getAcademicSnapshotById,
+  getLatestAcademicSnapshot,
   insertAcademicSnapshot,
   isSupabaseConfigured,
   updateAcademicSnapshotReasoning,
@@ -55,6 +61,40 @@ function buildGeminiFallbackResponse() {
     tasks: [],
     insights: [],
   };
+}
+
+function buildDemoAcademicPrompt(query, snapshotRecord) {
+  return [
+    "You are a JSON-only academic assistant running in fallback mode.",
+    "Live Newton academic data is unavailable in this deployment.",
+    snapshotRecord
+      ? "A previously stored academic snapshot is provided below. It may be outdated, so use it carefully and say it is stored context only."
+      : "No stored academic snapshot is available, so answer with general academic planning guidance only.",
+    "Do NOT claim that live schedules, assignments, attendance, or scores were checked right now.",
+    "Be explicit that the answer is fallback guidance.",
+    "Return 1 concise summary sentence.",
+    "Return 0 or more actionable tasks.",
+    "Return 2 to 4 concise insights whenever useful.",
+    "Respond with ONLY valid JSON.",
+    "Return exactly one of these shapes: {\"summary\":\"\",\"tasks\":[],\"insights\":[]} or {\"error\":\"\"}",
+    "",
+    snapshotRecord
+      ? `Stored snapshot payload:\n${JSON.stringify(
+          {
+            id: snapshotRecord.id,
+            query: snapshotRecord.query,
+            intent: snapshotRecord.intent,
+            source: snapshotRecord.source,
+            createdAt: snapshotRecord.created_at || null,
+            snapshot: snapshotRecord.snapshot || null,
+          },
+          null,
+          2,
+        )}`
+      : "Stored snapshot payload: null",
+    "",
+    `User query: ${query}`,
+  ].join("\n");
 }
 
 function normalizeAcademicResponse(value) {
@@ -206,6 +246,52 @@ function hasUsefulAcademicData(snapshot) {
   );
 }
 
+async function getStoredSnapshotForFallback() {
+  if (!isSupabaseConfigured()) {
+    return null;
+  }
+
+  try {
+    return await getLatestAcademicSnapshot();
+  } catch (error) {
+    logServerError("Unable to read the latest stored academic snapshot for fallback mode.", error);
+    return null;
+  }
+}
+
+async function buildDegradedAcademicResponse(query) {
+  const snapshotRecord = await getStoredSnapshotForFallback();
+
+  if (!isGeminiConfigured()) {
+    return buildStaticAcademicFallbackResponse(query, { snapshotRecord });
+  }
+
+  try {
+    const response = await askGemini(buildDemoAcademicPrompt(query, snapshotRecord));
+    const parsedResponse = parseGeminiJsonResponse(response);
+    const normalizedResponse = normalizeAcademicResponse(parsedResponse);
+
+    if (
+      !normalizedResponse.summary &&
+      normalizedResponse.tasks.length === 0 &&
+      normalizedResponse.insights.length === 0
+    ) {
+      return buildStaticAcademicFallbackResponse(query, { snapshotRecord });
+    }
+
+    return {
+      ...normalizedResponse,
+      source: snapshotRecord ? "demo-stored-gemini" : "demo-general-gemini",
+      mode: "demo",
+      notice: LIVE_SYNC_DEMO_NOTICE,
+      snapshotId: typeof snapshotRecord?.id === "string" ? snapshotRecord.id : "",
+    };
+  } catch (error) {
+    logServerError("Gemini fallback reasoning failed. Returning static fallback response.", error);
+    return buildStaticAcademicFallbackResponse(query, { snapshotRecord });
+  }
+}
+
 function logGeminiParsingFailure(reason, response) {
   console.error(reason, {
     responseLength: String(response || "").length,
@@ -242,23 +328,18 @@ export async function POST(request) {
 
     const runtimeStatus = getRuntimeStatus();
 
-    if (runtimeStatus.status !== "ok") {
-      return jsonResponse(
-        request,
-        {
-          error: runtimeStatus.message,
-          status: runtimeStatus.status,
-          config: runtimeStatus.config,
-          missing: runtimeStatus.missing,
-          commands: runtimeStatus.commands,
-        },
-        { status: 503 },
-      );
+    if (contestQuery && contestDraft) {
+      const contestGuidance = await generateContestGuidance(contestDraft, {
+        useLiveAcademicContext: Boolean(runtimeStatus?.config?.liveAcademicSyncAvailable),
+      });
+      return jsonResponse(request, buildContestChatResponse(contestGuidance));
     }
 
-    if (contestQuery && contestDraft) {
-      const contestGuidance = await generateContestGuidance(contestDraft);
-      return jsonResponse(request, buildContestChatResponse(contestGuidance));
+    if (
+      !runtimeStatus?.config?.liveAcademicSyncAvailable ||
+      !runtimeStatus?.config?.llmConfigured
+    ) {
+      return jsonResponse(request, await buildDegradedAcademicResponse(query));
     }
 
     const snapshot = await getNewtonSnapshot(query);
@@ -361,15 +442,18 @@ export async function POST(request) {
       {
         ...normalizedResponse,
         source: responseSource,
+        mode: "live",
+        notice: "",
         snapshotId,
       },
     );
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unable to process request.";
-
     logServerError("Unhandled error while processing /api/ask.", error);
-    return jsonResponse(request, { error: message }, { status: 500 });
+    return jsonResponse(
+      request,
+      { error: "Unable to process your question right now." },
+      { status: 500 },
+    );
   }
 }
 

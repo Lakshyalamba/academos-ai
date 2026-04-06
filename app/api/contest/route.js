@@ -1,13 +1,17 @@
 import { jsonResponse, optionsResponse } from "../../../lib/api-response";
 import { getContestPageData } from "../../../lib/contest-history";
+import { getRuntimeStatus } from "../../../lib/runtime-status";
 
 export const runtime = "nodejs";
 
 export async function GET(request) {
-  const contestPageData = await getContestPageData();
+  const runtimeStatus = getRuntimeStatus();
+  const contestPageData = await getContestPageData({
+    enabled: Boolean(runtimeStatus?.config?.liveAcademicSyncAvailable),
+  });
 
   return jsonResponse(request, contestPageData, {
-    status: contestPageData.status.available ? 200 : 503,
+    status: 200,
   });
 }
 

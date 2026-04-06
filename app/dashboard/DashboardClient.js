@@ -73,6 +73,7 @@ function getInitialDashboardState() {
 export default function DashboardClient() {
   const [data, setData] = useState(getInitialDashboardState);
   const [errorMessage, setErrorMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
     let isActive = true;
@@ -98,6 +99,7 @@ export default function DashboardClient() {
           catchUp: payload?.catchUp || getInitialDashboardState().catchUp,
         });
         setErrorMessage("");
+        setStatusMessage(typeof payload?.notice === "string" ? payload.notice : "");
       } catch (error) {
         if (!isActive) {
           return;
@@ -109,6 +111,7 @@ export default function DashboardClient() {
             : "Unable to load dashboard data right now.";
 
         setErrorMessage(message);
+        setStatusMessage("");
         setData((currentData) => ({
           ...currentData,
           todayOverview: {
@@ -164,9 +167,9 @@ export default function DashboardClient() {
 
   return (
     <>
-      {errorMessage ? (
+      {errorMessage || statusMessage ? (
         <div className={styles.statusBanner} role="status">
-          <p className={styles.statusBannerText}>{errorMessage}</p>
+          <p className={styles.statusBannerText}>{errorMessage || statusMessage}</p>
         </div>
       ) : null}
 
