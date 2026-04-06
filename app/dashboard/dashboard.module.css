@@ -24,7 +24,7 @@
 
 .dashboardLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.92fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
   align-items: start;
   margin-top: 1rem;
@@ -42,27 +42,6 @@
   margin: 0;
   color: #9a4e30;
   line-height: 1.6;
-}
-
-.dashboardMain {
-  display: grid;
-  gap: 1rem;
-  align-content: start;
-}
-
-.dashboardSidebar {
-  position: sticky;
-  top: 6.25rem;
-  display: grid;
-  gap: 1rem;
-  align-content: start;
-}
-
-.dashboardSecondaryGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  align-items: start;
 }
 
 .todoPanel {
@@ -679,15 +658,7 @@
 }
 
 @media (max-width: 960px) {
-  .dashboardLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboardSidebar {
-    position: static;
-  }
-
-  .dashboardSecondaryGrid,
+  .dashboardLayout,
   .todoWorkspace {
     grid-template-columns: 1fr;
   }
@@ -705,14 +676,6 @@
   }
 
   .dashboardLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboardSidebar {
-    position: static;
-  }
-
-  .dashboardSecondaryGrid {
     grid-template-columns: 1fr;
   }
 
@@ -784,4 +747,181 @@
   .attendanceSubjectRow {
     flex-direction: column;
   }
+}
+
+.header,
+.todoPanel,
+.todayOverviewCard,
+.classesWidget,
+.attendancePanel,
+.catchUpPanel,
+.assignmentsPanel {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: none;
+}
+
+.header {
+  padding: clamp(2rem, 4vw, 3rem);
+}
+
+.title,
+.todoPanelTitle,
+.todayOverviewTitle,
+.todayMetricValue,
+.todayMetricValueText,
+.classesWidgetTitle,
+.classesSectionTitle,
+.attendancePanelTitle,
+.catchUpPanelTitle,
+.assignmentsPanelTitle,
+.attendanceAverageValue {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+}
+
+.dashboardLayout {
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.statusBanner {
+  border-color: var(--color-border-strong);
+  background: var(--color-inverse);
+}
+
+.statusBannerText {
+  color: var(--color-on-inverse);
+}
+
+.todoForm,
+.todoChecklistItem,
+.todayMetric,
+.classesSection,
+.classRow,
+.attendanceAverageCard,
+.attendanceSubjectRow,
+.catchUpItem,
+.assignmentItem {
+  border-color: var(--color-border);
+  background: var(--color-surface-soft);
+}
+
+.todoPanelDescription,
+.todayOverviewDescription,
+.todayMetricHelper,
+.classesWidgetDescription,
+.classesEmptyState,
+.attendancePanelDescription,
+.catchUpPanelDescription,
+.attendanceAverageHelper,
+.attendanceSubjectMeta,
+.catchUpLecture,
+.catchUpSuggestion,
+.assignmentSubject,
+.assignmentDue,
+.assignmentsEmptyState,
+.todoInputLabel,
+.todoEmptyState,
+.todoChecklistTextDone {
+  color: var(--color-muted);
+}
+
+.todoInput,
+.todoAddButton,
+.todoCheckbox,
+.todayOverviewMeta,
+.todoPanelMeta,
+.classesSectionMeta,
+.classBadge,
+.classBadgeMuted,
+.attendanceSubjectValue,
+.catchUpPanelMeta,
+.assignmentsPanelMeta,
+.catchUpBadge,
+.overdueBadge {
+  border-color: var(--color-border);
+}
+
+.todoInput {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.todoInput:focus {
+  border-color: var(--color-text);
+  box-shadow: 0 0 0 4px rgba(5, 5, 5, 0.1);
+}
+
+.todoAddButton {
+  background: var(--color-inverse);
+  color: var(--color-on-inverse);
+}
+
+.todoAddButton:hover {
+  background: #222222;
+}
+
+.todoCheckbox {
+  accent-color: var(--color-text);
+}
+
+.todayOverviewGrid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.todayOverviewMeta,
+.todoPanelMeta,
+.classesSectionMeta,
+.classBadge,
+.classBadgeMuted,
+.attendanceSubjectValue,
+.catchUpPanelMeta,
+.assignmentsPanelMeta {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.className,
+.attendanceSubjectName,
+.catchUpSubject,
+.assignmentTitle,
+.todayMetricValue,
+.todayMetricValueText {
+  color: var(--color-text);
+}
+
+.attendanceStateHealthy {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.attendanceStateWatch {
+  background: rgba(5, 5, 5, 0.12);
+  color: var(--color-text);
+}
+
+.attendanceStateRisk {
+  background: var(--color-inverse);
+  color: var(--color-on-inverse);
+}
+
+.attendanceStateUnavailable {
+  background: var(--color-surface-muted);
+  color: var(--color-muted);
+}
+
+.catchUpBadge,
+.overdueBadge {
+  background: var(--color-inverse);
+  color: var(--color-on-inverse);
+}
+
+.cardLabel,
+.todayMetricLabel,
+.attendanceAverageLabel {
+  color: var(--color-text);
+  font-family: var(--font-display);
 }

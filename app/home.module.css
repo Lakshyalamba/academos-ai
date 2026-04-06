@@ -1,7 +1,7 @@
 .heroGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1.45fr) minmax(340px, 0.85fr);
+  gap: 2rem;
   align-items: stretch;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .heroLead {
-  max-width: 40rem;
+  max-width: 46rem;
 }
 
 .heroActions {
@@ -40,20 +40,24 @@
 .heroChip {
   padding: 0.75rem 1rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  color: #42546b;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .heroPanel {
   display: grid;
   gap: 1rem;
-  padding: 1.5rem;
+  padding: 1.75rem;
   border-radius: 24px;
-  background: linear-gradient(180deg, rgba(255, 253, 249, 0.96), rgba(248, 250, 255, 0.9));
-  border: 1px solid rgba(18, 32, 51, 0.08);
+  background: var(--color-inverse);
+  border: 1px solid var(--color-inverse);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.18);
 }
 
 .heroPanelLabel,
@@ -62,26 +66,37 @@
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.16em;
+  font-family: var(--font-display);
   text-transform: uppercase;
-  color: #b85c38;
+}
+
+.heroPanelLabel {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.sectionLabel {
+  color: var(--color-text);
 }
 
 .heroPanelTitle {
   margin: 0;
+  color: var(--color-on-inverse);
+  font-family: var(--font-display);
   font-size: 1.35rem;
   line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .heroPanelCopy {
   margin: 0;
-  color: #42546b;
+  color: rgba(255, 255, 255, 0.72);
   line-height: 1.7;
 }
 
 .heroPanelList {
   margin: 0;
   padding-left: 1.2rem;
-  color: #122033;
+  color: rgba(255, 255, 255, 0.92);
   line-height: 1.75;
 }
 
@@ -104,20 +119,22 @@
 .infoCard {
   padding: 1.5rem;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  box-shadow: 0 20px 60px rgba(18, 32, 51, 0.06);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-panel);
 }
 
 .infoTitle {
   margin: 0;
+  font-family: var(--font-display);
   font-size: 1.3rem;
   line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .infoCopy {
   margin: 0.8rem 0 0;
-  color: #42546b;
+  color: var(--color-muted);
   line-height: 1.7;
 }
 
@@ -125,8 +142,9 @@
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
+  font-family: var(--font-display);
   text-transform: uppercase;
-  color: #b85c38;
+  color: var(--color-text);
 }
 
 .detailsCard {
@@ -152,7 +170,7 @@
   flex: 0 0 auto;
   font-size: 1.4rem;
   line-height: 1;
-  color: #b85c38;
+  color: var(--color-text);
 }
 
 .detailsCard[open] .detailsSummary::after {
@@ -167,14 +185,14 @@
 
 .detailsBody p {
   margin: 0;
-  color: #42546b;
+  color: var(--color-muted);
   line-height: 1.7;
 }
 
 .detailsList {
   margin: 0;
   padding-left: 1.2rem;
-  color: #122033;
+  color: var(--color-text);
   line-height: 1.7;
 }
 
