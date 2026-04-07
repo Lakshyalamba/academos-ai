@@ -226,9 +226,7 @@ export default function DashboardClient() {
               <div className={styles.sectionTitleBlock}>
                 <p className={styles.cardLabel}>Pending Assignments</p>
                 <h2 className={styles.sectionTitle}>Pending assignments</h2>
-                <p className={styles.sectionDescription}>
-                  Compact, grouped, and easy to scan.
-                </p>
+                <p className={styles.sectionDescription}>Grouped by urgency.</p>
               </div>
               <p className={styles.cardMeta}>{getAssignmentsSummary(pendingAssignments)}</p>
             </div>

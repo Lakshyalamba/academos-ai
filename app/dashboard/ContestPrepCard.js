@@ -153,9 +153,7 @@ export default function ContestPrepCard() {
         <div className={styles.sectionTitleBlock}>
           <p className={styles.cardLabel}>Contest Prep</p>
           <h2 className={styles.sectionTitle}>Contest prep</h2>
-          <p className={styles.sectionDescription}>
-            Saved contest details and the next prep moves.
-          </p>
+          <p className={styles.sectionDescription}>Saved contest and next steps.</p>
         </div>
         <Link href="/contest" className={styles.inlineLink}>
           Open full page
@@ -165,9 +163,7 @@ export default function ContestPrepCard() {
       {!contest ? (
         <div className={styles.stateBox}>
           <p className={styles.stateTitle}>No contest saved yet.</p>
-          <p className={styles.stateCopy}>
-            Save the next contest once to keep prep visible here.
-          </p>
+          <p className={styles.stateCopy}>Save a contest to show it here.</p>
         </div>
       ) : (
         <div className={styles.contestStack}>

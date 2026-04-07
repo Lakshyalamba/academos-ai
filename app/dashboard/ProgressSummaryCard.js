@@ -137,9 +137,7 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
         <div className={styles.sectionTitleBlock}>
           <p className={styles.cardLabel}>Progress Summary</p>
           <h2 className={styles.sectionTitle}>Progress summary</h2>
-          <p className={styles.sectionDescription}>
-            A compact view of workload and attendance.
-          </p>
+          <p className={styles.sectionDescription}>Workload overview.</p>
         </div>
         <p className={styles.cardMeta}>
           {todayOverview.available ? "Live view" : "Fallback view"}
@@ -158,12 +156,10 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
 
       <section className={styles.attendanceSection}>
         <div className={styles.attendanceSummary}>
-          <div className={styles.sectionTitleBlock}>
+              <div className={styles.sectionTitleBlock}>
                 <p className={styles.cardLabel}>Attendance</p>
                 <h3 className={styles.subCardTitle}>Combined subject view</h3>
-                <p className={styles.sectionDescription}>
-                  Paired sections shown as one attendance value.
-                </p>
+                <p className={styles.sectionDescription}>Paired subject attendance.</p>
               </div>
 
           <div className={styles.attendanceSummaryMeta}>
@@ -182,9 +178,6 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
 
         {attendanceAlert?.available && attendancePairs.length ? (
           <>
-            <p className={styles.attendanceSummaryCopy}>
-              Matching subjects are paired together, for example GenAI C + GenAI 2 C.
-            </p>
             <div className={styles.attendanceGrid}>
               {attendancePairs.map((subject) => (
                 <article key={subject.id} className={styles.attendanceSubjectCard}>

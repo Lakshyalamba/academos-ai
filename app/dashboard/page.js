@@ -11,7 +11,7 @@ export default function DashboardPage() {
             <p className="eyebrow">Dashboard</p>
             <h1 className={styles.title}>Academic dashboard</h1>
             <p className={styles.headerCopy}>
-              Tasks, attendance, and prep in one view.
+              Tasks, attendance, and prep.
             </p>
           </div>
 

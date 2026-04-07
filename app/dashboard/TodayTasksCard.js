@@ -64,9 +64,7 @@ export default function TodayTasksCard({
         <div className={styles.sectionTitleBlock}>
           <p className={styles.cardLabel}>Today&apos;s Tasks</p>
           <h2 className={styles.sectionTitle}>Today&apos;s tasks</h2>
-          <p className={styles.sectionDescription}>
-            Personal tasks, classes, and catch-up in one view.
-          </p>
+          <p className={styles.sectionDescription}>Tasks, classes, and catch-up.</p>
         </div>
         <p className={styles.cardMeta}>{agendaLabel}</p>
       </div>
