@@ -18,6 +18,7 @@ export default function TodoListCard() {
   const [draft, setDraft] = useState("");
   const [isReady, setIsReady] = useState(false);
   const openItemsCount = items.filter((item) => !item.completed).length;
+  const completedItemsCount = items.length - openItemsCount;
 
   useEffect(() => {
     try {
@@ -78,16 +79,13 @@ export default function TodoListCard() {
   }
 
   return (
-    <section className={styles.todoPanel} aria-label="Personal to-do list">
-      <div className={styles.todoPanelHeader}>
-        <div>
-          <p className={styles.cardLabel}>To-Do List</p>
-          <h2 className={styles.todoPanelTitle}>Keep your own study checklist</h2>
-          <p className={styles.todoPanelDescription}>
-            Add quick personal tasks and clear them as your day moves forward.
-          </p>
+    <section className={styles.subCard} aria-label="Personal to-do list">
+      <div className={styles.subCardHeader}>
+        <div className={styles.sectionTitleBlock}>
+          <p className={styles.cardLabel}>Personal To-Do</p>
+          <h3 className={styles.subCardTitle}>Personal checklist</h3>
         </div>
-        <p className={styles.todoPanelMeta}>
+        <p className={styles.cardMeta}>
           {items.length === 0
             ? "No tasks yet"
             : openItemsCount === 0
@@ -96,55 +94,60 @@ export default function TodoListCard() {
         </p>
       </div>
 
-      <div className={styles.todoWorkspace}>
-        <form className={styles.todoForm} onSubmit={handleSubmit}>
-          <label className={styles.todoInputLabel} htmlFor="dashboard-todo-input">
-            Add a task
-          </label>
-          <div className={styles.todoInputRow}>
-            <input
-              id="dashboard-todo-input"
-              className={styles.todoInput}
-              type="text"
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              placeholder="Example: Finish DBMS notes"
-              maxLength={120}
-            />
-            <button className={styles.todoAddButton} type="submit">
-              Add
-            </button>
-          </div>
-        </form>
-
-        {items.length > 0 ? (
-          <ul className={styles.todoChecklist}>
-            {items.map((item) => (
-              <li key={item.id} className={styles.todoChecklistItem}>
-                <label className={styles.todoCheckboxRow}>
-                  <input
-                    className={styles.todoCheckbox}
-                    type="checkbox"
-                    checked={item.completed}
-                    onChange={() => handleToggle(item.id)}
-                  />
-                  <span
-                    className={`${styles.todoChecklistText} ${
-                      item.completed ? styles.todoChecklistTextDone : ""
-                    }`}
-                  >
-                    {item.text}
-                  </span>
-                </label>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className={styles.todoEmptyState}>
-            No personal tasks yet. Add one to keep today organized.
-          </p>
-        )}
+      <div className={styles.todoStats}>
+        <span className={styles.todoStat}>{openItemsCount} open</span>
+        <span className={styles.todoStat}>{completedItemsCount} done</span>
       </div>
+
+      <form className={styles.todoForm} onSubmit={handleSubmit}>
+        <label className={styles.visuallyHidden} htmlFor="dashboard-todo-input">
+          Add a task
+        </label>
+        <div className={styles.todoInputRow}>
+          <input
+            id="dashboard-todo-input"
+            className={styles.todoInput}
+            type="text"
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            placeholder="Add a quick study task"
+            maxLength={120}
+          />
+          <button className={styles.todoAddButton} type="submit">
+            Add task
+          </button>
+        </div>
+      </form>
+
+      {!isReady ? (
+        <p className={styles.inlineState}>Loading your checklist...</p>
+      ) : items.length > 0 ? (
+        <ul className={styles.todoChecklist}>
+          {items.map((item) => (
+            <li key={item.id} className={styles.todoChecklistItem}>
+              <label className={styles.todoCheckboxRow}>
+                <input
+                  className={styles.todoCheckbox}
+                  type="checkbox"
+                  checked={item.completed}
+                  onChange={() => handleToggle(item.id)}
+                />
+                <span
+                  className={`${styles.todoChecklistText} ${
+                    item.completed ? styles.todoChecklistTextDone : ""
+                  }`}
+                >
+                  {item.text}
+                </span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className={styles.inlineState}>
+          No personal tasks yet. Add one to keep the day organized.
+        </p>
+      )}
     </section>
   );
 }

@@ -1,30 +1,29 @@
 import Link from "next/link";
 import DashboardClient from "./DashboardClient";
 import styles from "./dashboard.module.css";
-import TodoListCard from "./TodoListCard";
 
 export default function DashboardPage() {
   return (
     <main className="page-shell">
       <section className={styles.header}>
-        <p className="eyebrow">Dashboard</p>
         <div className={styles.headerRow}>
-          <div>
-            <h1 className={styles.title}>Academic Dashboard</h1>
-            <p className="page-copy">
-              Everything you need for the day, from classes and pending work to
-              attendance and catch-up.
+          <div className={styles.headerCopyBlock}>
+            <p className="eyebrow">Dashboard</p>
+            <h1 className={styles.title}>Academic dashboard</h1>
+            <p className={styles.headerCopy}>
+              Tasks, deadlines, attendance, and contest prep in one clean view.
             </p>
           </div>
 
-          <Link href="/" className="text-link">
+          <Link href="/" className={styles.headerLink}>
             Back to home
           </Link>
         </div>
       </section>
 
-      <TodoListCard />
-      <DashboardClient />
+      <div className={styles.pageStack}>
+        <DashboardClient />
+      </div>
     </main>
   );
 }

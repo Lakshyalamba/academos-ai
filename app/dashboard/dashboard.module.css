@@ -1,927 +1,684 @@
-.header {
-  padding: 2.75rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: 0 24px 80px rgba(18, 32, 51, 0.08);
-  backdrop-filter: blur(12px);
-}
-
-.headerRow {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.title {
-  margin: 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: clamp(2.2rem, 4vw, 3.5rem);
-  line-height: 0.96;
-  letter-spacing: -0.04em;
-}
-
-.dashboardLayout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  align-items: start;
-  margin-top: 1rem;
-}
-
-.statusBanner {
-  margin-top: 1rem;
-  padding: 1rem 1.15rem;
-  border: 1px solid rgba(184, 92, 56, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 247, 241, 0.92);
-}
-
-.statusBannerText {
-  margin: 0;
-  color: #9a4e30;
-  line-height: 1.6;
-}
-
-.todoPanel {
-  display: grid;
-  gap: 1.15rem;
+.pageStack {
   margin-top: 1.25rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 28px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 251, 255, 0.9));
-  box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
 }
 
-.todoPanelHeader {
+.header,
+.dashboardCard {
+  border: 1px solid rgba(23, 37, 61, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.header {
+  padding: clamp(1.5rem, 3vw, 2rem);
+}
+
+.headerRow,
+.sectionHeader,
+.subCardHeader,
+.assignmentBucketHeader,
+.scheduleDayHeader,
+.contestSummaryHeader,
+.attendanceSummary {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
 }
 
-.todoPanelTitle {
-  margin: 0.35rem 0 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: clamp(1.8rem, 3vw, 2.35rem);
-  line-height: 1.02;
+.headerCopyBlock,
+.sectionTitleBlock {
+  display: grid;
+  gap: 0.25rem;
 }
 
-.todoPanelDescription {
-  margin: 0.55rem 0 0;
-  color: #42546b;
-  line-height: 1.65;
-}
-
-.todoPanelMeta {
+.title {
   margin: 0;
-  padding: 0.5rem 0.8rem;
+  color: #162033;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: clamp(2.1rem, 4vw, 3rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.headerCopy {
+  max-width: 40rem;
+  margin: 0.35rem 0 0;
+  color: #5f6b7d;
+  line-height: 1.55;
+}
+
+.headerLink,
+.inlineLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.7rem 1rem;
   border-radius: 999px;
-  background: rgba(18, 32, 51, 0.06);
-  color: #5f6d7d;
+  border: 1px solid rgba(23, 37, 61, 0.1);
+  background: rgba(243, 247, 251, 0.9);
+  color: #162033;
+  font-size: 0.86rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.headerLink:hover,
+.inlineLink:hover {
+  transform: translateY(-1px);
+  border-color: rgba(35, 59, 92, 0.2);
+  background: rgba(234, 241, 248, 1);
+}
+
+.dashboardShell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.95fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.dashboardMain,
+.dashboardSide,
+.todayAgendaStack,
+.contestStack {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.dashboardCard {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  animation: cardEnter 420ms ease both;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.dashboardCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(35, 59, 92, 0.12);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
+}
+
+.dashboardMain > :nth-child(1) {
+  animation-delay: 40ms;
+}
+
+.dashboardMain > :nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.dashboardSide > :nth-child(1) {
+  animation-delay: 140ms;
+}
+
+.dashboardSide > :nth-child(2) {
+  animation-delay: 190ms;
+}
+
+.cardLabel,
+.progressStatLabel,
+.attendanceSubjectFormula {
+  margin: 0;
+  color: #6d7a8a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: #162033;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sectionDescription,
+.progressStatHelper,
+.attendanceSummaryCopy,
+.stateCopy,
+.catchUpLecture,
+.catchUpSuggestion,
+.assignmentSubject,
+.scheduleMetaText,
+.inlineState {
+  margin: 0;
+  color: #627285;
+  line-height: 1.5;
+}
+
+.cardMeta,
+.bucketMeta,
+.assignmentBadge,
+.assignmentBadgeOverdue,
+.todoStat,
+.contestMetaPill,
+.attendanceStateBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
   font-size: 0.76rem;
   font-weight: 700;
   white-space: nowrap;
 }
 
-.todoForm {
+.cardMeta,
+.bucketMeta,
+.todoStat,
+.contestMetaPill {
+  background: rgba(236, 241, 246, 0.95);
+  color: #425064;
+}
+
+.statusBanner {
+  margin-bottom: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(190, 78, 53, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 247, 242, 0.96);
+}
+
+.statusBannerText {
+  margin: 0;
+  color: #9e4d32;
+  line-height: 1.55;
+}
+
+.todayTasksGrid,
+.assignmentsGrid {
   display: grid;
-  gap: 0.65rem;
-  padding: 1rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
+  gap: 1rem;
+}
+
+.todayTasksGrid {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.92fr);
+  align-items: start;
+}
+
+.assignmentsGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.subCard,
+.assignmentBucket,
+.progressStatCard,
+.attendanceSubjectCard,
+.contestSummaryCard,
+.contestGuidanceCard,
+.scheduleDayCard {
+  border: 1px solid rgba(23, 37, 61, 0.08);
   border-radius: 20px;
+  background: rgba(248, 251, 254, 0.95);
+}
+
+.subCard,
+.assignmentBucket,
+.contestSummaryCard,
+.contestGuidanceCard,
+.scheduleDayCard {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.subCardTitle,
+.assignmentBucketTitle,
+.attendanceSubjectName,
+.scheduleSubject,
+.catchUpSubject,
+.assignmentTitle {
+  margin: 0;
+  color: #162033;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.scheduleGrid,
+.progressStatsGrid,
+.attendanceGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.scheduleGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.scheduleList,
+.catchUpList,
+.assignmentList,
+.todoChecklist,
+.contestActionList {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scheduleList,
+.catchUpList,
+.assignmentList,
+.todoChecklist {
+  max-height: 18rem;
+  overflow: auto;
+}
+
+.scheduleItem,
+.catchUpItem,
+.assignmentItem,
+.todoChecklistItem,
+.contestActionItem {
+  border: 1px solid rgba(23, 37, 61, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.scheduleItem,
+.catchUpItem,
+.assignmentItem,
+.contestActionItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.8rem 0.85rem;
+}
+
+.scheduleItemBody,
+.catchUpItemBody,
+.assignmentContent {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.catchUpItemBody {
+  gap: 0.28rem;
+}
+
+.catchUpLecture,
+.scheduleMetaText,
+.assignmentSubject {
+  font-size: 0.88rem;
+}
+
+.catchUpSuggestion {
+  font-size: 0.9rem;
+}
+
+.assignmentMetaGroup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.assignmentBadge {
+  background: rgba(228, 236, 245, 0.95);
+  color: #41536c;
+}
+
+.assignmentBadgeOverdue {
+  background: rgba(253, 235, 232, 0.95);
+  color: #b44932;
+}
+
+.stateBox {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1px dashed rgba(23, 37, 61, 0.14);
+  border-radius: 18px;
+  background: rgba(247, 250, 252, 0.9);
+}
+
+.stateTitle {
+  margin: 0;
+  color: #162033;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.inlineState {
+  padding: 0.85rem 0.95rem;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.9);
 }
 
-.todoInputLabel {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #42546b;
+.todoForm {
+  display: grid;
+  gap: 0.6rem;
 }
 
 .todoInputRow {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .todoInput {
   flex: 1;
   min-width: 0;
-  padding: 0.85rem 0.95rem;
-  border: 1px solid rgba(18, 32, 51, 0.12);
+  min-height: 2.85rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(23, 37, 61, 0.12);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.96);
-  color: #122033;
+  background: rgba(255, 255, 255, 0.98);
+  color: #162033;
   font: inherit;
 }
 
 .todoInput::placeholder {
-  color: #7a8796;
+  color: #7d8898;
 }
 
 .todoInput:focus {
   outline: none;
-  border-color: rgba(184, 92, 56, 0.45);
-  box-shadow: 0 0 0 4px rgba(184, 92, 56, 0.12);
+  border-color: rgba(37, 99, 235, 0.32);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
 .todoAddButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 1.1rem;
+  min-height: 2.85rem;
+  padding: 0.8rem 1rem;
   border: none;
   border-radius: 16px;
-  background: #122033;
+  background: #1e3753;
   color: #ffffff;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .todoAddButton:hover {
-  background: #1c314d;
+  transform: translateY(-1px);
+  background: #274667;
+  box-shadow: 0 12px 28px rgba(30, 55, 83, 0.18);
 }
 
-.todoWorkspace {
-  display: grid;
-  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-  gap: 1rem;
-  align-items: start;
-}
-
-.todoChecklist {
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.todoStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .todoChecklistItem {
-  padding: 0.95rem 1rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.92);
+  padding: 0.78rem 0.85rem;
 }
 
 .todoCheckboxRow {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.75rem;
   cursor: pointer;
 }
 
 .todoCheckbox {
-  width: 1.05rem;
-  height: 1.05rem;
+  width: 1rem;
+  height: 1rem;
   margin: 0;
-  accent-color: #b85c38;
+  accent-color: #1e3753;
 }
 
-.todoChecklistText,
-.todoEmptyState {
-  margin: 0;
-  color: #122033;
-  line-height: 1.6;
+.todoChecklistText {
+  color: #162033;
+  line-height: 1.5;
 }
 
 .todoChecklistTextDone {
-  color: #6a7280;
+  color: #7a8594;
   text-decoration: line-through;
 }
 
-.todoEmptyState {
-  color: #42546b;
-}
-
-.todayOverviewCard {
-  display: grid;
-  gap: 1.15rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 26px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 251, 255, 0.86));
-  box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
-}
-
-.todayOverviewHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.todayOverviewTitle {
-  margin: 0.35rem 0 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: clamp(1.7rem, 3vw, 2.3rem);
-  line-height: 1.05;
-}
-
-.todayOverviewDescription,
-.todayMetricHelper {
-  margin: 0.6rem 0 0;
-  color: #42546b;
-  line-height: 1.65;
-}
-
-.todayOverviewMeta {
-  margin: 0;
-  padding: 0.5rem 0.8rem;
-  border-radius: 999px;
-  background: rgba(184, 92, 56, 0.1);
-  color: #9a4e30;
-  font-size: 0.78rem;
-  font-weight: 700;
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
+  border: 0;
 }
 
-.todayOverviewGrid {
-  display: grid;
+.progressStatsGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
 }
 
-.todayMetric {
+.progressStatCard {
   display: grid;
-  align-content: start;
-  min-height: 100%;
-  padding: 1rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.88);
+  gap: 0.35rem;
+  padding: 0.95rem;
 }
 
-.todayMetricLabel {
+.progressStatValue {
   margin: 0;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #6a7280;
-}
-
-.todayMetricValue,
-.todayMetricValueText {
-  margin: 0.7rem 0 0;
+  color: #162033;
   font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  color: #122033;
-}
-
-.todayMetricValue {
-  font-size: clamp(1.8rem, 3vw, 2.35rem);
+  font-size: clamp(1.7rem, 2.6vw, 2rem);
   line-height: 1;
 }
 
-.todayMetricValueText {
-  font-size: 1.2rem;
-  line-height: 1.2;
+.progressStatHelper {
+  font-size: 0.88rem;
 }
 
-.classesWidget {
-  display: grid;
-  gap: 1rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 26px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 251, 255, 0.86));
-  box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
-}
-
-.classesWidgetHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.classesWidgetTitle {
-  margin: 0.35rem 0 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: clamp(1.55rem, 2.6vw, 2rem);
-  line-height: 1.05;
-}
-
-.classesWidgetDescription {
-  margin: 0.55rem 0 0;
-  color: #42546b;
-  line-height: 1.65;
-}
-
-.classesSectionsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.classesSection {
+.attendanceSection {
   display: grid;
   gap: 0.85rem;
-  padding: 1rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.88);
 }
 
-.classesSectionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.classesSectionTitle {
-  margin: 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: 1.25rem;
-  line-height: 1.1;
-}
-
-.classesSectionMeta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.3rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(18, 32, 51, 0.06);
-  color: #5f6d7d;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.classesList {
+.attendanceSummaryMeta {
   display: grid;
-  gap: 0.65rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.classRow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.85rem 0.9rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.96);
-}
-
-.className {
-  margin: 0;
-  color: #122033;
-  line-height: 1.45;
-}
-
-.classMeta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-items: end;
   gap: 0.45rem;
-}
-
-.classBadge,
-.classBadgeMuted {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.32rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.classBadge {
-  background: rgba(184, 92, 56, 0.1);
-  color: #9a4e30;
-}
-
-.classBadgeMuted {
-  background: rgba(18, 32, 51, 0.06);
-  color: #5f6d7d;
-}
-
-.classesEmptyState {
-  margin: 0;
-  color: #42546b;
-  line-height: 1.65;
-}
-
-.attendancePanel,
-.catchUpPanel,
-.assignmentsPanel {
-  display: grid;
-  gap: 1rem;
-  padding: 1.35rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 26px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 251, 255, 0.86));
-  box-shadow: 0 22px 60px rgba(18, 32, 51, 0.07);
-}
-
-.attendancePanelHeader,
-.catchUpPanelHeader,
-.assignmentsPanelHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.attendancePanelTitle,
-.catchUpPanelTitle,
-.assignmentsPanelTitle {
-  margin: 0.35rem 0 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: clamp(1.45rem, 2.3vw, 1.85rem);
-  line-height: 1.05;
-}
-
-.attendancePanelDescription,
-.catchUpPanelDescription {
-  margin: 0.55rem 0 0;
-  color: #42546b;
-  line-height: 1.6;
-}
-
-.attendanceStateBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 5.25rem;
-  padding: 0.5rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.attendanceStateHealthy {
-  background: rgba(46, 125, 74, 0.12);
-  color: #2e7d4a;
-}
-
-.attendanceStateWatch {
-  background: rgba(184, 92, 56, 0.12);
-  color: #9a4e30;
-}
-
-.attendanceStateRisk {
-  background: rgba(159, 45, 45, 0.12);
-  color: #9f2d2d;
-}
-
-.attendanceStateUnavailable {
-  background: rgba(18, 32, 51, 0.06);
-  color: #5f6d7d;
-}
-
-.attendanceAverageCard {
-  display: grid;
-  gap: 0.4rem;
-  padding: 1rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.94);
-}
-
-.attendanceAverageLabel {
-  margin: 0;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #6a7280;
 }
 
 .attendanceAverageValue {
-  margin: 0.25rem 0 0;
+  margin: 0;
+  color: #162033;
   font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: clamp(2rem, 2.8vw, 2.35rem);
+  font-size: 1.9rem;
   line-height: 1;
-  color: #122033;
 }
 
-.attendanceAverageHelper {
-  margin: 0.25rem 0 0;
-  color: #42546b;
-  line-height: 1.6;
+.attendanceStateBadge {
+  padding-inline: 0.8rem;
 }
 
-.attendanceSubjectList {
+.attendanceStateHealthy {
+  background: rgba(228, 244, 234, 0.96);
+  color: #267247;
+}
+
+.attendanceStateWatch {
+  background: rgba(255, 243, 224, 0.96);
+  color: #9a6121;
+}
+
+.attendanceStateRisk {
+  background: rgba(253, 235, 232, 0.96);
+  color: #b44932;
+}
+
+.attendanceStateUnavailable {
+  background: rgba(236, 241, 246, 0.96);
+  color: #5b6b7e;
+}
+
+.attendanceGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.attendanceSubjectCard {
   display: grid;
-  gap: 0.7rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.attendanceSubjectRow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.9rem;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 0.4rem;
+  aspect-ratio: 1 / 1;
   padding: 0.9rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.94);
 }
 
-.attendanceSubjectName {
+.attendanceSubjectRecord {
   margin: 0;
-  font-size: 1rem;
+  color: #4d5d73;
+  font-size: 0.95rem;
   line-height: 1.35;
-  color: #122033;
-}
-
-.attendanceSubjectMeta {
-  margin: 0.35rem 0 0;
-  color: #42546b;
-  line-height: 1.55;
 }
 
 .attendanceSubjectValue {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.34rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(18, 32, 51, 0.06);
-  color: #122033;
-  font-size: 0.76rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.catchUpPanelMeta,
-.assignmentsPanelMeta {
   margin: 0;
-  padding: 0.5rem 0.8rem;
-  border-radius: 999px;
-  background: rgba(18, 32, 51, 0.06);
-  color: #5f6d7d;
-  font-size: 0.76rem;
-  font-weight: 700;
-  white-space: nowrap;
+  align-self: end;
+  color: #162033;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: 1.55rem;
+  line-height: 1;
 }
 
-.assignmentList {
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.catchUpList {
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.catchUpItem,
-.assignmentItem {
-  display: grid;
-  gap: 0.45rem;
-  padding: 0.9rem;
-  border: 1px solid rgba(18, 32, 51, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.94);
-}
-
-.catchUpItemHeader,
-.assignmentItemHeader {
+.contestMetaRow {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.contestGuidanceCard {
   gap: 0.75rem;
 }
 
-.catchUpSubject,
-.assignmentTitle {
+.contestGuidanceSummary {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.35;
-  color: #122033;
-}
-
-.catchUpLecture,
-.catchUpSuggestion,
-.assignmentSubject,
-.assignmentDue,
-.assignmentsEmptyState {
-  margin: 0;
-  color: #42546b;
+  color: #1f2b3d;
   line-height: 1.55;
 }
 
-.catchUpBadge,
-.overdueBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.28rem 0.58rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  white-space: nowrap;
+.contestActionItem {
+  color: #1f2b3d;
+  line-height: 1.5;
 }
 
-.catchUpBadge {
-  background: rgba(46, 125, 74, 0.12);
-  color: #2e7d4a;
-}
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 
-.overdueBadge {
-  border-radius: 999px;
-  background: rgba(159, 45, 45, 0.12);
-  color: #9f2d2d;
-  font-size: 0.72rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.cardLabel {
-  margin: 0;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #b85c38;
-}
-
-@media (max-width: 960px) {
-  .dashboardLayout,
-  .todoWorkspace {
-    grid-template-columns: 1fr;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 640px) {
-  .header {
-    padding: 1.5rem;
-    border-radius: 22px;
-  }
-
-  .headerRow {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .dashboardLayout {
+@media (max-width: 1080px) {
+  .dashboardShell,
+  .todayTasksGrid,
+  .assignmentsGrid {
     grid-template-columns: 1fr;
   }
 
-  .todoPanel {
-    padding: 1.25rem;
+  .attendanceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .header,
+  .dashboardCard {
     border-radius: 22px;
   }
 
-  .todoPanelHeader {
+  .header,
+  .dashboardCard,
+  .subCard,
+  .assignmentBucket,
+  .contestSummaryCard,
+  .contestGuidanceCard,
+  .scheduleDayCard,
+  .progressStatCard {
+    padding: 1rem;
+  }
+
+  .headerRow,
+  .sectionHeader,
+  .subCardHeader,
+  .assignmentBucketHeader,
+  .scheduleDayHeader,
+  .contestSummaryHeader,
+  .attendanceSummary {
     flex-direction: column;
   }
 
+  .headerLink,
+  .inlineLink {
+    width: 100%;
+  }
+
+  .scheduleGrid,
+  .progressStatsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .scheduleItem,
+  .catchUpItem,
+  .assignmentItem {
+    flex-direction: column;
+  }
+
+  .assignmentMetaGroup {
+    justify-content: flex-start;
+  }
+
+  .attendanceSummaryMeta {
+    justify-items: start;
+  }
+}
+
+@media (max-width: 560px) {
   .todoInputRow {
     flex-direction: column;
   }
 
-  .todoWorkspace {
+  .attendanceGrid {
     grid-template-columns: 1fr;
   }
 
-  .todayOverviewCard {
-    padding: 1.25rem;
-    border-radius: 22px;
+  .attendanceSubjectCard {
+    aspect-ratio: auto;
+    min-height: 11rem;
   }
 
-  .todayOverviewHeader {
-    flex-direction: column;
-  }
-
-  .todayOverviewGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .classesWidget {
-    padding: 1.25rem;
-    border-radius: 22px;
-  }
-
-  .classesWidgetHeader {
-    flex-direction: column;
-  }
-
-  .classesSectionsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .classRow {
-    flex-direction: column;
-  }
-
-  .classMeta {
-    justify-content: flex-start;
-  }
-
-  .attendancePanel,
-  .catchUpPanel,
-  .assignmentsPanel {
-    padding: 1.25rem;
-    border-radius: 22px;
-  }
-
-  .attendancePanelHeader,
-  .catchUpPanelHeader,
-  .assignmentsPanelHeader {
-    flex-direction: column;
-  }
-
-  .catchUpItemHeader,
-  .attendanceSubjectRow {
-    flex-direction: column;
+  .scheduleList,
+  .catchUpList,
+  .assignmentList,
+  .todoChecklist {
+    max-height: none;
   }
 }
 
-.header,
-.todoPanel,
-.todayOverviewCard,
-.classesWidget,
-.attendancePanel,
-.catchUpPanel,
-.assignmentsPanel {
-  border-color: var(--color-border-strong);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-panel);
-  backdrop-filter: none;
-}
-
-.header {
-  padding: clamp(2rem, 4vw, 3rem);
-}
-
-.title,
-.todoPanelTitle,
-.todayOverviewTitle,
-.todayMetricValue,
-.todayMetricValueText,
-.classesWidgetTitle,
-.classesSectionTitle,
-.attendancePanelTitle,
-.catchUpPanelTitle,
-.assignmentsPanelTitle,
-.attendanceAverageValue {
-  color: var(--color-text);
-  font-family: var(--font-display);
-  text-transform: uppercase;
-}
-
-.dashboardLayout {
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-.statusBanner {
-  border-color: var(--color-border-strong);
-  background: var(--color-inverse);
-}
-
-.statusBannerText {
-  color: var(--color-on-inverse);
-}
-
-.todoForm,
-.todoChecklistItem,
-.todayMetric,
-.classesSection,
-.classRow,
-.attendanceAverageCard,
-.attendanceSubjectRow,
-.catchUpItem,
-.assignmentItem {
-  border-color: var(--color-border);
-  background: var(--color-surface-soft);
-}
-
-.todoPanelDescription,
-.todayOverviewDescription,
-.todayMetricHelper,
-.classesWidgetDescription,
-.classesEmptyState,
-.attendancePanelDescription,
-.catchUpPanelDescription,
-.attendanceAverageHelper,
-.attendanceSubjectMeta,
-.catchUpLecture,
-.catchUpSuggestion,
-.assignmentSubject,
-.assignmentDue,
-.assignmentsEmptyState,
-.todoInputLabel,
-.todoEmptyState,
-.todoChecklistTextDone {
-  color: var(--color-muted);
-}
-
-.todoInput,
-.todoAddButton,
-.todoCheckbox,
-.todayOverviewMeta,
-.todoPanelMeta,
-.classesSectionMeta,
-.classBadge,
-.classBadgeMuted,
-.attendanceSubjectValue,
-.catchUpPanelMeta,
-.assignmentsPanelMeta,
-.catchUpBadge,
-.overdueBadge {
-  border-color: var(--color-border);
-}
-
-.todoInput {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
-.todoInput:focus {
-  border-color: var(--color-text);
-  box-shadow: 0 0 0 4px rgba(5, 5, 5, 0.1);
-}
-
-.todoAddButton {
-  background: var(--color-inverse);
-  color: var(--color-on-inverse);
-}
-
-.todoAddButton:hover {
-  background: #222222;
-}
-
-.todoCheckbox {
-  accent-color: var(--color-text);
-}
-
-.todayOverviewGrid {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-}
-
-.todayOverviewMeta,
-.todoPanelMeta,
-.classesSectionMeta,
-.classBadge,
-.classBadgeMuted,
-.attendanceSubjectValue,
-.catchUpPanelMeta,
-.assignmentsPanelMeta {
-  background: var(--color-surface-muted);
-  color: var(--color-text);
-}
-
-.className,
-.attendanceSubjectName,
-.catchUpSubject,
-.assignmentTitle,
-.todayMetricValue,
-.todayMetricValueText {
-  color: var(--color-text);
-}
-
-.attendanceStateHealthy {
-  background: var(--color-surface-muted);
-  color: var(--color-text);
-}
-
-.attendanceStateWatch {
-  background: rgba(5, 5, 5, 0.12);
-  color: var(--color-text);
-}
-
-.attendanceStateRisk {
-  background: var(--color-inverse);
-  color: var(--color-on-inverse);
-}
-
-.attendanceStateUnavailable {
-  background: var(--color-surface-muted);
-  color: var(--color-muted);
-}
-
-.catchUpBadge,
-.overdueBadge {
-  background: var(--color-inverse);
-  color: var(--color-on-inverse);
-}
-
-.cardLabel,
-.todayMetricLabel,
-.attendanceAverageLabel {
-  color: var(--color-text);
-  font-family: var(--font-display);
+@media (prefers-reduced-motion: reduce) {
+  .dashboardCard,
+  .headerLink,
+  .inlineLink,
+  .todoAddButton {
+    animation: none;
+    transition: none;
+  }
 }
