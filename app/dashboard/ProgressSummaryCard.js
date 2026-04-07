@@ -32,6 +32,83 @@ function getAttendanceStateClass(state) {
   }
 }
 
+function formatPercentage(value) {
+  if (!Number.isFinite(value)) {
+    return "Not available";
+  }
+
+  return `${value.toFixed(1)}%`;
+}
+
+function getAttendancePairKey(name) {
+  return String(name || "")
+    .replace(/\b2\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function sortAttendancePairLabels(labels) {
+  return [...labels].sort((left, right) => {
+    const leftHasTwo = /\b2\b/.test(left);
+    const rightHasTwo = /\b2\b/.test(right);
+
+    if (leftHasTwo !== rightHasTwo) {
+      return leftHasTwo ? 1 : -1;
+    }
+
+    return left.localeCompare(right);
+  });
+}
+
+function buildAttendancePairs(subjects) {
+  const groups = new Map();
+
+  for (const subject of subjects) {
+    const name = String(subject?.name || "").trim();
+
+    if (!name) {
+      continue;
+    }
+
+    const key = getAttendancePairKey(name) || name;
+    const existing = groups.get(key) || {
+      key,
+      names: [],
+      attendedLectures: 0,
+      totalLectures: 0,
+    };
+
+    existing.names.push(name);
+    existing.attendedLectures += Number(subject?.attendedLectures) || 0;
+    existing.totalLectures += Number(subject?.totalLectures) || 0;
+    groups.set(key, existing);
+  }
+
+  return [...groups.values()]
+    .map((group) => {
+      const percentage =
+        group.totalLectures > 0
+          ? (group.attendedLectures / group.totalLectures) * 100
+          : Number.NaN;
+
+      return {
+        id: group.key,
+        label: sortAttendancePairLabels(group.names).join(" + "),
+        attendedLectures: group.attendedLectures,
+        totalLectures: group.totalLectures,
+        percentage,
+        percentageLabel: formatPercentage(percentage),
+      };
+    })
+    .sort((left, right) => {
+      if (left.percentage !== right.percentage) {
+        return left.percentage - right.percentage;
+      }
+
+      return left.label.localeCompare(right.label);
+    });
+}
+
 export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) {
   const stats = [
     {
@@ -52,6 +129,7 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
   ];
 
   const subjects = Array.isArray(attendanceAlert?.subjects) ? attendanceAlert.subjects : [];
+  const attendancePairs = buildAttendancePairs(subjects);
 
   return (
     <section className={styles.dashboardCard} aria-label="Progress summary">
@@ -81,12 +159,12 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
       <section className={styles.attendanceSection}>
         <div className={styles.attendanceSummary}>
           <div className={styles.sectionTitleBlock}>
-            <p className={styles.cardLabel}>Attendance</p>
-            <h3 className={styles.subCardTitle}>Combined subject view</h3>
-            <p className={styles.sectionDescription}>
-              Final subject attendance shown in one compact row.
-            </p>
-          </div>
+                <p className={styles.cardLabel}>Attendance</p>
+                <h3 className={styles.subCardTitle}>Combined subject view</h3>
+                <p className={styles.sectionDescription}>
+                  Paired sections shown as one attendance value.
+                </p>
+              </div>
 
           <div className={styles.attendanceSummaryMeta}>
             <span
@@ -102,14 +180,15 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
           </div>
         </div>
 
-        {attendanceAlert?.available && subjects.length ? (
+        {attendanceAlert?.available && attendancePairs.length ? (
           <>
-            <p className={styles.attendanceSummaryCopy}>{attendanceAlert.explanation}</p>
+            <p className={styles.attendanceSummaryCopy}>
+              Matching subjects are paired together, for example GenAI C + GenAI 2 C.
+            </p>
             <div className={styles.attendanceGrid}>
-              {subjects.map((subject) => (
-                <article key={subject.name} className={styles.attendanceSubjectCard}>
-                  <p className={styles.attendanceSubjectName}>{subject.name}</p>
-                  <p className={styles.attendanceSubjectFormula}>Combined class + lab</p>
+              {attendancePairs.map((subject) => (
+                <article key={subject.id} className={styles.attendanceSubjectCard}>
+                  <p className={styles.attendanceSubjectName}>{subject.label}</p>
                   <p className={styles.attendanceSubjectRecord}>
                     {subject.attendedLectures}/{subject.totalLectures}
                   </p>

@@ -58,6 +58,36 @@ function getAssignmentsSummary(items) {
   return `${overdueCount} overdue`;
 }
 
+function getAssignmentBuckets(overdueAssignments, upcomingAssignments) {
+  const buckets = [];
+
+  if (overdueAssignments.length > 0) {
+    buckets.push({
+      key: "overdue",
+      title: "Needs attention",
+      meta: `${overdueAssignments.length} item${
+        overdueAssignments.length === 1 ? "" : "s"
+      }`,
+      items: overdueAssignments,
+      emptyMessage: "No overdue assignments.",
+    });
+  }
+
+  if (upcomingAssignments.length > 0) {
+    buckets.push({
+      key: "upcoming",
+      title: "Up next",
+      meta: `${upcomingAssignments.length} item${
+        upcomingAssignments.length === 1 ? "" : "s"
+      }`,
+      items: upcomingAssignments,
+      emptyMessage: "No upcoming assignments right now.",
+    });
+  }
+
+  return buckets;
+}
+
 function AssignmentBucket({ title, meta, items, emptyMessage }) {
   return (
     <article className={styles.assignmentBucket}>
@@ -170,6 +200,7 @@ export default function DashboardClient() {
     : [];
   const overdueAssignments = pendingAssignments.filter((item) => item.overdue);
   const upcomingAssignments = pendingAssignments.filter((item) => !item.overdue);
+  const assignmentBuckets = getAssignmentBuckets(overdueAssignments, upcomingAssignments);
 
   return (
     <>
@@ -203,24 +234,20 @@ export default function DashboardClient() {
             </div>
 
             {pendingAssignments.length ? (
-              <div className={styles.assignmentsGrid}>
-                <AssignmentBucket
-                  title="Needs attention"
-                  meta={`${overdueAssignments.length} item${
-                    overdueAssignments.length === 1 ? "" : "s"
-                  }`}
-                  items={overdueAssignments}
-                  emptyMessage="No overdue assignments."
-                />
-
-                <AssignmentBucket
-                  title="Up next"
-                  meta={`${upcomingAssignments.length} item${
-                    upcomingAssignments.length === 1 ? "" : "s"
-                  }`}
-                  items={upcomingAssignments}
-                  emptyMessage="No upcoming assignments right now."
-                />
+              <div
+                className={`${styles.assignmentsGrid} ${
+                  assignmentBuckets.length === 1 ? styles.assignmentsGridSingle : ""
+                }`}
+              >
+                {assignmentBuckets.map((bucket) => (
+                  <AssignmentBucket
+                    key={bucket.key}
+                    title={bucket.title}
+                    meta={bucket.meta}
+                    items={bucket.items}
+                    emptyMessage={bucket.emptyMessage}
+                  />
+                ))}
               </div>
             ) : (
               <div className={styles.stateBox}>

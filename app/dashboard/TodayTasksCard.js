@@ -72,77 +72,77 @@ export default function TodayTasksCard({
       </div>
 
       <div className={styles.todayTasksGrid}>
-        <TodoListCard />
-
-        <div className={styles.todayAgendaStack}>
-          <section className={styles.subCard}>
-            <div className={styles.subCardHeader}>
-              <div className={styles.sectionTitleBlock}>
-                <p className={styles.cardLabel}>Class Schedule</p>
-                <h3 className={styles.subCardTitle}>Today and tomorrow</h3>
-              </div>
-              <p className={styles.cardMeta}>
-                {classesSchedule?.available ? "Live schedule" : "Unavailable"}
-              </p>
-            </div>
-
-            <div className={styles.scheduleGrid}>
-              <ScheduleDay
-                label="Today"
-                items={todayClasses}
-                emptyMessage={
-                  classesSchedule?.todayEmptyMessage || "No classes scheduled today."
-                }
-              />
-              <ScheduleDay
-                label="Tomorrow"
-                items={tomorrowClasses}
-                emptyMessage={
-                  classesSchedule?.tomorrowEmptyMessage ||
-                  "No classes scheduled tomorrow."
-                }
-              />
-            </div>
-          </section>
-
-          <section className={styles.subCard}>
-            <div className={styles.subCardHeader}>
-              <div className={styles.sectionTitleBlock}>
-                <p className={styles.cardLabel}>Catch Up</p>
-                <h3 className={styles.subCardTitle}>Recent missed lectures</h3>
-              </div>
-              <p className={styles.cardMeta}>
-                {catchUp?.available ? "Live activity" : "Unavailable"}
-              </p>
-            </div>
-
-            {catchUpItems.length ? (
-              <ul className={styles.catchUpList}>
-                {catchUpItems.map((item) => (
-                  <li key={item.id} className={styles.catchUpItem}>
-                    <div className={styles.catchUpItemBody}>
-                      <p className={styles.catchUpSubject}>{item.subjectName}</p>
-                      <p className={styles.catchUpLecture}>
-                        {item.lectureLabel && item.lectureLabel !== item.subjectName
-                          ? `${item.lectureLabel} · ${item.dateLabel}`
-                          : item.dateLabel}
-                      </p>
-                      <p className={styles.catchUpSuggestion}>{item.suggestion}</p>
-                    </div>
-
-                    {item.hasRecording ? (
-                      <span className={styles.assignmentBadge}>Recording</span>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className={styles.inlineState}>
-                {catchUp?.emptyMessage || "You&apos;re caught up on recent lectures."}
-              </p>
-            )}
-          </section>
+        <div className={styles.todayTodoArea}>
+          <TodoListCard />
         </div>
+
+        <section className={`${styles.subCard} ${styles.todayScheduleCard}`}>
+          <div className={styles.subCardHeader}>
+            <div className={styles.sectionTitleBlock}>
+              <p className={styles.cardLabel}>Class Schedule</p>
+              <h3 className={styles.subCardTitle}>Today and tomorrow</h3>
+            </div>
+            <p className={styles.cardMeta}>
+              {classesSchedule?.available ? "Live schedule" : "Unavailable"}
+            </p>
+          </div>
+
+          <div className={styles.scheduleGrid}>
+            <ScheduleDay
+              label="Today"
+              items={todayClasses}
+              emptyMessage={
+                classesSchedule?.todayEmptyMessage || "No classes scheduled today."
+              }
+            />
+            <ScheduleDay
+              label="Tomorrow"
+              items={tomorrowClasses}
+              emptyMessage={
+                classesSchedule?.tomorrowEmptyMessage ||
+                "No classes scheduled tomorrow."
+              }
+            />
+          </div>
+        </section>
+
+        <section className={`${styles.subCard} ${styles.todayCatchUpCard}`}>
+          <div className={styles.subCardHeader}>
+            <div className={styles.sectionTitleBlock}>
+              <p className={styles.cardLabel}>Catch Up</p>
+              <h3 className={styles.subCardTitle}>Recent missed lectures</h3>
+            </div>
+            <p className={styles.cardMeta}>
+              {catchUp?.available ? "Live activity" : "Unavailable"}
+            </p>
+          </div>
+
+          {catchUpItems.length ? (
+            <ul className={styles.catchUpList}>
+              {catchUpItems.map((item) => (
+                <li key={item.id} className={styles.catchUpItem}>
+                  <div className={styles.catchUpItemBody}>
+                    <p className={styles.catchUpSubject}>{item.subjectName}</p>
+                    <p className={styles.catchUpLecture}>
+                      {item.lectureLabel && item.lectureLabel !== item.subjectName
+                        ? `${item.lectureLabel} · ${item.dateLabel}`
+                        : item.dateLabel}
+                    </p>
+                    <p className={styles.catchUpSuggestion}>{item.suggestion}</p>
+                  </div>
+
+                  {item.hasRecording ? (
+                    <span className={styles.assignmentBadge}>Recording</span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.inlineState}>
+              {catchUp?.emptyMessage || "You&apos;re caught up on recent lectures."}
+            </p>
+          )}
+        </section>
       </div>
     </section>
   );
