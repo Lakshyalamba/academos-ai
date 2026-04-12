@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { getApiUrl } from "../../lib/public-config";
-import ContestPrepCard from "./ContestPrepCard";
-import ProgressSummaryCard from "./ProgressSummaryCard";
-import styles from "./dashboard.module.css";
 import TodayTasksCard from "./TodayTasksCard";
+import styles from "./dashboard.module.css";
 
 function getInitialDashboardState() {
   return {
@@ -214,60 +212,57 @@ export default function DashboardClient() {
       ) : null}
 
       <section className={styles.dashboardShell} aria-label="Dashboard content">
-        <div className={styles.dashboardMain}>
-          <TodayTasksCard
-            classesSchedule={todayOverview.classesSchedule}
-            catchUp={catchUp}
-            classesTodayCount={todayOverview.classesTodayCount}
-          />
+        <TodayTasksCard
+          classesSchedule={todayOverview.classesSchedule}
+          catchUp={catchUp}
+          classesTodayCount={todayOverview.classesTodayCount}
+        />
 
-          <section className={styles.dashboardCard} aria-label="Pending assignments">
-            <div className={styles.sectionHeader}>
-              <div className={styles.sectionTitleBlock}>
-                <p className={styles.cardLabel}>Pending Assignments</p>
-                <h2 className={styles.sectionTitle}>Pending assignments</h2>
-                <p className={styles.sectionDescription}>Grouped by urgency.</p>
-              </div>
-              <p className={styles.cardMeta}>{getAssignmentsSummary(pendingAssignments)}</p>
+        <section className={styles.dashboardCard} aria-label="Pending assignments">
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionTitleBlock}>
+              <p className={styles.cardLabel}>Pending Assignments</p>
+              <h2 className={styles.sectionTitle}>Pending assignments</h2>
+              <p className={styles.sectionDescription}>Grouped by urgency.</p>
             </div>
+            <p className={styles.cardMeta}>{getAssignmentsSummary(pendingAssignments)}</p>
+          </div>
 
-            {pendingAssignments.length ? (
-              <div
-                className={`${styles.assignmentsGrid} ${
-                  assignmentBuckets.length === 1 ? styles.assignmentsGridSingle : ""
-                }`}
-              >
-                {assignmentBuckets.map((bucket) => (
-                  <AssignmentBucket
-                    key={bucket.key}
-                    title={bucket.title}
-                    meta={bucket.meta}
-                    items={bucket.items}
-                    emptyMessage={bucket.emptyMessage}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className={styles.stateBox}>
-                <p className={styles.stateTitle}>
-                  {todayOverview.pendingAssignments?.emptyMessage ||
-                    "No pending assignments found in the current live snapshot."}
-                </p>
-                <p className={styles.stateCopy}>
-                  Open work will appear here in a shorter, grouped layout.
-                </p>
-              </div>
-            )}
-          </section>
-        </div>
+          {pendingAssignments.length ? (
+            <div
+              className={`${styles.assignmentsGrid} ${
+                assignmentBuckets.length === 1 ? styles.assignmentsGridSingle : ""
+              }`}
+            >
+              {assignmentBuckets.map((bucket) => (
+                <AssignmentBucket
+                  key={bucket.key}
+                  title={bucket.title}
+                  meta={bucket.meta}
+                  items={bucket.items}
+                  emptyMessage={bucket.emptyMessage}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.stateBox}>
+              <p className={styles.stateTitle}>
+                {todayOverview.pendingAssignments?.emptyMessage ||
+                  "No pending assignments found in the current live snapshot."}
+              </p>
+              <p className={styles.stateCopy}>
+                Open work will appear here in a shorter, grouped layout.
+              </p>
+            </div>
+          )}
+        </section>
 
-        <aside className={styles.dashboardSide}>
-          <ProgressSummaryCard
-            todayOverview={todayOverview}
-            attendanceAlert={attendanceAlert}
-          />
-          <ContestPrepCard />
-        </aside>
+        <ProgressSummaryCard
+          todayOverview={todayOverview}
+          attendanceAlert={attendanceAlert}
+        />
+        
+        <ContestPrepCard />
       </section>
     </>
   );

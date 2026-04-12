@@ -77,10 +77,10 @@
 }
 
 .dashboardShell {
-  display: grid;
-  grid-template-columns: minmax(0, 1.52fr) minmax(330px, 0.92fr);
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .dashboardMain,
