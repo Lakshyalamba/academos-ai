@@ -8,15 +8,11 @@ export default function DashboardPage() {
       <section className={styles.header}>
         <div className={styles.headerRow}>
           <div className={styles.headerCopyBlock}>
-            <p className="eyebrow">Dashboard</p>
-            <h1 className={styles.title}>Academic dashboard</h1>
-            <p className={styles.headerCopy}>
-              Tasks, attendance, and prep.
-            </p>
+            <h1 className={styles.title}>Dashboard</h1>
           </div>
 
           <Link href="/" className={styles.headerLink}>
-            Back to home
+            Home
           </Link>
         </div>
       </section>

@@ -120,7 +120,7 @@ export default function TodoListCard() {
       </form>
 
       {!isReady ? (
-        <p className={styles.inlineState}>Loading your checklist...</p>
+        <p className={styles.inlineState}>Loading...</p>
       ) : items.length > 0 ? (
         <ul className={styles.todoChecklist}>
           {items.map((item) => (

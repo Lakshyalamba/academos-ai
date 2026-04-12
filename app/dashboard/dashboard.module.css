@@ -11,7 +11,76 @@
 }
 
 .header {
-  padding: clamp(1.2rem, 2.3vw, 1.55rem);
+  padding: clamp(1rem, 2vw, 1.3rem);
+  animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(-15px);
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  margin: 0;
+  color: #111111;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  animation: fadeIn 0.5s ease forwards;
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.headerLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #f3f3f3;
+  color: #111111;
+  font-size: 0.86rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+  animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.headerCopy {
+  max-width: 32rem;
+  margin: 0.15rem 0 0;
+  color: #5c5c5c;
+  line-height: 1.45;
+  font-size: 0.95rem;
 }
 
 .headerRow,
@@ -93,8 +162,8 @@
 
 .dashboardCard {
   display: grid;
-  gap: 0.75rem;
-  padding: 0.9rem;
+  gap: 0.5rem;
+  padding: 0.6rem;
   animation: cardEnter 420ms ease both;
   transition:
     transform 220ms ease,
@@ -129,7 +198,7 @@
 .attendanceSubjectFormula {
   margin: 0;
   color: #666666;
-  font-size: 0.69rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -138,7 +207,7 @@
 .sectionTitle {
   margin: 0;
   color: #111111;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -154,6 +223,7 @@
   margin: 0;
   color: #5c5c5c;
   line-height: 1.45;
+  font-size: 0.9rem;
 }
 
 .cardMeta,
@@ -166,11 +236,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 1.85rem;
-  padding: 0.35rem 0.7rem;
+  min-height: 1.7rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.08);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -189,12 +259,14 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 18px;
   background: #f6f6f6;
+  animation: fadeIn 0.4s ease forwards;
 }
 
 .statusBannerText {
   margin: 0;
   color: #111111;
   line-height: 1.5;
+  font-size: 0.9rem;
 }
 
 .todayTasksGrid,
@@ -448,12 +520,19 @@
     transform 180ms ease,
     background-color 180ms ease,
     box-shadow 180ms ease;
+  animation: fadeIn 0.5s ease forwards;
+  animation-delay: 0.5s;
+  opacity: 0;
 }
 
 .todoAddButton:hover {
-  transform: translateY(-1px);
-  background: #000000;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: #222222;
+}
+
+.todoAddButton:active {
+  transform: scale(0.98);
 }
 
 .todoStats {
@@ -574,24 +653,48 @@
 .attendanceSubjectCard {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 0.28rem;
+  gap: 0.25rem;
   aspect-ratio: 1 / 1;
-  padding: 0.72rem;
+  padding: 0.6rem;
+  animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+@keyframes popIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.attendanceSubjectCard:nth-child(1) { animation-delay: 0.4s; }
+.attendanceSubjectCard:nth-child(2) { animation-delay: 0.45s; }
+.attendanceSubjectCard:nth-child(3) { animation-delay: 0.5s; }
+.attendanceSubjectCard:nth-child(4) { animation-delay: 0.55s; }
+.attendanceSubjectCard:nth-child(5) { animation-delay: 0.6s; }
+.attendanceSubjectCard:nth-child(6) { animation-delay: 0.65s; }
+.attendanceSubjectCard:nth-child(7) { animation-delay: 0.7s; }
+.attendanceSubjectCard:nth-child(8) { animation-delay: 0.75s; }
+
+.attendanceSubjectCard:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
 .attendanceSubjectName {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   line-height: 1.2;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
 }
 
 .attendanceSubjectRecord {
   margin: 0;
   color: #5a5a5a;
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   line-height: 1.35;
 }
 
@@ -600,7 +703,7 @@
   align-self: end;
   color: #111111;
   font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   line-height: 1;
 }
 
@@ -635,13 +738,75 @@
 @keyframes cardEnter {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px) scale(0.98);
   }
 
   to {
     opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dashboardCard {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  animation: cardEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.dashboardCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.dashboardMain > :nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.dashboardMain > :nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dashboardMain > :nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.dashboardMain > :nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.dashboardCard .sectionTitle {
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.15s;
+  opacity: 0;
+}
+
+.dashboardCard .cardMeta {
+  animation: fadeIn 0.5s ease forwards;
+  animation-delay: 0.25s;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
+}
+
+.dashboardCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 1080px) {
@@ -671,14 +836,75 @@
 
   .header,
   .dashboardCard,
-  .subCard,
-  .assignmentBucket,
-  .contestSummaryCard,
-  .contestGuidanceCard,
-  .scheduleDayCard,
-  .progressStatCard {
-    padding: 1rem;
+.subCard,
+.assignmentBucket,
+.progressStatCard,
+.contestSummaryCard,
+.contestGuidanceCard,
+.scheduleDayCard {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  background: #f6f6f6;
+  animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+@keyframes scaleIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
+}
+
+.progressStatCard:nth-child(1) { animation-delay: 0.3s; }
+.progressStatCard:nth-child(2) { animation-delay: 0.35s; }
+.progressStatCard:nth-child(3) { animation-delay: 0.4s; }
+.progressStatCard:nth-child(4) { animation-delay: 0.45s; }
+
+.scheduleItem,
+.assignmentItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+  animation: slideInLeft 0.4s ease forwards;
+  opacity: 0;
+}
+
+.scheduleItem:nth-child(1),
+.assignmentItem:nth-child(1) { animation-delay: 0.35s; }
+.scheduleItem:nth-child(2),
+.assignmentItem:nth-child(2) { animation-delay: 0.4s; }
+.scheduleItem:nth-child(3),
+.assignmentItem:nth-child(3) { animation-delay: 0.45s; }
+.scheduleItem:nth-child(4),
+.assignmentItem:nth-child(4) { animation-delay: 0.5s; }
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.scheduleItem:hover,
+.assignmentItem:hover {
+  transform: translateX(4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+}
 
   .headerRow,
   .sectionHeader,

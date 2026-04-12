@@ -135,12 +135,10 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
     <section className={styles.dashboardCard} aria-label="Progress summary">
       <div className={styles.sectionHeader}>
         <div className={styles.sectionTitleBlock}>
-          <p className={styles.cardLabel}>Progress Summary</p>
-          <h2 className={styles.sectionTitle}>Progress summary</h2>
-          <p className={styles.sectionDescription}>Workload overview.</p>
+          <h2 className={styles.sectionTitle}>Progress</h2>
         </div>
         <p className={styles.cardMeta}>
-          {todayOverview.available ? "Live view" : "Fallback view"}
+          {todayOverview.available ? "Live" : "Unavailable"}
         </p>
       </div>
 
@@ -149,7 +147,6 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
           <article key={item.label} className={styles.progressStatCard}>
             <p className={styles.progressStatLabel}>{item.label}</p>
             <p className={styles.progressStatValue}>{item.value}</p>
-            <p className={styles.progressStatHelper}>{item.helper}</p>
           </article>
         ))}
       </div>
@@ -194,10 +191,7 @@ export default function ProgressSummaryCard({ todayOverview, attendanceAlert }) 
           </>
         ) : (
           <div className={styles.stateBox}>
-            <p className={styles.stateTitle}>{attendanceAlert?.explanation}</p>
-            <p className={styles.stateCopy}>
-              Attendance cards will appear here when the live record is available.
-            </p>
+            <p className={styles.stateTitle}>Attendance data unavailable</p>
           </div>
         )}
       </section>

@@ -62,9 +62,7 @@ export default function TodayTasksCard({
     <section className={styles.dashboardCard} aria-label="Today's tasks">
       <div className={styles.sectionHeader}>
         <div className={styles.sectionTitleBlock}>
-          <p className={styles.cardLabel}>Today&apos;s Tasks</p>
-          <h2 className={styles.sectionTitle}>Today&apos;s tasks</h2>
-          <p className={styles.sectionDescription}>Tasks, classes, and catch-up.</p>
+          <h2 className={styles.sectionTitle}>Today's Tasks</h2>
         </div>
         <p className={styles.cardMeta}>{agendaLabel}</p>
       </div>
@@ -77,11 +75,10 @@ export default function TodayTasksCard({
         <section className={`${styles.subCard} ${styles.todayScheduleCard}`}>
           <div className={styles.subCardHeader}>
             <div className={styles.sectionTitleBlock}>
-              <p className={styles.cardLabel}>Class Schedule</p>
-              <h3 className={styles.subCardTitle}>Today and tomorrow</h3>
+              <h3 className={styles.subCardTitle}>Schedule</h3>
             </div>
             <p className={styles.cardMeta}>
-              {classesSchedule?.available ? "Live schedule" : "Unavailable"}
+              {classesSchedule?.available ? "Live" : "Unavailable"}
             </p>
           </div>
 
@@ -89,17 +86,12 @@ export default function TodayTasksCard({
             <ScheduleDay
               label="Today"
               items={todayClasses}
-              emptyMessage={
-                classesSchedule?.todayEmptyMessage || "No classes scheduled today."
-              }
+              emptyMessage="No classes"
             />
             <ScheduleDay
               label="Tomorrow"
               items={tomorrowClasses}
-              emptyMessage={
-                classesSchedule?.tomorrowEmptyMessage ||
-                "No classes scheduled tomorrow."
-              }
+              emptyMessage="No classes"
             />
           </div>
         </section>
@@ -107,11 +99,10 @@ export default function TodayTasksCard({
         <section className={`${styles.subCard} ${styles.todayCatchUpCard}`}>
           <div className={styles.subCardHeader}>
             <div className={styles.sectionTitleBlock}>
-              <p className={styles.cardLabel}>Catch Up</p>
-              <h3 className={styles.subCardTitle}>Recent missed lectures</h3>
+              <h3 className={styles.subCardTitle}>Catch Up</h3>
             </div>
             <p className={styles.cardMeta}>
-              {catchUp?.available ? "Live activity" : "Unavailable"}
+              {catchUp?.available ? "Live" : "Unavailable"}
             </p>
           </div>
 

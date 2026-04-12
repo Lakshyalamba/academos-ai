@@ -10,7 +10,7 @@ function getInitialDashboardState() {
   return {
     todayOverview: {
       available: false,
-      message: "Loading today's academic overview...",
+      message: "Loading...",
       classesTodayCount: null,
       pendingAssignmentsCount: null,
       overdueItemsCount: null,
@@ -18,13 +18,13 @@ function getInitialDashboardState() {
         available: false,
         today: [],
         tomorrow: [],
-        todayEmptyMessage: "Loading today's classes...",
-        tomorrowEmptyMessage: "Loading tomorrow's classes...",
+        todayEmptyMessage: "No classes",
+        tomorrowEmptyMessage: "No classes",
       },
       pendingAssignments: {
         available: false,
         items: [],
-        emptyMessage: "Loading pending assignments...",
+        emptyMessage: "Loading...",
       },
     },
     attendanceAlert: {
@@ -32,13 +32,13 @@ function getInitialDashboardState() {
       state: "unavailable",
       averageLabel: null,
       subjectCount: 0,
-      explanation: "Loading attendance details...",
+      explanation: "Loading...",
       subjects: [],
     },
     catchUp: {
       available: false,
       items: [],
-      emptyMessage: "Loading recent lecture activity...",
+      emptyMessage: "No activity",
     },
   };
 }
@@ -222,9 +222,7 @@ export default function DashboardClient() {
         <section className={styles.dashboardCard} aria-label="Pending assignments">
           <div className={styles.sectionHeader}>
             <div className={styles.sectionTitleBlock}>
-              <p className={styles.cardLabel}>Pending Assignments</p>
-              <h2 className={styles.sectionTitle}>Pending assignments</h2>
-              <p className={styles.sectionDescription}>Grouped by urgency.</p>
+              <h2 className={styles.sectionTitle}>Pending Assignments</h2>
             </div>
             <p className={styles.cardMeta}>{getAssignmentsSummary(pendingAssignments)}</p>
           </div>
@@ -248,11 +246,7 @@ export default function DashboardClient() {
           ) : (
             <div className={styles.stateBox}>
               <p className={styles.stateTitle}>
-                {todayOverview.pendingAssignments?.emptyMessage ||
-                  "No pending assignments found in the current live snapshot."}
-              </p>
-              <p className={styles.stateCopy}>
-                Open work will appear here in a shorter, grouped layout.
+                {todayOverview.pendingAssignments?.emptyMessage || "No assignments"}
               </p>
             </div>
           )}
