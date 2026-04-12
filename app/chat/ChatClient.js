@@ -39,11 +39,11 @@ const fallbackSetupStatus = {
 };
 
 const exampleQueries = [
-  "What should I focus on this week?",
-  "What should I prepare for this Friday's contest?",
-  "Do I have any overdue work or attendance risk?",
-  "Summarize my upcoming classes, quizzes, and deadlines.",
-  "Which subject needs the most attention right now?",
+  "What's due this week?",
+  "Attendance status",
+  "Quiz dates",
+  "Next deadline",
+  "Subject progress",
 ];
 
 function readSavedContestDraft() {
