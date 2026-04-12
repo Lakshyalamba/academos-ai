@@ -1,22 +1,145 @@
 .authLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(380px, 0.88fr);
-  gap: 2rem;
-  align-items: stretch;
+  grid-template-columns: minmax(380px, 0.9fr) minmax(0, 1.3fr);
+  gap: 3rem;
+  align-items: center;
+  min-height: calc(100vh - 180px);
 }
 
 .introPanel {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  align-content: start;
+  justify-content: center;
+  animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .introTitle {
-  max-width: 12ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+  transform: translateX(40px);
 }
 
 .introCopy {
-  max-width: 34rem;
+  font-size: 1.1rem;
+  color: var(--color-muted);
+  max-width: 28rem;
+  line-height: 1.7;
+  animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.4s;
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.featureCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 18px;
+  box-shadow: var(--shadow-panel);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+.featureCard:hover {
+  transform: translateY(-4px) translateX(4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-text);
+}
+
+.featureCard:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.featureIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--color-surface-muted);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.featureIcon {
+  font-size: 1.2rem;
+}
+
+.featureContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.featureTitle {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.featureDesc {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+.featureArrow {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.featureCard:hover .featureArrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.introNote {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  font-style: italic;
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 1s;
+  opacity: 0;
+  transform: translateX(40px);
 }
 
 .introGrid {
@@ -61,22 +184,32 @@
 .formCard {
   display: grid;
   gap: 1rem;
-  padding: 1.6rem;
+  padding: 2rem;
   border-radius: 28px;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
   box-shadow: var(--shadow-offset);
+  animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateX(-40px);
+}
+
+@keyframes slideInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .formHeader {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.5rem;
 }
 
 .formTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.85rem;
+  font-size: 1.8rem;
   line-height: 1.05;
   letter-spacing: -0.03em;
   text-transform: uppercase;
@@ -193,6 +326,15 @@
 @media (max-width: 920px) {
   .authLayout {
     grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .introPanel {
+    order: 2;
+  }
+  
+  .featureGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

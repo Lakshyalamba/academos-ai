@@ -1,7 +1,6 @@
 "use client";
 
 import { startTransition, useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../../components/AuthProvider";
 import {
@@ -9,7 +8,6 @@ import {
   DEFAULT_AUTH_REDIRECT_PATH,
   getSafeRedirectPath,
 } from "../../lib/auth-routes";
-import { SUPABASE_AUTH_CONFIG_MESSAGE } from "../../lib/supabase-auth-config";
 import styles from "./auth.module.css";
 
 const defaultFormState = {
@@ -101,8 +99,6 @@ export default function AuthForm() {
     searchParams.get("redirectTo"),
     DEFAULT_AUTH_REDIRECT_PATH,
   );
-  const queryErrorMessage =
-    searchParams.get("error") === "config" ? SUPABASE_AUTH_CONFIG_MESSAGE : "";
 
   useEffect(() => {
     setMode(getModeFromSearchParams(searchParams));
@@ -210,18 +206,15 @@ export default function AuthForm() {
     }
   }
 
-  const helperMessage = authError || queryErrorMessage;
+  const helperMessage = authError;
 
   return (
     <div className={styles.formCard}>
       <div className={styles.formHeader}>
-        <p className="eyebrow">{mode === "signup" ? "Create account" : "Welcome back"}</p>
+        <p className="eyebrow">{mode === "signup" ? "Sign Up" : "Login"}</p>
         <h2 className={styles.formTitle}>
-          {mode === "signup" ? "Start using Academos with your own account." : "Log in to access your academic workspace."}
+          {mode === "signup" ? "Create your account" : "Welcome back"}
         </h2>
-        <p className={styles.formCopy}>
-          Use your email and password to continue to the dashboard, chat, and contest tools.
-        </p>
       </div>
 
       <div className={styles.modeToggle} aria-label="Authentication mode">
@@ -262,7 +255,7 @@ export default function AuthForm() {
       <form className={styles.form} onSubmit={handleSubmit}>
         {mode === "signup" ? (
           <label className={styles.field}>
-            <span className={styles.fieldLabel}>Full name</span>
+            <span className={styles.fieldLabel}>Full Name</span>
             <input
               type="text"
               name="fullName"
@@ -271,7 +264,7 @@ export default function AuthForm() {
               onChange={handleFieldChange}
               autoComplete="name"
               disabled={isSubmitting}
-              placeholder="A student name"
+              placeholder="Your name"
             />
           </label>
         ) : null}
@@ -286,7 +279,7 @@ export default function AuthForm() {
             onChange={handleFieldChange}
             autoComplete="email"
             disabled={isSubmitting}
-            placeholder="student@example.com"
+            placeholder="email@example.com"
           />
         </label>
 
@@ -300,13 +293,13 @@ export default function AuthForm() {
             onChange={handleFieldChange}
             autoComplete={mode === "signup" ? "new-password" : "current-password"}
             disabled={isSubmitting}
-            placeholder="At least 8 characters"
+            placeholder="Min 8 characters"
           />
         </label>
 
         {mode === "signup" ? (
           <label className={styles.field}>
-            <span className={styles.fieldLabel}>Confirm password</span>
+            <span className={styles.fieldLabel}>Confirm Password</span>
             <input
               type="password"
               name="confirmPassword"
@@ -315,7 +308,7 @@ export default function AuthForm() {
               onChange={handleFieldChange}
               autoComplete="new-password"
               disabled={isSubmitting}
-              placeholder="Repeat the password"
+              placeholder="Repeat password"
             />
           </label>
         ) : null}
@@ -336,18 +329,14 @@ export default function AuthForm() {
       </form>
 
       <p className={styles.footerCopy}>
-        {mode === "signup" ? "Already have an account?" : "Need an account?"}{" "}
+        {mode === "signup" ? "Already have an account?" : "New here?"}{" "}
         <button
           type="button"
           className={styles.inlineButton}
           onClick={() => handleModeChange(mode === "signup" ? "login" : "signup")}
         >
-          {mode === "signup" ? "Log in here" : "Create one here"}
+          {mode === "signup" ? "Login" : "Sign up"}
         </button>
-      </p>
-
-      <p className={styles.footerHint}>
-        Looking for the product first? <Link href="/">Go back to the landing page</Link>.
       </p>
     </div>
   );
