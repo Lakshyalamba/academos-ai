@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getApiUrl } from "../../lib/public-config";
+import ProgressSummaryCard from "./ProgressSummaryCard";
 import TodayTasksCard from "./TodayTasksCard";
 import styles from "./dashboard.module.css";
 
@@ -261,8 +262,6 @@ export default function DashboardClient() {
           todayOverview={todayOverview}
           attendanceAlert={attendanceAlert}
         />
-        
-        <ContestPrepCard />
       </section>
     </>
   );
