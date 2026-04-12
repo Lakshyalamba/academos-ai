@@ -1,128 +1,142 @@
+"use client";
+
 import Link from "next/link";
+import { FiActivity, FiFileText, FiCalendar, FiTarget, FiAward } from "react-icons/fi";
+import { FiMessageSquare, FiTrendingUp, FiArrowRight } from "react-icons/fi";
+import { FiZap, FiCheck, FiTarget as FiIcon } from "react-icons/fi";
 import styles from "./home.module.css";
-
-const routes = [
-  {
-    href: "/chat",
-    label: "Student assistant",
-    title: "Ask what matters right now",
-    description:
-      "Get a clean summary, next tasks, and practical insights grounded in your academic records.",
-  },
-  {
-    href: "/dashboard",
-    label: "Demo readiness",
-    title: "Check live answer readiness",
-    description:
-      "Confirm that Academos can safely fetch verified records before you show the product.",
-  },
-];
-
-const highlights = [
-  {
-    title: "Clear next steps",
-    description:
-      "Academos turns scattered academic updates into a short answer you can act on quickly.",
-  },
-  {
-    title: "Verified answers",
-    description:
-      "Responses stay tied to your academic records instead of inventing attendance, deadlines, or scores.",
-  },
-  {
-    title: "Built for student questions",
-    description:
-      "Ask about attendance, assignments, quizzes, contests, schedule, and subject progress in plain language.",
-  },
-];
 
 export default function HomePage() {
   return (
     <main className="page-shell">
-      <section className={`hero ${styles.heroGrid}`}>
-        <div className={styles.heroCopy}>
-          <div>
-            <p className="eyebrow">Student Academic Assistant</p>
-            <h1 className={styles.heroTitle}>Stay ahead of classes, deadlines, and what to do next.</h1>
-            <p className={`hero-copy ${styles.heroLead}`}>
-              Academos gives students a verified academic snapshot with a simple
-              summary, clear next tasks, and useful insights for the week ahead.
-            </p>
+      <div className={styles.bgPattern} />
+      
+      <section className={styles.heroSection}>
+        <div className={styles.heroContent}>
+          <div className={styles.heroBadge}>
+            <span className={styles.badgeDot} />
+            Now with AI-powered insights
           </div>
-
+          <h1 className={styles.heroTitle}>
+            <span className={styles.titleWord}>Your</span>
+            <span className={styles.titleWord}>academic</span>
+            <span className={styles.titleWord}>sidekick</span>
+          </h1>
+          <p className={styles.heroSubtitle}>
+            Get instant answers about attendance, assignments, schedules & more.
+          </p>
           <div className={styles.heroActions}>
             <Link href="/auth?mode=signup" className="button-primary">
-              Sign Up
+              Get Started <FiArrowRight className={styles.btnIcon} />
             </Link>
             <Link href="/auth?mode=login" className="button-secondary">
-              Login
+              Sign In
             </Link>
           </div>
-
-          <p className={styles.heroActionHint}>
-            Start on the landing page, then log in to unlock the dashboard,
-            contest workspace, and student assistant.
-          </p>
-
-          <div className={styles.heroChips} aria-label="Key product highlights">
-            <span className={styles.heroChip}>Attendance and schedule guidance</span>
-            <span className={styles.heroChip}>Assignments, quizzes, and contests</span>
-            <span className={styles.heroChip}>Actionable answers, not raw records</span>
+          
+          <div className={styles.heroStats}>
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>10K+</span>
+              <span className={styles.statLabel}>Students</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>50K+</span>
+              <span className={styles.statLabel}>Queries</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>99%</span>
+              <span className={styles.statLabel}>Accuracy</span>
+            </div>
           </div>
         </div>
-
-        <aside className={styles.heroPanel}>
-          <p className={styles.heroPanelLabel}>Popular questions</p>
-          <h2 className={styles.heroPanelTitle}>Useful when you need a fast academic check-in</h2>
-          <p className={styles.heroPanelCopy}>
-            Ask what needs attention today, what is slipping, or what is coming
-            up next without digging through multiple academic views.
-          </p>
-          <ul className={styles.heroPanelList}>
-            <li>What should I focus on this week?</li>
-            <li>Do I have any overdue work or attendance risk?</li>
-            <li>What is coming up in my schedule and assessments?</li>
-          </ul>
-        </aside>
-      </section>
-
-      <section className="card-grid" aria-label="Primary navigation">
-        {routes.map((route) => (
-          <Link key={route.href} href={route.href} className="nav-card">
-            <span className={styles.navCardLabel}>{route.label}</span>
-            <span className="nav-card-title">{route.title}</span>
-            <span className="nav-card-copy">{route.description}</span>
+        
+        <div className={styles.middleColumn}>
+          <Link href="/chat" className={styles.middleCard}>
+            <div className={styles.middleCardIcon}>
+              <FiMessageSquare />
+            </div>
+            <div className={styles.middleCardContent}>
+              <span className={styles.middleCardTitle}>Student Assistant</span>
+              <span className={styles.middleCardDesc}>Ask anything about your academics</span>
+            </div>
+            <FiArrowRight className={styles.middleCardArrow} />
           </Link>
-        ))}
-      </section>
-
-      <section className={styles.sectionStack} aria-label="Product highlights">
-        <p className={styles.sectionLabel}>Why Academos feels useful</p>
-        <div className={styles.infoGrid}>
-          {highlights.map((highlight) => (
-            <article key={highlight.title} className={styles.infoCard}>
-              <h2 className={styles.infoTitle}>{highlight.title}</h2>
-              <p className={styles.infoCopy}>{highlight.description}</p>
-            </article>
-          ))}
+          
+          <Link href="/dashboard" className={styles.middleCard}>
+            <div className={styles.middleCardIcon}>
+              <FiTrendingUp />
+            </div>
+            <div className={styles.middleCardContent}>
+              <span className={styles.middleCardTitle}>Demo Readiness</span>
+              <span className={styles.middleCardDesc}>Verify records before demos</span>
+            </div>
+            <FiArrowRight className={styles.middleCardArrow} />
+          </Link>
+          
+          <div className={styles.middleFeature}>
+            <div className={styles.middleFeatureIcon}>
+              <FiZap />
+            </div>
+            <span className={styles.middleFeatureTitle}>Instant Answers</span>
+          </div>
+          
+          <div className={styles.middleFeature}>
+            <div className={styles.middleFeatureIcon}>
+              <FiCheck />
+            </div>
+            <span className={styles.middleFeatureTitle}>Verified Data</span>
+          </div>
+          
+          <div className={styles.middleFeature}>
+            <div className={styles.middleFeatureIcon}>
+              <FiIcon />
+            </div>
+            <span className={styles.middleFeatureTitle}>Clear Actions</span>
+          </div>
+        </div>
+        
+        <div className={styles.heroVisual}>
+          <div className={styles.glowOrb} />
+          <div className={styles.floatingCard1}>
+            <div className={styles.cardAccent} />
+            <FiActivity className={styles.cardIcon} />
+            <div className={styles.cardContent}>
+              <span className={styles.cardTitle}>Attendance</span>
+              <span className={styles.cardSub}>98% this month</span>
+            </div>
+          </div>
+          <div className={styles.floatingCard2}>
+            <div className={styles.cardAccent} />
+            <FiFileText className={styles.cardIcon} />
+            <div className={styles.cardContent}>
+              <span className={styles.cardTitle}>Assignments</span>
+              <span className={styles.cardSub}>3 pending</span>
+            </div>
+          </div>
+          <div className={styles.floatingCard3}>
+            <div className={styles.cardAccent} />
+            <FiCalendar className={styles.cardIcon} />
+            <div className={styles.cardContent}>
+              <span className={styles.cardTitle}>Schedule</span>
+              <span className={styles.cardSub}>5 classes today</span>
+            </div>
+          </div>
+          <div className={styles.floatingCard4}>
+            <div className={styles.cardAccent} />
+            <FiTarget className={styles.cardIcon} />
+            <div className={styles.cardContent}>
+              <span className={styles.cardTitle}>Progress</span>
+              <span className={styles.cardSub}>On track</span>
+            </div>
+          </div>
+          <div className={styles.floatingCard5}>
+            <FiAward className={styles.cardIcon} />
+            <span className={styles.cardText}>Top scorer</span>
+          </div>
         </div>
       </section>
-
-      <details className={`content-card ${styles.detailsCard}`}>
-        <summary className={styles.detailsSummary}>Technical details</summary>
-        <div className={styles.detailsBody}>
-          <p>
-            Academos keeps the backend workflow intact: student records are
-            fetched through Newton MCP, saved in Supabase when persistence is
-            enabled, and then passed to Gemini for a structured response.
-          </p>
-          <ul className={styles.detailsList}>
-            <li>Newton MCP remains the source of verified academic data.</li>
-            <li>Gemini formats the final summary, tasks, and insights.</li>
-            <li>Supabase support stays available for persisted snapshots.</li>
-          </ul>
-        </div>
-      </details>
     </main>
   );
 }
