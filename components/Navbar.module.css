@@ -1,0 +1,310 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.headerGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.98) 0%, rgba(5, 5, 5, 0.92) 100%);
+  pointer-events: none;
+}
+
+.headerInner {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  padding: 0.85rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  backdrop-filter: blur(16px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brandIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--color-on-inverse);
+  border-radius: 12px;
+  animation: brandPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+@keyframes brandPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes brandPop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.brandIconText {
+  color: var(--color-inverse);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.02rem;
+}
+
+.brandTitle {
+  color: var(--color-on-inverse);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  animation: fadeSlide 0.5s ease forwards;
+  animation-delay: 0.1s;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.brandCopy {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-display);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: fadeSlide 0.5s ease forwards;
+  animation-delay: 0.15s;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+@keyframes fadeSlide {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  animation: fadeSlide 0.4s ease forwards;
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.navLink:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-on-inverse);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navLink:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.navIcon {
+  font-size: 0.9rem;
+}
+
+.navLinkAccent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-on-inverse);
+  background: var(--color-on-inverse);
+  color: var(--color-inverse);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  animation: fadeSlide 0.4s ease forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.navLinkAccent:hover {
+  background: transparent;
+  color: var(--color-on-inverse);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navLinkAccent:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.sessionPill {
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.userPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  animation: fadeSlide 0.4s ease forwards;
+  animation-delay: 0.15s;
+  opacity: 0;
+}
+
+.userIcon {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.userEmail {
+  color: var(--color-on-inverse);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logoutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  animation: fadeSlide 0.4s ease forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.logoutBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-on-inverse);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.logoutBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.logoutBtn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.logoutIcon {
+  font-size: 0.9rem;
+}
+
+.errorMessage {
+  margin: 0;
+  padding: 0.7rem 1.5rem;
+  color: var(--color-on-inverse);
+  background: rgba(220, 38, 38, 0.9);
+  font-size: 0.8rem;
+  font-family: var(--font-display);
+}
+
+@media (max-width: 760px) {
+  .headerInner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .brand {
+    justify-content: center;
+  }
+
+  .nav {
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .navLink,
+  .navLinkAccent {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.65rem;
+  }
+
+  .userEmail {
+    max-width: 80px;
+  }
+}

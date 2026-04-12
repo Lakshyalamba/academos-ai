@@ -4,11 +4,13 @@ import { startTransition, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthProvider";
+import { FiGrid, FiMessageSquare, FiLogOut, FiUser } from "react-icons/fi";
+import styles from "./Navbar.module.css";
 
 const appLinks = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/contest", label: "Contest" },
-  { href: "/chat", label: "Ask Academos" },
+  { href: "/dashboard", label: "Dashboard", icon: FiGrid },
+  { href: "/contest", label: "Contest", icon: null },
+  { href: "/chat", label: "Ask", icon: FiMessageSquare },
 ];
 
 export default function Navbar() {
@@ -38,30 +40,44 @@ export default function Navbar() {
   }
 
   return (
-    <header className="site-header">
-      <div className="site-header-inner">
-        <Link href="/" className="site-brand">
-          <span className="site-brand-title">Academos</span>
-          <span className="site-brand-copy">student academic guide</span>
+    <header className={styles.header}>
+      <div className={styles.headerGlow} />
+      <div className={styles.headerInner}>
+        <Link href="/" className={styles.brand}>
+          <div className={styles.brandIcon}>
+            <span className={styles.brandIconText}>A</span>
+          </div>
+          <div className={styles.brandText}>
+            <span className={styles.brandTitle}>Academos</span>
+            <span className={styles.brandCopy}>student assistant</span>
+          </div>
         </Link>
 
-        <nav className="site-nav" aria-label="Primary">
-          {isLoading ? <span className="site-session-pill">Checking session...</span> : null}
+        <nav className={styles.nav} aria-label="Primary">
+          {isLoading ? (
+            <span className={styles.sessionPill}>Loading...</span>
+          ) : null}
 
           {!isLoading && user
-            ? appLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="site-nav-link">
-                  {link.label}
+            ? appLinks.map((link, index) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={styles.navLink}
+                  style={{ animationDelay: `${0.1 + index * 0.05}s` }}
+                >
+                  {link.icon && <link.icon className={styles.navIcon} />}
+                  <span>{link.label}</span>
                 </Link>
               ))
             : null}
 
           {!isLoading && !user ? (
             <>
-              <Link href="/auth?mode=login" className="site-nav-link">
+              <Link href="/auth?mode=login" className={styles.navLink}>
                 Login
               </Link>
-              <Link href="/auth?mode=signup" className="site-nav-link site-nav-link-accent">
+              <Link href="/auth?mode=signup" className={styles.navLinkAccent}>
                 Sign Up
               </Link>
             </>
@@ -69,21 +85,25 @@ export default function Navbar() {
 
           {!isLoading && user ? (
             <>
-              <span className="site-session-pill">{user.email}</span>
+              <div className={styles.userPill}>
+                <FiUser className={styles.userIcon} />
+                <span className={styles.userEmail}>{user.email?.split('@')[0]}</span>
+              </div>
               <button
                 type="button"
-                className="site-nav-button"
+                className={styles.logoutBtn}
                 onClick={handleLogout}
                 disabled={isLoggingOut}
               >
-                {isLoggingOut ? "Logging out..." : "Logout"}
+                <FiLogOut className={styles.logoutIcon} />
+                <span>{isLoggingOut ? "..." : "Logout"}</span>
               </button>
             </>
           ) : null}
         </nav>
       </div>
 
-      {logoutError ? <p className="site-header-message">{logoutError}</p> : null}
+      {logoutError ? <p className={styles.errorMessage}>{logoutError}</p> : null}
     </header>
   );
 }
